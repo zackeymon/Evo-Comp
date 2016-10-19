@@ -15,9 +15,11 @@ class Food:
     def grow(self):
         self.energy += 1
               
-    def reproduce(self, new, delx, dely, food_list):
+    def reproduce(self, new, food_list):
         if self.energy >= self.repThresh:
-              if np.random.random_integers(4) = di.up
+
+                           
+                     
             
     def die(self):
         if self.energy <= 0:
