@@ -1,26 +1,31 @@
-import random
+import numpy as np
+from direction import Direction
 
 class Bug:
 
-    def __init__(self, x, y, energy):
-        self.x = x
-        self.y = y
+    def __init__(self, pos, energy, reproduction_threshold):
+        self.pos = np.array(pos)
         self.energy = energy
+        self.energy_initial = energy
+        self.reproduction_threshold = reproduction_threshold
+        # self.energy_max = energy_max
+
+    def respire(self):
+        self.energy -= 1
 
     def eat(self, food):
-        self.energy += food.energyVal
+        self.energy += food.energy
 
-    def find_food(self, food_list):
-        for food in food_list:
-            if self.x == food.x and self.y == food.y:
-                return food
-        return None
+    def move(self, del_pos):
+        self.pos += del_pos
 
-    def move(self, bug_list, delx, dely):
-        for bug in bug_list:
-            if self.x + delx == bug.x and self.y + dely == bug.y:
-                break
+    def reproduce(self, new_pos):
+        self.energy = self.energy_initial
 
-        self.x += delx
-        self.y += dely
+        # Set new bug parameters
+        new_energy = self.energy_initial
+        new_reproduction_threshold = self.reproduction_threshold
 
+        # Create new bug object
+        new_bug = Bug(new_pos, new_energy, new_reproduction_threshold)
+        return new_bug
