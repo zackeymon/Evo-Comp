@@ -8,15 +8,15 @@ class Direction(Enum):
   right = 4
 
   def random():
-  randomP = np.random.random_integers(4)
+  random_point = np.random.random_integers(4)
   delx = 0
   dely = 0
-    if randomP == Direction.up:
+    if random_point == Direction.up:
       dely += 1
-    elif randomP == Direcion.down:
+    elif random_point == Direcion.down:
       dely -= 1
-    elif randomP == Direction.left:
+    elif random_point == Direction.left:
       delx -= 1
-    elif randomP == Direction.right:
+    elif random_point == Direction.right:
       delx += 1
       
