@@ -1,4 +1,5 @@
 import numpy as np
+from Direction import 
 
 class Food:
        
