@@ -20,3 +20,5 @@ class Direction(Enum):
     elif random_point == Direction.right:
       delx += 1
       
+   return np.array([delx, dely])
+      
