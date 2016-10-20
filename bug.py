@@ -3,8 +3,8 @@ from direction import Direction
 
 class Bug:
 
-    def __init__(self, pos, energy, reproduction_threshold):
-        self.pos = np.array(pos)
+    def __init__(self, position, energy, reproduction_threshold):
+        self.position = np.array(position)
         self.energy = energy
         self.energy_initial = energy
         self.reproduction_threshold = reproduction_threshold
@@ -13,11 +13,11 @@ class Bug:
     def respire(self):
         self.energy -= 1
 
-    def eat(self, food):
-        self.energy += food.energy
+    def eat(self, food, no_of_bugs):
+        self.energy += food.energy/no_of_bugs #share food?
 
     def move(self, del_pos):
-        self.pos += del_pos
+        self.position += del_pos
 
     def reproduce(self, new_pos):
         self.energy = self.energy_initial
