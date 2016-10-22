@@ -1,4 +1,5 @@
 import numpy as np
+from direction import Direction
 
 
 class World:
@@ -10,29 +11,28 @@ class World:
         self.bugList = []
         self.foodList = []
 
-    def check_collision(self, position = [], plant = False):
+    def check_collision(self, position, plant=False):
         disallowed_directions = []
 
-        if position[1] + 1 > self.rows:
-            disallowed_directions.append(1)
-        if position[1] - 1 < 1:
-            disallowed_directions.append(2)
-        if position[0] - 1 < 1:
-            disallowed_directions.append(3)
-        if position[1] + 1 > self.columns:
-            disallowed_directions.append(4)
+        if position[1] + 1 >= self.rows:
+            disallowed_directions.append(Direction.up)
+        if position[1] - 1 < 0:
+            disallowed_directions.append(Direction.down)
+        if position[0] - 1 < 0:
+            disallowed_directions.append(Direction.left)
+        if position[0] + 1 >= self.columns:
+            disallowed_directions.append(Direction.right)
 
         if plant:
             for food in self.foodList:
-                if position + np.array([0, 1]) == food:
-                    disallowed_directions.append(1)
-                if position + np.array([0, -1]) == food:
-                    disallowed_directions.append(2)
-                if position + np.array([-1, 0]) == food:
-                    disallowed_directions.append(3)
-                if position + np.array([1, 0]) == food:
-                    disallowed_directions.append(4)
+                if position + np.array([0, 1]) == food.position:
+                    disallowed_directions.append(Direction.up)
+                if position + np.array([0, -1]) == food.position:
+                    disallowed_directions.append(Direction.down)
+                if position + np.array([-1, 0]) == food.position:
+                    disallowed_directions.append(Direction.left)
+                if position + np.array([1, 0]) == food.position:
+                    disallowed_directions.append(Direction.right)
 
         list(set(disallowed_directions))
         return disallowed_directions
-
