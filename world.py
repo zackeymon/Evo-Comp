@@ -10,43 +10,29 @@ class World:
         self.bugList = []
         self.foodList = []
 
-    def check_collision_food(self, food_position = []):
-        food_disallowed_directions = []
+    def check_collision(self, position = [], plant = False):
+        disallowed_directions = []
 
-        if food_position[1] + 1 > self.rows:
-            food_disallowed_directions.append(1)
-        elif food_position[1] - 1 < 1:
-            food_disallowed_directions.append(2)
-        elif food_position[0] - 1 < 1:
-            food_disallowed_directions.append(3)
-        elif food_position[1] + 1 > self.columns:
-            food_disallowed_directions.append(4)
+        if position[1] + 1 > self.rows:
+            disallowed_directions.append(1)
+        if position[1] - 1 < 1:
+            disallowed_directions.append(2)
+        if position[0] - 1 < 1:
+            disallowed_directions.append(3)
+        if position[1] + 1 > self.columns:
+            disallowed_directions.append(4)
 
-        for food in self.foodList:
-            if food_position + [0, 1] == food:
-                food_disallowed_directions.append(1)
-            elif food_position + [0, -1] == food:
-                food_disallowed_directions.append(2)
-            elif food_position + [-1, 0] == food:
-                food_disallowed_directions.append(3)
-            elif food_position + [1, 0] == food:
-                food_disallowed_directions.append(4)
+        if plant:
+            for food in self.foodList:
+                if position + np.array([0, 1]) == food:
+                    disallowed_directions.append(1)
+                if position + np.array([0, -1]) == food:
+                    disallowed_directions.append(2)
+                if position + np.array([-1, 0]) == food:
+                    disallowed_directions.append(3)
+                if position + np.array([1, 0]) == food:
+                    disallowed_directions.append(4)
 
-        list(set(food_disallowed_directions))
-        return np.array(food_disallowed_directions)
-
-    def check_collision_bug(self, bug_position = []):
-        bug_disallowed_directions = []
-
-        if bug_position[1] + 1 > self.rows:
-            bug_disallowed_directions.append(1)
-        elif bug_position[1] - 1 < 1:
-            bug_disallowed_directions.append(2)
-        elif bug_position[0] - 1 < 1:
-            bug_disallowed_directions.append(3)
-        elif bug_position[1] + 1 > self.columns:
-            bug_disallowed_directions.append(4)
-
-        list(set(bug_disallowed_directions))
-        return np.array(bug_disallowed_directions)
+        list(set(disallowed_directions))
+        return disallowed_directions
 
