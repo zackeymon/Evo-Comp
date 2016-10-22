@@ -11,28 +11,28 @@ class World:
         self.bugList = []
         self.foodList = []
 
-    def check_collision(self, position, plant=False):
+    def get_disallowed_directions(self, current_position, check_food=False):
         disallowed_directions = []
 
-        if position[1] + 1 >= self.rows:
+        if self.check_collision(current_position + np.array([0, 1]), check_food):
             disallowed_directions.append(Direction.up)
-        if position[1] - 1 < 0:
+        if self.check_collision(current_position + np.array([0, -1]), check_food):
             disallowed_directions.append(Direction.down)
-        if position[0] - 1 < 0:
+        if self.check_collision(current_position + np.array([-1, 0]), check_food):
             disallowed_directions.append(Direction.left)
-        if position[0] + 1 >= self.columns:
+        if self.check_collision(current_position + np.array([1, 0]), check_food):
             disallowed_directions.append(Direction.right)
 
-        if plant:
-            for food in self.foodList:
-                if position + np.array([0, 1]) == food.position:
-                    disallowed_directions.append(Direction.up)
-                if position + np.array([0, -1]) == food.position:
-                    disallowed_directions.append(Direction.down)
-                if position + np.array([-1, 0]) == food.position:
-                    disallowed_directions.append(Direction.left)
-                if position + np.array([1, 0]) == food.position:
-                    disallowed_directions.append(Direction.right)
-
-        list(set(disallowed_directions))
         return disallowed_directions
+
+    def check_collision(self, position, check_food=False):
+        # Check if the position is out of bound
+        if position[0] < 0 or position[0] >= self.rows or position[1] < 0 or position[1] >= self.columns:
+            return True
+
+        if check_food:
+            for food in self.foodList:
+                if position == food.position:
+                    return True
+
+        return False
