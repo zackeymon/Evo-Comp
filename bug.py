@@ -1,5 +1,5 @@
 import numpy as np
-from direction import Direction
+
 
 class Bug:
 

@@ -10,7 +10,7 @@ class Direction(Enum):
     right = 4
 
     @staticmethod
-    def random(disallowed_directions=[]):
+    def random(disallowed_directions = []):
         directions = range(1, 4)
         allowed_directions = [x for x in directions if x not in disallowed_directions]
         random_direction = random.choice(allowed_directions)
