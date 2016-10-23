@@ -3,6 +3,8 @@ from organism import Organism
 
 
 class Bug(Organism):
+    def __init__(self, position, energy, reproduction_threshold, energy_max):
+        Organism.__init__(self, position, energy, reproduction_threshold, energy_max)
 
     def respire(self):
         self.energy -= 1
