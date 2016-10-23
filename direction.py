@@ -26,4 +26,3 @@ class Direction(Enum):
             del_x += 1
         return np.array([del_x, del_y])
 
-

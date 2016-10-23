@@ -1,14 +1,8 @@
 import numpy as np
+from organism import Organism
 
 
-class Bug:
-
-    def __init__(self, position, energy, reproduction_threshold):
-        self.position = np.array(position)
-        self.energy = energy
-        self.energy_initial = energy
-        self.reproduction_threshold = reproduction_threshold
-        # self.energy_max = energy_max
+class Bug(Organism):
 
     def respire(self):
         self.energy -= 1

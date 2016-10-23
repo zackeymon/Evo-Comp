@@ -1,13 +1,8 @@
 import numpy as np
+from organism import Organism
 
 
-class Food:
-    def __init__(self, position, energy, reproduction_threshold, energy_max):
-        self.position = np.array(position)
-        self.energy = energy
-        self.energy_initial = energy
-        self.reproduction_threshold = reproduction_threshold
-        self.energy_max = energy_max
+class Food(Organism):
 
     def grow(self):
         if self.energy < self.energy_max:
