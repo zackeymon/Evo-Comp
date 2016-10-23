@@ -11,7 +11,7 @@ class World:
         self.bugList = []
         self.foodList = []
 
-    def get_disallowed_directions(self, current_position, check_food=False):
+    def get_disallowed_directions(self, current_position = [], check_food=False):
         disallowed_directions = []
 
         if self.check_collision(current_position + np.array([0, 1]), check_food):
