@@ -7,21 +7,15 @@ from organism_type import OrganismType
 from world_viewer import WorldViewer
 
 
-def random_position(world):
-    x = random.randint(0, world.columns - 1)
-    y = random.randint(0, world.rows - 1)
-    return [x, y]
-
-
-world_viewer1 = WorldViewer()
 world1 = World()
+world_viewer1 = WorldViewer()
 
 for i in range(2):
-    world1.bugList.append(Bug(random_position(world1)))
-    world1.foodList.append(Food(random_position(world1), energy=65))
-    world1.foodList.append(Food(random_position(world1), energy=65))
+    world1.bugList.append(Bug(World.random_position(world1)))
+    world1.foodList.append(Food(World.random_position(world1)))
+    world1.foodList.append(Food(World.random_position(world1)))
 
-for i in range(100):
+for i in range(10):
     random.shuffle(world1.bugList)
     random.shuffle(world1.foodList)
     for food in world1.foodList:

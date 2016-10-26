@@ -1,6 +1,5 @@
-from enum import Enum
 
 
-class OrganismType(Enum):
+class OrganismType():
     food = 0
     bug = 1

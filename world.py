@@ -1,10 +1,20 @@
+import random
 import numpy as np
 from organism_type import OrganismType
 from direction import Direction
 
 
 class World:
+    """
+    A class to create in the environment in which our organisms live.
+    """
     def __init__(self, time=0, rows=9, columns=10):
+        """
+        World Initialisation
+        :param time: Time at which the world begins to exist
+        :param rows: Number of rows in the world
+        :param columns: Number of columns in the world
+        """
         self.time = time
         self.columns = columns
         self.rows = rows
@@ -12,7 +22,13 @@ class World:
         self.bugList = []
         self.foodList = []
 
+    def random_position(self):
+        x = random.randint(0, self.columns - 1)
+        y = random.randint(0, self.rows - 1)
+        return [x, y]
+
     def get_disallowed_directions(self, current_position, organism_type):
+        "Each organism cannot collide with itself (no overlap)."
         disallowed_directions = []
 
         if self.check_collision(current_position + np.array([0, 1]), organism_type):
@@ -27,7 +43,7 @@ class World:
         return disallowed_directions
 
     def check_collision(self, position, organism_type):
-        # Check if the position is out of bound
+        "Check if position is out of bounds and for disallowed collisions."
         if position[0] < 0 or position[0] >= self.rows or position[1] < 0 or position[1] >= self.columns:
             return True
 

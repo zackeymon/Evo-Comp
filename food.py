@@ -1,9 +1,18 @@
-import numpy as np
 from organism import Organism
 
 
 class Food(Organism):
-    def __init__(self, position, energy=20, reproduction_threshold=70, energy_max=100):
+    """
+    A class for a food organism that simply grows and sustains life.
+    """
+    def __init__(self, position, energy=30, reproduction_threshold=35, energy_max=100):
+        """
+        Food Initialisation
+        :param position: The current position of the food in the world
+        :param energy: The energy stored in the food
+        :param reproduction_threshold: The energy value at which the food reproduces
+        :param energy_max: The maximum energy the food can hold
+        """
         Organism.__init__(self, position, energy, reproduction_threshold, energy_max)
 
     def grow(self):
