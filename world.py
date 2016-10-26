@@ -33,11 +33,11 @@ class World:
 
         if organism_type == OrganismType.food:
             for food in self.foodList:
-                if position == food.position:
+                if (position == food.position).all():
                     return True
         elif organism_type == OrganismType.bug:
             for bug in self.bugList:
-                if position == bug.position:
+                if (position == bug.position).all():
                     return True
 
         return False

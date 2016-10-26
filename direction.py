@@ -3,7 +3,7 @@ import random
 from enum import Enum
 
 
-class Direction(Enum):
+class Direction():
     up = 1
     down = 2
     left = 3
@@ -11,8 +11,10 @@ class Direction(Enum):
 
     @staticmethod
     def random(disallowed_directions = []):
-        directions = range(1, 4)
+        directions = range(1, 5)
         allowed_directions = [x for x in directions if x not in disallowed_directions]
+        if not allowed_directions:
+            return None
         random_direction = random.choice(allowed_directions)
         del_x = 0
         del_y = 0
