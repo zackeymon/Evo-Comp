@@ -29,10 +29,11 @@ class WorldViewer:
             
         ax.set_xticks(np.arange(0, self.columns+2, 1))                                                                                              
         ax.set_yticks(np.arange(0, self.rows+2, 1))  
+        #ax.grid(b=True, which='major', color='black', linestyle='-')
         
         ax.savefig('/data/' + str(world) + '/' + str(world.time) + '.png')
         plt.close(ax)
-
+        
 
 #fig.savefig('Pics2/forcing' + str(forcing) + 'damping' + str(damping) + 'omega' + str(omega) + 'set2.png')
 
