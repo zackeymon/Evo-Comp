@@ -7,7 +7,7 @@ from organism_type import OrganismType
 from world_viewer import WorldViewer
 
 
-world1 = World()
+world1 = World(name='My_World_1')
 world_viewer1 = WorldViewer()
 
 for i in range(2):
@@ -15,7 +15,7 @@ for i in range(2):
     world1.foodList.append(Food(World.random_position(world1)))
     world1.foodList.append(Food(World.random_position(world1)))
 
-for i in range(10):
+for i in range(1):
     random.shuffle(world1.bugList)
     random.shuffle(world1.foodList)
     for food in world1.foodList:
@@ -55,3 +55,4 @@ for i in range(10):
 
     world_viewer1.view_world(world1)
     print(world1.bugList)
+

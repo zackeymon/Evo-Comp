@@ -8,16 +8,18 @@ class World:
     """
     A class to create in the environment in which our organisms live.
     """
-    def __init__(self, time=0, rows=9, columns=10):
+    def __init__(self, time=0, rows=9, columns=10, name='My_World'):
         """
         World Initialisation
         :param time: Time at which the world begins to exist
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
+        :param name: Name of the world
         """
         self.time = time
         self.columns = columns
         self.rows = rows
+        self.name = name
         self.grid = [[None for i in range(rows)] for i in range(columns)]
         self.bugList = []
         self.foodList = []

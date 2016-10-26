@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
@@ -28,16 +29,9 @@ class WorldViewer:
         ax.set_xticks(np.arange(0, world.columns+2, 1))
         ax.set_yticks(np.arange(0, world.rows+2, 1))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
-        
-#       ax.savefig('/data/' + str(world) + '/' + str(world.time) + '.png')
+
+        if not os.path.exists(os.path.join('data', '%r' % world.name)):
+            os.makedirs(os.path.join('data', '%r' % world.name))
+        plt.savefig(os.path.join('data', '%r' % world.name, 'time=%s.png' % world.time))
 #       plt.close(ax)
         plt.show()
-
-#fig.savefig('Pics2/forcing' + str(forcing) + 'damping' + str(damping) + 'omega' + str(omega) + 'set2.png')
-
-#fig.savefig(os.path.join(('Pics2', 'forcing{0}damping{1}omega{2}set2.png'.format(forcing, damping, omega)))
-
-#path = '/Some/path/to/Pics2'
-#filename = 'forcing{0}damping{1}omega{2}set2.png'.format(forcing, damping, omega)
-#filename = os.path.join(path, filename)
-#fig.savefig(filename)
