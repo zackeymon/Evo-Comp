@@ -30,6 +30,8 @@
 4. Evolving Food e.g. Energy Levels
 5. Obstructions e.g. Rocks
 
+------TO DO------
+
 Grows/Respire values
 Random Walk
 Timer on Images
