@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import datetime
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
@@ -30,8 +31,13 @@ class WorldViewer:
         ax.set_yticks(np.arange(0, world.rows+2, 1))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
 
-        if not os.path.exists(os.path.join('data', '%r' % world.name)):
-            os.makedirs(os.path.join('data', '%r' % world.name))
-        plt.savefig(os.path.join('data', '%r' % world.name, 'time=%s.png' % world.time))
+        if world.time == 0:
+            global directory
+            directory = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            if not os.path.exists(os.path.join('data', directory)):
+                os.makedirs(os.path.join('data', directory))
+
+        plt.savefig(os.path.join('data', directory, 'time=%s.png' % world.time))
 #       plt.close(ax)
         plt.show()
+

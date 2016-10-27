@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 
-class Direction():
+class Direction:
     """
     Define a direction for movement and reproduction.
     """
