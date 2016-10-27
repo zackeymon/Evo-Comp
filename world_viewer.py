@@ -9,6 +9,13 @@ class WorldViewer:
     """
     A class to view the world visually as it develops.
     """
+    def __init__(self, time_stamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+        """
+        World Initialisation Time
+        :param time_stamp: The beginning of time
+        """
+        self.time_stamp = time_stamp
+
     def view_world(self, world):
         "Draw the world: rectangles=food, circles=bugs"
         ax = plt.figure(figsize=(world.columns, world.rows)).add_subplot(1,1,1)
@@ -31,13 +38,10 @@ class WorldViewer:
         ax.set_yticks(np.arange(0, world.rows+2, 1))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
 
-        if world.time == 0:
-            global directory
-            directory = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-            if not os.path.exists(os.path.join('data', directory)):
-                os.makedirs(os.path.join('data', directory))
+        if not os.path.exists(os.path.join('data', self.time_stamp)):
+            os.makedirs(os.path.join('data', self.time_stamp))
 
-        plt.savefig(os.path.join('data', directory, 'time=%s.png' % world.time))
+        plt.savefig(os.path.join('data', self.time_stamp, '%s.png' % world.time))
 #       plt.close(ax)
         plt.show()
 
