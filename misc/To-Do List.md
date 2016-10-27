@@ -27,7 +27,7 @@
 
 ------EXTENDING THE SYSTEM POSSIBLY UNCESSARILY------
 
-4. Evolving Food e.g. Energy Levels
+4. Evolving Food e.g. Energy Levels, Colours
 5. Obstructions e.g. Rocks
 
 ------TO DO------
@@ -36,9 +36,11 @@ Grows/Respire values
 Random Walk
 Timer on Images
 World Seed
-Lifetime(Bug/Food)
-Population(Bug/Food)
+Data: Lifetime(Bug/Food)
+Data: Population(Bug/Food)
 Run Faster
 SOLID
+
+Equilibrium (Percoloation - Statistical Mechanics)
 
 Mutations (random energy.etc)
