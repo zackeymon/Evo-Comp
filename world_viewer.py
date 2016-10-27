@@ -36,6 +36,7 @@ class WorldViewer:
             
         ax.set_xticks(np.arange(0, world.columns+1, 1))
         ax.set_yticks(np.arange(0, world.rows+1, 1))
+        plt.xlabel('time=%s' %world.time, fontsize=(0.05*world.rows*world.columns))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
 
         if not os.path.exists(os.path.join('data', self.time_stamp)):

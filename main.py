@@ -16,7 +16,7 @@ for i in range(10):
 for i in range(200):
     world1.foodList.append(Food(World.random_position(world1)))
 
-for i in range(100):
+for i in range(2):
 #while world1.bugList:
     random.shuffle(world1.bugList)
     random.shuffle(world1.foodList)
