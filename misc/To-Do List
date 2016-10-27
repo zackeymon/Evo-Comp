@@ -20,6 +20,8 @@
 
 ------EXTENDING THE SYSTEM------
 
+Evolution/Mutation (random reproduction threshold.etc)
+
 1. Predators - Could bugs evolve into Predators? How fast do they move? 
 2. Vision - How far can a bug see? What is the degree of its vision? Do bugs react to predators and vice versa?
 3. Genes - Vision, Speed, Reproduciton Rate, Maybe eating speed (if we allow overlap and let bugs share food)
@@ -33,15 +35,14 @@
 ------TO DO------
 
 Grows/Respire values
+Track Bug
+New Bug has energy related to parent's energy above reproduction threshold
 Plant and Bug don't spawn on each other
 Random Walk
-Timer on Images
 World Seed
 Data: Lifetime(Bug/Food)
-Data: Population(Bug/Food)
 Run Faster
 SOLID
 
 Equilibrium (Percoloation - Statistical Mechanics)
 
-Mutations (random energy.etc)

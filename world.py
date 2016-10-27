@@ -8,7 +8,7 @@ class World:
     """
     A class to create in the environment in which our organisms live.
     """
-    def __init__(self, time=0, rows=50, columns=50):
+    def __init__(self, time=0, rows=10, columns=10):
         """
         World Initialisation
         :param time: Time at which the world begins to exist

@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
 
+
 class WorldViewer:
     """
     A class to view the world visually as it develops.
@@ -17,7 +18,7 @@ class WorldViewer:
         self.time_stamp = time_stamp
 
     def view_world(self, world):
-        "Draw the world: rectangles=food, circles=bugs"
+        """"Draw the world: rectangles=food, circles=bugs"""
         ax = plt.figure(figsize=(world.columns, world.rows)).add_subplot(1,1,1)
 
         for food in world.foodList:
@@ -30,13 +31,13 @@ class WorldViewer:
         for bug in world.bugList:
             bug_size = bug.energy*0.01
             if bug_size <= 0.3:
-                ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=0.3, height=0.3, facecolor = "#7b68ee"))
+                ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=0.3, height=0.3, facecolor = "#ff0000"))
             else:
-                ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=bug_size, height=bug_size, facecolor = "#7b68ee"))
+                ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=bug_size, height=bug_size, facecolor = "#ff0000"))
             
         ax.set_xticks(np.arange(0, world.columns+1, 1))
         ax.set_yticks(np.arange(0, world.rows+1, 1))
-        plt.xlabel('time=%s' %world.time, fontsize=(0.05*world.rows*world.columns))
+        plt.xlabel('time=%s' %world.time, fontsize=(2*world.columns))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
 
         if not os.path.exists(os.path.join('data', self.time_stamp)):
@@ -44,4 +45,17 @@ class WorldViewer:
 
         plt.savefig(os.path.join('data', self.time_stamp, '%s.png' % world.time))
         plt.close()
+
+    def output_data_population(self, world):
+        """Output data for analysis."""
+
+        with open(os.path.join('data', self.time_stamp, 'food_population.txt'), 'a') as food_file:
+            if world.time == 0:
+                food_file.write('time' + '   ' + 'population'+ '\n')
+            food_file.write('%s' %world.time + '      ' + '%r' %np.size(world.foodList) + '\n')
+
+        with open(os.path.join('data', self.time_stamp, 'bug_population.txt'), 'a') as bug_file:
+            if world.time == 0:
+                bug_file.write('time' + '   ' + 'population'+ '\n')
+            bug_file.write('%s' %world.time + '      ' + '%r' %np.size(world.bugList) + '\n')
 

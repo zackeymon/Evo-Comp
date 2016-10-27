@@ -7,7 +7,7 @@ from organism_type import OrganismType
 from world_viewer import WorldViewer
 
 
-world1 = World()
+world1 = World(rows=20, columns=20)
 world_viewer1 = WorldViewer()
 
 for i in range(10):
@@ -18,8 +18,11 @@ for i in range(200):
 
 for i in range(2):
 #while world1.bugList:
+#    if (world1.time % 2 ==0):
+#        world1.foodList.append(Food(World.random_position(world1)))
     random.shuffle(world1.bugList)
     random.shuffle(world1.foodList)
+
     for food in world1.foodList:
         food.grow()
         if food.energy >= food.reproduction_threshold:
@@ -55,10 +58,9 @@ for i in range(2):
                 if random_direction is not None:
                     world1.bugList.append(bug.reproduce(random_direction))
 
-    world_viewer1.view_world(world1)
     print(world1.bugList)
+    world_viewer1.view_world(world1)
+    world_viewer1.output_data_population(world1)
 
     world1.time += 1
-
-
 

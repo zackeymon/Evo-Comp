@@ -23,7 +23,7 @@ class Organism:
         return '%s-[%s, %s]' % (self.__class__.__name__, self.position[0], self.position[1])
 
     def reproduce(self, direction):
-        "Return new organism from reproduction."
+        """"Return new organism from reproduction."""
         self.energy = self.energy_initial
 
         #Set new parameters
