@@ -30,7 +30,8 @@
 4. Evolving Food e.g. Energy Levels
 5. Obstructions e.g. Rocks
 
-Grows/Respire
+Grows/Respire values
+Random Walk
 Timer on Images
 World Seed
 Lifetime(Bug/Food)
