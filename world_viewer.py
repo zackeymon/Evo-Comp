@@ -34,14 +34,13 @@ class WorldViewer:
             else:
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=bug_size, height=bug_size, facecolor = "#7b68ee"))
             
-        ax.set_xticks(np.arange(0, world.columns+2, 1))
-        ax.set_yticks(np.arange(0, world.rows+2, 1))
+        ax.set_xticks(np.arange(0, world.columns+1, 1))
+        ax.set_yticks(np.arange(0, world.rows+1, 1))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
 
         if not os.path.exists(os.path.join('data', self.time_stamp)):
             os.makedirs(os.path.join('data', self.time_stamp))
 
         plt.savefig(os.path.join('data', self.time_stamp, '%s.png' % world.time))
-#       plt.close(ax)
-        plt.show()
+        plt.close()
 

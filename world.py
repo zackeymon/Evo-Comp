@@ -8,7 +8,7 @@ class World:
     """
     A class to create in the environment in which our organisms live.
     """
-    def __init__(self, time=0, rows=9, columns=10):
+    def __init__(self, time=0, rows=50, columns=50):
         """
         World Initialisation
         :param time: Time at which the world begins to exist
@@ -29,7 +29,7 @@ class World:
         return [x, y]
 
     def get_disallowed_directions(self, current_position, organism_type):
-        "Each organism cannot collide with itself (no overlap)."
+        """Each organism cannot collide with itself (no overlap)."""
         disallowed_directions = []
 
         if self.check_collision(current_position + np.array([0, 1]), organism_type):
@@ -44,8 +44,8 @@ class World:
         return disallowed_directions
 
     def check_collision(self, position, organism_type):
-        "Check if position is out of bounds and for disallowed collisions."
-        if position[0] < 0 or position[0] >= self.rows or position[1] < 0 or position[1] >= self.columns:
+        """Check if position is out of bounds and for disallowed collisions."""
+        if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
 
         if organism_type == OrganismType.food:

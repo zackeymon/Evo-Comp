@@ -29,3 +29,13 @@
 
 4. Evolving Food e.g. Energy Levels
 5. Obstructions e.g. Rocks
+
+Grows/Respire
+Timer on Images
+World Seed
+Lifetime(Bug/Food)
+Population(Bug/Food)
+Run Faster
+SOLID
+
+Mutations (random energy.etc)

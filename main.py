@@ -10,12 +10,14 @@ from world_viewer import WorldViewer
 world1 = World()
 world_viewer1 = WorldViewer()
 
-for i in range(2):
+for i in range(10):
     world1.bugList.append(Bug(World.random_position(world1)))
-    world1.foodList.append(Food(World.random_position(world1)))
+
+for i in range(200):
     world1.foodList.append(Food(World.random_position(world1)))
 
-for i in range(5):
+for i in range(100):
+#while world1.bugList:
     random.shuffle(world1.bugList)
     random.shuffle(world1.foodList)
     for food in world1.foodList:
