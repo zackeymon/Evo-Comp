@@ -1,7 +1,5 @@
 import random
 from world import World
-from bug import Bug
-from food import Food
 from direction import Direction
 from organism_type import OrganismType
 from world_viewer import WorldViewer
@@ -10,16 +8,19 @@ from world_viewer import WorldViewer
 world1 = World(rows=20, columns=20)
 world_viewer1 = WorldViewer()
 
+world1.initialise_food(200, energy=25, reproduction_threshold=30, energy_max=100)
+world1.initialise_bug(10, energy=5, reproduction_threshold=70, energy_max=100)
+
+
 for i in range(10):
-    world1.bugList.append(Bug(World.random_position(world1)))
-
-for i in range(200):
-    world1.foodList.append(Food(World.random_position(world1)))
-
-for i in range(2):
 #while world1.bugList:
-#    if (world1.time % 2 ==0):
+#    if (world1.time % 2 == 0):
 #        world1.foodList.append(Food(World.random_position(world1)))
+
+    print(world1.bugList)
+    world_viewer1.view_world(world1)
+    world_viewer1.output_data_population(world1)
+
     random.shuffle(world1.bugList)
     random.shuffle(world1.foodList)
 
@@ -57,10 +58,6 @@ for i in range(2):
                     world1.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
                     world1.bugList.append(bug.reproduce(random_direction))
-
-    print(world1.bugList)
-    world_viewer1.view_world(world1)
-    world_viewer1.output_data_population(world1)
 
     world1.time += 1
 

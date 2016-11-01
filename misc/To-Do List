@@ -34,13 +34,12 @@ Evolution/Mutation (random reproduction threshold.etc)
 
 ------TO DO------
 
+Reproduction doesn't seem to go to correct square
 Grows/Respire values
 Track Bug
 New Bug has energy related to parent's energy above reproduction threshold
-Plant and Bug don't spawn on each other
 Random Walk
 World Seed
-Data: Lifetime(Bug/Food)
 Run Faster
 SOLID
 

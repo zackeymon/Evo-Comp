@@ -6,6 +6,12 @@ from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
 
 
+def sum_list_lifetime(object_list):
+    lifetime = 0
+    for object in object_list:
+        lifetime += object.lifetime
+    return lifetime
+
 class WorldViewer:
     """
     A class to view the world visually as it develops.
@@ -49,13 +55,25 @@ class WorldViewer:
     def output_data_population(self, world):
         """Output data for analysis."""
 
+        if world.time == 0:
+            with open(os.path.join('data', self.time_stamp, 'food_population.txt'), 'a') as food_file:
+                food_file.write('time' + '   ' + 'population' + '\n')
+            with open(os.path.join('data', self.time_stamp, 'bug_population.txt'), 'a') as bug_file:
+                bug_file.write('time' + '   ' + 'population' + '\n')
+            with open(os.path.join('data', self.time_stamp, 'food_lifetime.txt'), 'a') as food_life:
+                food_life.write('time' + '   ' + 'average_lifetime' + '\n')
+            with open(os.path.join('data', self.time_stamp, 'bug_lifetime.txt'), 'a') as bug_life:
+                bug_life.write('time' + '   ' + 'average_lifetime' + '\n')
+
         with open(os.path.join('data', self.time_stamp, 'food_population.txt'), 'a') as food_file:
-            if world.time == 0:
-                food_file.write('time' + '   ' + 'population'+ '\n')
             food_file.write('%s' %world.time + '      ' + '%r' %np.size(world.foodList) + '\n')
 
         with open(os.path.join('data', self.time_stamp, 'bug_population.txt'), 'a') as bug_file:
-            if world.time == 0:
-                bug_file.write('time' + '   ' + 'population'+ '\n')
             bug_file.write('%s' %world.time + '      ' + '%r' %np.size(world.bugList) + '\n')
+
+        with open(os.path.join('data', self.time_stamp, 'food_lifetime.txt'), 'a') as food_life:
+            food_life.write('%s' % world.time + '      ' + '%r' % (sum_list_lifetime(world.foodList) / np.size(world.foodList)) + '\n')
+
+        with open(os.path.join('data', self.time_stamp, 'bug_lifetime.txt'), 'a') as bug_life:
+            bug_life.write('%s' % world.time + '      ' + '%r' % (sum_list_lifetime(world.bugList) / np.size(world.bugList)) + '\n')
 
