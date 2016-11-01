@@ -12,7 +12,7 @@ world1.initialise_food(200, energy=25, reproduction_threshold=30, energy_max=100
 world1.initialise_bug(10, energy=5, reproduction_threshold=70, energy_max=100)
 
 
-for i in range(10):
+for i in range(15):
 #while world1.bugList:
 #    if (world1.time % 2 == 0):
 #        world1.foodList.append(Food(World.random_position(world1)))
@@ -32,12 +32,15 @@ for i in range(10):
                 world1.get_disallowed_directions(food.position, OrganismType.food))
             if random_direction is not None:
                 world1.foodList.append(food.reproduce(random_direction))
+            #don't grow if newly spawned
+            #don't move if newly spawned
 
     for bug in world1.bugList:
         bug.respire()
         if bug.energy <= 0:
             # Bug die
             world1.bugList.remove(bug)
+            world1.bugList_dead.append(bug)
         else:
             random_direction = Direction.random(
                 world1.get_disallowed_directions(bug.position, OrganismType.bug))
@@ -51,6 +54,7 @@ for i in range(10):
                 if (bug.position == food.position).all():
                     bug.eat(food)
                     world1.foodList.remove(food)
+                    world1.foodList_dead.append(food)
                     break
 
             if bug.energy >= bug.reproduction_threshold:

@@ -24,6 +24,8 @@ class World:
         self.grid = [[x,y] for x in range(columns) for y in range(rows)]
         self.bugList = []
         self.foodList = []
+        self.bugList_dead = []
+        self.foodList_dead = []
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)
