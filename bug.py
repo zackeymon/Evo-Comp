@@ -28,3 +28,4 @@ class Bug(Organism):
 
     def move(self, del_pos):
         self.position += del_pos
+

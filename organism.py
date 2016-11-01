@@ -37,3 +37,4 @@ class Organism:
 
         #Create new object
         return self.__class__(new_position, new_lifetime, new_energy, new_reproduction_threshold, new_energy_max)
+

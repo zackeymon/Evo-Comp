@@ -34,6 +34,8 @@ Evolution/Mutation (random reproduction threshold.etc)
 
 ------TO DO------
 
+Artificial Life Paper - Library
+Average Lifetime needs to include dead bugs/food
 Reproduction doesn't seem to go to correct square
 Grows/Respire values
 Track Bug

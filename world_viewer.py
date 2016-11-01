@@ -6,12 +6,6 @@ from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
 
 
-def sum_list_lifetime(object_list):
-    lifetime = 0
-    for object in object_list:
-        lifetime += object.lifetime
-    return lifetime
-
 class WorldViewer:
     """
     A class to view the world visually as it develops.
@@ -22,6 +16,12 @@ class WorldViewer:
         :param time_stamp: The beginning of time
         """
         self.time_stamp = time_stamp
+
+    def sum_list_lifetime(self, object_list):
+        lifetime = 0
+        for object in object_list:
+            lifetime += object.lifetime
+        return lifetime
 
     def view_world(self, world):
         """"Draw the world: rectangles=food, circles=bugs"""
@@ -72,8 +72,8 @@ class WorldViewer:
             bug_file.write('%s' %world.time + '      ' + '%r' %np.size(world.bugList) + '\n')
 
         with open(os.path.join('data', self.time_stamp, 'food_lifetime.txt'), 'a') as food_life:
-            food_life.write('%s' % world.time + '      ' + '%r' % (sum_list_lifetime(world.foodList) / np.size(world.foodList)) + '\n')
+            food_life.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.foodList) / np.size(world.foodList)) + '\n')
 
         with open(os.path.join('data', self.time_stamp, 'bug_lifetime.txt'), 'a') as bug_life:
-            bug_life.write('%s' % world.time + '      ' + '%r' % (sum_list_lifetime(world.bugList) / np.size(world.bugList)) + '\n')
+            bug_life.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.bugList) / np.size(world.bugList)) + '\n')
 
