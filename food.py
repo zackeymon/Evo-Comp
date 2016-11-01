@@ -19,5 +19,4 @@ class Food(Organism):
     def grow(self):
         if self.energy < self.energy_max:
             self.energy += 1
-            self.lifetime += 1
 

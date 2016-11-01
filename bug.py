@@ -18,7 +18,6 @@ class Bug(Organism):
 
     def respire(self):
         self.energy -= 1
-        self.lifetime += 1
 
     def eat(self, food):
         if (self.energy + food.energy) > self.energy_max:

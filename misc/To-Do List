@@ -35,7 +35,6 @@ Evolution/Mutation (random reproduction threshold.etc)
 ------TO DO------
 
 Artificial Life Paper - Library
-Reproduction doesn't seem to go to correct square
 Grows/Respire values
 Track Bug
 New Bug has energy related to parent's energy above reproduction threshold
