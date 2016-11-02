@@ -5,6 +5,7 @@ class Organism:
     """
     The parent class for all organisms living in the world.
     """
+
     def __init__(self, position, lifetime, energy, reproduction_threshold, energy_max):
         """
         Organism Initialisation
@@ -28,13 +29,12 @@ class Organism:
         """"Return new organism from reproduction."""
         self.energy = self.energy_initial
 
-        #Set new parameters
+        # Set new parameters
         new_position = self.position + direction
         new_lifetime = 0
         new_energy = self.energy_initial
         new_energy_max = self.energy_max
         new_reproduction_threshold = self.reproduction_threshold
 
-        #Create new object
+        # Create new object
         return self.__class__(new_position, new_lifetime, new_energy, new_reproduction_threshold, new_energy_max)
-

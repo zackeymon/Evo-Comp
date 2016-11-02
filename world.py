@@ -10,22 +10,22 @@ class World:
     """
     A class to create in the environment in which our organisms live.
     """
+
     def __init__(self, time=0, rows=10, columns=10):
         """
         World Initialisation
         :param time: Time at which the world begins to exist
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
-        :param name: Name of the world
         """
         self.time = time
         self.columns = columns
         self.rows = rows
-        self.grid = [[x,y] for x in range(columns) for y in range(rows)]
+        self.grid = [[x, y] for x in range(columns) for y in range(rows)]
         self.bugList = []
         self.foodList = []
-        self.bugList_dead = []
-        self.foodList_dead = []
+        self.bugListDead = []
+        self.foodListDead = []
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)
@@ -86,4 +86,3 @@ class World:
                 if np.size(self.bugList) >= number:
                     create_bugs = False
                     break
-
