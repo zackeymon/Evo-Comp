@@ -1,5 +1,6 @@
 # PyCharm files 
 .idea/
 __pycache__/
+data/
 
 # I don't know what I'm doing

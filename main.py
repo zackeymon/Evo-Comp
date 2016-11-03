@@ -6,13 +6,13 @@ from direction import Direction
 from organism_type import OrganismType
 from world_viewer import WorldViewer
 
-myWorld = World(rows=20, columns=20)
+myWorld = World(rows=30, columns=30)
 worldViewer = WorldViewer()
 
-myWorld.initialise_food(200, energy=25, reproduction_threshold=30, energy_max=100)
-myWorld.initialise_bug(10, energy=5, reproduction_threshold=70, energy_max=100)
+myWorld.initialise_food(100)
+myWorld.initialise_bug(10)
 
-for i in range(100):
+for i in range(1000):
 
     myWorld.foodList.append(Food(myWorld.random_position()))
 
@@ -37,11 +37,12 @@ for i in range(100):
             myWorld.bugList.remove(bug)
             myWorld.bugListDead.append(bug)
         else:
-            if myWorld.time == 0 or bug.lifetime >= 1:
+            if bug.lifetime > 0:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
                     bug.move(random_direction)
+
             # for i in myWorld.grid[bug.position[0]][bug.position[1]]:
             #     if isinstance(i, Food):
             #         bug.eat(i)
@@ -61,5 +62,5 @@ for i in range(100):
             bug.lifetime += 1
 
     worldViewer.view_world(myWorld)
-    worldViewer.output_data_population(myWorld)
+    #worldViewer.output_data_population(myWorld)
     myWorld.time += 1

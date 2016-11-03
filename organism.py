@@ -1,5 +1,5 @@
 import numpy as np
-
+from random import randint
 
 class Organism:
     """
@@ -19,8 +19,12 @@ class Organism:
         self.lifetime = lifetime
         self.energy = energy
         self.energy_initial = energy
-        self.reproduction_threshold = reproduction_threshold
+        self.reproduction_threshold = reproduction_threshold + randint(-5, 5)
         self.energy_max = energy_max
+        if self.reproduction_threshold > energy_max:
+            self.reproduction_threshold = self.energy_max
+        elif self.reproduction_threshold < self.energy_initial + 5:
+            self.reproduction_threshold = self.energy_initial + 5
 
     def __repr__(self):
         return '%s-[%s, %s]' % (self.__class__.__name__, self.position[0], self.position[1])

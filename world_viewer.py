@@ -80,10 +80,10 @@ class WorldViewer:
             bug_pop.write('%s' % world.time + '      ' + '%r' % np.size(world.bugList) + '\n')
 
         with open(os.path.join('data', self.time_stamp, 'food_population_dead.txt'), 'a') as food_pop_dead:
-            food_pop_dead.write('%s' % world.time + '      ' + '%r' % np.size(world.foodList_dead) + '\n')
+            food_pop_dead.write('%s' % world.time + '      ' + '%r' % np.size(world.foodListDead) + '\n')
 
         with open(os.path.join('data', self.time_stamp, 'bug_population_dead.txt'), 'a') as bug_pop_dead:
-            bug_pop_dead.write('%s' % world.time + '      ' + '%r' % np.size(world.bugList_dead) + '\n')
+            bug_pop_dead.write('%s' % world.time + '      ' + '%r' % np.size(world.bugListDead) + '\n')
 
         with open(os.path.join('data', self.time_stamp, 'food_alive_lifetime.txt'), 'a') as food_life:
             food_life.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.foodList) / np.size(world.foodList)) + '\n')
@@ -91,11 +91,11 @@ class WorldViewer:
         with open(os.path.join('data', self.time_stamp, 'bug_alive_lifetime.txt'), 'a') as bug_life:
             bug_life.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.bugList) / np.size(world.bugList)) + '\n')
 
-        if np.size(world.foodList_dead) > 0:
+        if np.size(world.foodListDead) > 0:
             with open(os.path.join('data', self.time_stamp, 'food_lifetime.txt'), 'a') as food_life_dead:
-                food_life_dead.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.foodList_dead) / np.size(world.foodList_dead)) + '\n')
+                food_life_dead.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.foodListDead) / np.size(world.foodListDead)) + '\n')
 
-        if np.size(world.bugList_dead) > 0:
+        if np.size(world.bugListDead) > 0:
             with open(os.path.join('data', self.time_stamp, 'bug_lifetime.txt'), 'a') as bug_life_dead:
-                bug_life_dead.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.bugList_dead) / np.size(world.bugList_dead)) + '\n')
+                bug_life_dead.write('%s' % world.time + '      ' + '%r' % (self.sum_list_lifetime(world.bugListDead) / np.size(world.bugListDead)) + '\n')
 
