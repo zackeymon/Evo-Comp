@@ -63,26 +63,24 @@ class World:
 
         return False
 
+    #def spawn_food(self, number=10, energy=20, reproduction_threshold=30, energy_max=100):
+        #list of food positions (check foodlist each time want to spawn food and append positions to position list)
+        #check if iteration is in the list
+        #if not, spawn and append to foodlist
+        #if yes, try another iteration
+
+
     def initialise_food(self, number=10, energy=20, reproduction_threshold=30, energy_max=100):
-        create_food = True
-        while create_food:
-            for i in range(number):
-                iteration = self.random_position()
-                if iteration in self.grid:
-                    self.foodList.append(Food(iteration, 0, energy, reproduction_threshold, energy_max))
-                    self.grid.remove(iteration)
-                if np.size(self.foodList) >= number:
-                    create_food = False
-                    break
+        while np.size(self.foodList) < number:
+            iteration = self.random_position()
+            if iteration in self.grid:
+                self.foodList.append(Food(iteration, 0, energy, reproduction_threshold, energy_max))
+                self.grid.remove(iteration)
 
     def initialise_bug(self, number=10, energy=5, reproduction_threshold=70, energy_max=100):
-        create_bugs = True
-        while create_bugs:
-            for i in range(number):
+        while np.size(self.bugList) < number:
                 iteration = self.random_position()
                 if iteration in self.grid:
                     self.bugList.append(Bug(iteration, 0, energy, reproduction_threshold, energy_max))
                     self.grid.remove(iteration)
-                if np.size(self.bugList) >= number:
-                    create_bugs = False
-                    break
+
