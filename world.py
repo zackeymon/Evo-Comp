@@ -26,6 +26,8 @@ class World:
         self.foodList = []
         self.bugListDead = []
         self.foodListDead = []
+        self.food_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'], ['average_lifespan']]
+        self.bug_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'], ['average_lifespan']]
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)
@@ -71,7 +73,7 @@ class World:
                 if iteration in self.grid:
                     self.foodList.append(Food(iteration, 0, energy, reproduction_threshold, energy_max))
                     self.grid.remove(iteration)
-                if np.size(self.foodList) >= number:
+                if len(self.foodList) >= number:
                     create_food = False
                     break
 
@@ -83,6 +85,6 @@ class World:
                 if iteration in self.grid:
                     self.bugList.append(Bug(iteration, 0, energy, reproduction_threshold, energy_max))
                     self.grid.remove(iteration)
-                if np.size(self.bugList) >= number:
+                if len(self.bugList) >= number:
                     create_bugs = False
                     break

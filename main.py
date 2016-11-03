@@ -12,7 +12,7 @@ worldViewer = WorldViewer()
 myWorld.initialise_food(100)
 myWorld.initialise_bug(10)
 
-for i in range(1000):
+for i in range(10):
 
     myWorld.foodList.append(Food(myWorld.random_position()))
 
@@ -61,6 +61,8 @@ for i in range(1000):
                     myWorld.bugList.append(bug.reproduce(random_direction))
             bug.lifetime += 1
 
-    worldViewer.view_world(myWorld)
+    worldViewer.generate_data(myWorld)
     #worldViewer.output_data_population(myWorld)
     myWorld.time += 1
+
+worldViewer.output_data(myWorld)
