@@ -65,26 +65,26 @@ class World:
 
         return False
 
-    def initialise_food(self, number=10, energy=20, reproduction_threshold=30, energy_max=100):
-        create_food = True
-        while create_food:
-            for i in range(number):
-                iteration = self.random_position()
-                if iteration in self.grid:
-                    self.foodList.append(Food(iteration, 0, energy, reproduction_threshold, energy_max))
-                    self.grid.remove(iteration)
-                if len(self.foodList) >= number:
-                    create_food = False
-                    break
+    def available_spaces(self):
+        self.grid = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+        for food in self.foodList:
+            self.grid.remove(food.position.tolist())
 
-    def initialise_bug(self, number=10, energy=5, reproduction_threshold=70, energy_max=100):
-        create_bugs = True
-        while create_bugs:
-            for i in range(number):
-                iteration = self.random_position()
-                if iteration in self.grid:
-                    self.bugList.append(Bug(iteration, 0, energy, reproduction_threshold, energy_max))
-                    self.grid.remove(iteration)
-                if len(self.bugList) >= number:
-                    create_bugs = False
-                    break
+    def spawn_food(self, number=10, energy=20, reproduction_threshold=30, energy_max=100):
+        """Spawn food and check spawn square is available."""
+        number_to_spawn = len(self.foodList) + number
+        while len(self.foodList) < number_to_spawn:
+            iteration = self.grid[random.randint(0, len(self.grid)-1)]
+            self.foodList.append(Food(iteration, 0, energy, reproduction_threshold, energy_max))
+            self.grid.remove(iteration)
+
+    def spawn_bug(self, number=10, energy=5, reproduction_threshold=70, energy_max=100):
+        """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
+        while len(self.bugList) < number:
+            iteration = self.grid[random.randint(0, len(self.grid)-1)]
+            if iteration:
+                self.bugList.append(Bug(iteration, 0, energy, reproduction_threshold, energy_max))
+                self.grid.remove(iteration)
+            else:
+                raise Exception("Cannot initialise everything, world is full!")
+

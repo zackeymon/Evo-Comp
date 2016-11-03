@@ -9,12 +9,13 @@ from world_viewer import WorldViewer
 myWorld = World(rows=30, columns=30)
 worldViewer = WorldViewer()
 
-myWorld.initialise_food(100)
-myWorld.initialise_bug(10)
+myWorld.spawn_food(100)
+myWorld.spawn_bug(10)
 
-for i in range(10):
+for i in range(5):
 
-    myWorld.foodList.append(Food(myWorld.random_position()))
+    myWorld.available_spaces()
+    myWorld.spawn_food(1)
 
     random.shuffle(myWorld.bugList)
     random.shuffle(myWorld.foodList)
@@ -62,7 +63,7 @@ for i in range(10):
             bug.lifetime += 1
 
     worldViewer.generate_data(myWorld)
-    #worldViewer.output_data_population(myWorld)
+    worldViewer.view_world(myWorld)
     myWorld.time += 1
 
 worldViewer.output_data(myWorld)

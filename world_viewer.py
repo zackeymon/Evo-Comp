@@ -53,6 +53,7 @@ class WorldViewer:
         plt.close()
 
     def generate_data(self, world):
+        """Add data for the current world iteration to a list."""
 
         world.food_data[0].append(world.time)
         world.food_data[1].append(len(world.foodList))
@@ -79,7 +80,7 @@ class WorldViewer:
             world.bug_data[4].append(self.sum_list_lifetime(world.bugListDead) / len(world.bugListDead))
 
     def output_data(self, world):
-        """Output data in Excel format for analysis."""
+        """Output data in CSV (comma-separated values) format for analysis."""
 
         with open(os.path.join('data', self.time_stamp, 'food_data.csv'), 'a') as food_file:
             for time, population, dead_population, average_alive_lifetime, average_lifespan in zip(*world.food_data):
