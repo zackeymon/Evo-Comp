@@ -8,11 +8,15 @@ from world_viewer import WorldViewer
 
 myWorld = World(rows=30, columns=30)
 worldViewer = WorldViewer()
+random.seed(worldViewer.time_stamp)
 
 myWorld.spawn_food(100)
 myWorld.spawn_bug(10)
 
 for i in range(5):
+
+    if len(myWorld.foodList) == len(myWorld.grid):
+        break
 
     myWorld.available_spaces()
     myWorld.spawn_food(1)

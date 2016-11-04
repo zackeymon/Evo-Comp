@@ -75,19 +75,16 @@ class World:
     def spawn_food(self, number=10, energy=20, reproduction_threshold=30, energy_max=100):
         """Spawn food and check spawn square is available."""
         for i in range(number):
-            if len(self.grid) <= 0:
+            try:
+                self.foodList.append(Food(self.grid.pop(random.randint(0, len(self.grid)-1)), 0, energy, reproduction_threshold, energy_max))
+            except ValueError:
                 break
-            spawn_point = self.grid[random.randint(0, len(self.grid)-1)]
-            self.foodList.append(Food(spawn_point, 0, energy, reproduction_threshold, energy_max))
-            self.grid.remove(spawn_point)
 
     def spawn_bug(self, number=10, energy=5, reproduction_threshold=70, energy_max=100):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         for i in range(number):
-            if len(self.grid) <= 0:
-                raise Exception("Cannot initialise everything, world is full!")
-            spawn_point = self.grid[random.randint(0, len(self.grid)-1)]
-            self.bugList.append(Bug(spawn_point, 0, energy, reproduction_threshold, energy_max))
-            self.grid.remove(spawn_point)
-
+            try:
+                self.bugList.append(Bug(self.grid.pop(random.randint(0, len(self.grid)-1)), 0, energy, reproduction_threshold, energy_max))
+            except ValueError:
+                break
 
