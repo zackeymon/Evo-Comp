@@ -17,6 +17,9 @@ class WorldViewer:
         """
         self.time_stamp = time_stamp
 
+        if not os.path.exists(os.path.join('data', self.time_stamp)):
+            os.makedirs(os.path.join('data', self.time_stamp))
+
     def sum_list_lifetime(self, object_list):
         lifetime = 0
         for object in object_list:
@@ -46,35 +49,44 @@ class WorldViewer:
         plt.xlabel('time=%s' %world.time, fontsize=(2*world.columns))
         #ax.grid(b=True, which='major', color='black', linestyle='-')
 
-        if not os.path.exists(os.path.join('data', self.time_stamp)):
-            os.makedirs(os.path.join('data', self.time_stamp))
-
         plt.savefig(os.path.join('data', self.time_stamp, '%s.png' % world.time))
         plt.close()
 
-    def output_data_population(self, world):
-        """Output data for analysis."""
-        
-        titles = ['time', 'population', 'dead_population', 'alive_lifetime', 'lifetime']
-        food_data = [world.time, np.size(world.foodList), np.size(world.foodListDead), (self.sum_list_lifetime(world.foodList) / np.size(world.foodList)), (self.sum_list_lifetime(world.foodListDead) / np.size(world.foodListDead))]
-        bug_data = [world.time, np.size(world.bugList), np.size(world.bugListDead), (self.sum_list_lifetime(world.bugList) / np.size(world.bugList)), (self.sum_list_lifetime(world.bugListDead) / np.size(world.bugListDead))]
+    def generate_data(self, world):
+        """Add data for the current world iteration to a list."""
 
-        if world.time == 0:
-            with open(os.path.join('data', self.time_stamp, 'food_population.txt'), 'a') as food_file:
-                food_file.write('time' + '   ' + 'population' + '   ' + 'dead_population' + '   ' + 'alive_lifetime + '   ' + 'lifetime' + '\n')
-            with open(os.path.join('data', self.time_stamp, 'bug_population.txt'), 'a') as bug_file:
-                bug_file.write('time' + '   ' + 'population' + '   ' + 'dead_population' + '   ' + 'alive_lifetime + '   ' + 'lifetime' + '\n')
+        world.food_data[0].append(world.time)
+        world.food_data[1].append(len(world.foodList))
+        world.food_data[2].append(len(world.foodListDead))
+        if len(world.foodList) <= 0:
+            world.food_data[3].append('0')
+        else:
+            world.food_data[3].append(self.sum_list_lifetime(world.foodList) / len(world.foodList))
+        if len(world.foodListDead) <=0:
+            world.food_data[4].append('N/A')
+        else:
+            world.food_data[4].append(self.sum_list_lifetime(world.foodListDead) / len(world.foodListDead))
 
-         np.savetxt(food_file, titles, fmt=['%s', '%r', '%r', '%r', '%r'])
-         np.savetext(bug_file, titles, fmt=['%s', '%r', '%r', '%r', '%r']) 
-         np.savetxt(food_file, food_data, fmt=['%s', '%r', '%r', '%r', '%r'])    
-         np.savetext(bug_file, bug_data, fmt=['%s', '%r', '%r', '%r', '%r'])
-                               
-        #with open(os.path.join('data', self.time_stamp, 'food_population.txt'), 'a') as food_file:
-         #   food_file.write('%s' % world.time + '      ' + '%r' % np.size(world.foodList) + '   ' + '%r' % np.size(world.foodListDead) 
-           #                 + '   ' + '%r' % (self.sum_list_lifetime(world.foodList) / np.size(world.foodList)) + '   '+ '%r' % (self.sum_list_lifetime(world.foodListDead) / np.size(world.foodListDead)) + '\n')
+        world.bug_data[0].append(world.time)
+        world.bug_data[1].append(len(world.bugList))
+        world.bug_data[2].append(len(world.bugListDead))
+        if len(world.bugList) <= 0:
+            world.bug_data[3].append('0')
+        else:
+            world.bug_data[3].append(self.sum_list_lifetime(world.bugList) / len(world.bugList))
+        if len(world.bugListDead) <=0:
+            world.bug_data[4].append('N/A')
+        else:
+            world.bug_data[4].append(self.sum_list_lifetime(world.bugListDead) / len(world.bugListDead))
 
-        #with open(os.path.join('data', self.time_stamp, 'bug_population.txt'), 'a') as bug_file:
-         #   bug_file.write('%s' % world.time + '      ' + '%r' % np.size(world.bugList) + '   ' + '%r' % np.size(world.bugListDead) 
-          #                 + '   ' + '%r' % (self.sum_list_lifetime(world.bugList) / np.size(world.bugList)) + '   ' + '%r' % (self.sum_list_lifetime(world.bugListDead) / np.size(world.bugListDead)) + '\n')
+    def output_data(self, world):
+        """Output data in CSV (comma-separated values) format for analysis."""
+
+        with open(os.path.join('data', self.time_stamp, 'food_data.csv'), 'a') as food_file:
+            for time, population, dead_population, average_alive_lifetime, average_lifespan in zip(*world.food_data):
+                food_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,' % average_alive_lifetime + '%r,' % average_lifespan + '\n')
+
+        with open(os.path.join('data', self.time_stamp, 'bug_data.csv'), 'a') as bug_file:
+            for time, population, dead_population, average_alive_lifetime, average_lifespan in zip(*world.bug_data):
+                bug_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,' % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
