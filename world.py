@@ -28,6 +28,7 @@ class World:
         self.foodListDead = []
         self.food_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'], ['average_lifespan']]
         self.bug_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'], ['average_lifespan']]
+        self.bug_gene_data = [[] for i in range (2)]
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)

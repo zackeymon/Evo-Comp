@@ -5,13 +5,17 @@ from bug import Bug
 from direction import Direction
 from organism_type import OrganismType
 from world_viewer import WorldViewer
+from gene_viewer import GeneViewer
 
 myWorld = World(rows=30, columns=30)
 worldViewer = WorldViewer()
+geneViewer = GeneViewer()
 random.seed(worldViewer.time_stamp)
 
 myWorld.spawn_food(100)
 myWorld.spawn_bug(10)
+
+worldViewer.world_seed(myWorld) #seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need to keep them but can check them later
 
 for i in range(5):
 
@@ -67,7 +71,10 @@ for i in range(5):
             bug.lifetime += 1
 
     worldViewer.generate_data(myWorld)
+    geneViewer.generate_gene_data(myWorld)
     worldViewer.view_world(myWorld)
     myWorld.time += 1
 
 worldViewer.output_data(myWorld)
+geneViewer.output_gene_data(myWorld)
+

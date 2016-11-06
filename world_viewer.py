@@ -12,19 +12,27 @@ class WorldViewer:
     """
     def __init__(self, time_stamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
         """
-        World Initialisation Time
-        :param time_stamp: The beginning of time
+        World Viewer Initialisation
+        :param time_stamp: The real time and data at which the beginning of time occurs
         """
         self.time_stamp = time_stamp
 
         if not os.path.exists(os.path.join('data', self.time_stamp)):
             os.makedirs(os.path.join('data', self.time_stamp))
 
+        if not os.path.isfile(os.path.join('data', 'world_seeds.csv')):
+            with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
+                seed.write('time_stamp,' + 'columns,' + 'rows,' + 'food,' + 'bugs,' + 'results,' + '\n')
+
     def sum_list_lifetime(self, object_list):
         lifetime = 0
         for object in object_list:
             lifetime += object.lifetime
         return lifetime
+
+    def world_seed(self, world):
+        with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
+            seed.write('%r,' % self.time_stamp + '%r,' % world.columns +'%r,' % world.rows + '%r,' % len(world.foodList) + '%r,' % len(world.bugList) + '\n')
 
     def view_world(self, world):
         """"Draw the world: rectangles=food, circles=bugs"""
