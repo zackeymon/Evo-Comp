@@ -34,8 +34,8 @@ Evolution/Mutation (random reproduction threshold.etc)
 
 ------TO DO------
 
-Gene Contours
-New Bug has energy related to parent's energy above reproduction threshold
+Bug collision? -> Number of offspring (currently set at 2)/ Or need another evolutionary trait
+	Gene Contours
 Random Walk
 Run Faster
 SOLID
