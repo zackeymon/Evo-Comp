@@ -1,6 +1,7 @@
 import numpy as np
 from random import randint
 
+
 class Organism:
     """
     The parent class for all organisms living in the world.
@@ -18,25 +19,25 @@ class Organism:
         self.position = np.array(position)
         self.lifetime = lifetime
         self.energy = energy
-        self.energy_initial = energy
         self.reproduction_threshold = reproduction_threshold + randint(-5, 5)
         self.energy_max = energy_max
         if self.reproduction_threshold > energy_max:
             self.reproduction_threshold = self.energy_max
-        elif self.reproduction_threshold < self.energy_initial + 5:
-            self.reproduction_threshold = self.energy_initial + 5
 
     def __repr__(self):
-        return '%s-[%s, %s]' % (self.__class__.__name__, self.position[0], self.position[1])
+        return '%s(P:[%d, %d] L:%d E:%d RT:%d Emax:%d)' % (
+            self.__class__.__name__, self.position[0], self.position[1], self.energy, self.reproduction_threshold,
+            self.energy_max)
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
-        self.energy = self.energy_initial
+        # Half of the energy goes to the offspring
+        self.energy /= 2
 
         # Set new parameters
         new_position = self.position + direction
         new_lifetime = 0
-        new_energy = self.energy_initial
+        new_energy = self.energy
         new_energy_max = self.energy_max
         new_reproduction_threshold = self.reproduction_threshold
 
