@@ -26,9 +26,11 @@ class World:
         self.foodList = []
         self.bugListDead = []
         self.foodListDead = []
-        self.food_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'], ['average_lifespan']]
-        self.bug_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'], ['average_lifespan']]
-        self.bug_gene_data = [[] for i in range (2)]
+        self.food_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'],
+                          ['average_lifespan']]
+        self.bug_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'],
+                         ['average_lifespan']]
+        self.bug_gene_data = [[] for _ in range(2)]
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)
@@ -77,7 +79,9 @@ class World:
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
-                self.foodList.append(Food(self.grid.pop(random.randint(0, len(self.grid)-1)), 0, energy, reproduction_threshold, energy_max))
+                self.foodList.append(
+                    Food(self.grid.pop(random.randint(0, len(self.grid) - 1)), 0, energy, reproduction_threshold,
+                         energy_max))
             except ValueError:
                 break
 
@@ -85,7 +89,8 @@ class World:
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         for i in range(number):
             try:
-                self.bugList.append(Bug(self.grid.pop(random.randint(0, len(self.grid)-1)), 0, energy, reproduction_threshold, energy_max))
+                self.bugList.append(
+                    Bug(self.grid.pop(random.randint(0, len(self.grid) - 1)), 0, energy, reproduction_threshold,
+                        energy_max))
             except ValueError:
                 break
-
