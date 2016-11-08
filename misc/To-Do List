@@ -34,6 +34,7 @@ Evolution/Mutation (random reproduction threshold.etc)
 
 ------TO DO------
 
+DESIGN DECISIONS
 Bug collision? -> Number of offspring (currently set at 2)/ Or need another evolutionary trait
 	Gene Contours
 Random Walk

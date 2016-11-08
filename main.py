@@ -17,7 +17,7 @@ myWorld.spawn_bug(10)
 
 worldViewer.world_seed(myWorld)  #seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need to keep them but can check them later
 
-for i in range(5):
+for i in range(2):
 
     if len(myWorld.foodList) == len(myWorld.grid):
         break
@@ -77,3 +77,4 @@ for i in range(5):
 
 worldViewer.output_data(myWorld)
 geneViewer.output_gene_data(myWorld)
+geneViewer.plot_gene_data(myWorld)
