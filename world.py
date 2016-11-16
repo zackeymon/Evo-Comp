@@ -1,5 +1,7 @@
 import random
+import datetime
 import numpy as np
+from collections import OrderedDict
 from bug import Bug
 from food import Food
 from organism_type import OrganismType
@@ -18,20 +20,20 @@ class World:
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
         """
-        self.seed = seed
         self.time = time
         self.columns = columns
         self.rows = rows
+        self.seed = seed
         self.grid = [[x, y] for x in range(columns) for y in range(rows)]
         self.bugList = []
         self.foodList = []
         self.bugListDead = []
         self.foodListDead = []
-        self.food_data = {'time':[], 'population':[], ['dead_population'], ['average_alive_lifetime'],
-                          ['average_lifespan']}
-        self.bug_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'],
-                         ['average_lifespan']]
-        self.bug_gene_data = [[] for _ in range(2)]
+        self.food_data = OrderedDict([('time', []), ('population', []), ('dead_population', []),
+                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
+        self.bug_data = OrderedDict([('time', []), ('population', []), ('dead_population', []),
+                                     ('average_alive_lifetime', []), ('average_lifespan', [])])
+        self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('evolutionary_trait', [])])
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)

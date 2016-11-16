@@ -11,16 +11,16 @@ from gene_viewer import GeneViewer
 myWorld = World(rows=30, columns=30)
 random.seed(myWorld.seed)
 
-worldViewer = WorldViewer()
-geneViewer = GeneViewer()
+worldViewer = WorldViewer(myWorld)
+geneViewer = GeneViewer(myWorld)
 
-worldSpaces= myWorld.grid
 myWorld.spawn_food(100)
 myWorld.spawn_bug(10)
 
-worldViewer.world_seed(myWorld)  #seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need to keep them but can check them later
+# seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
+# to keep them but can check them later
 
-for i in range(2):
+for i in range(100):
 
     if len(myWorld.bugList) == 0:
         break
@@ -28,8 +28,8 @@ for i in range(2):
     myWorld.available_spaces()
     myWorld.spawn_food(1)
 
-    random.shuffle(myWorld.bugList)
     random.shuffle(myWorld.foodList)
+    random.shuffle(myWorld.bugList)
 
     for food in myWorld.foodList:
         if food.lifetime > 0:
@@ -52,14 +52,14 @@ for i in range(2):
             if bug.lifetime > 0:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
-                if random_direction:
+                if random_direction is not None:
                     bug.move(random_direction)
 
             # for i in myWorld.grid[bug.position[0]][bug.position[1]]:
             #     if isinstance(i, Food):
             #         bug.eat(i)
 
-            for food in myWorld.foodList:
+            for food in list(myWorld.foodList):
                 if (bug.position == food.position).all():
                     bug.eat(food)
                     myWorld.foodList.remove(food)
@@ -69,15 +69,16 @@ for i in range(2):
             if bug.energy >= bug.reproduction_threshold:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
-                if random_direction:
-                    myWorld.bugList.append(bug.reproduce(random_direction))
+                if random_direction is not None:
+                    spawn = bug.reproduce(random_direction)
+                    myWorld.bugList.append(spawn)
             bug.lifetime += 1
 
-    worldViewer.generate_data(myWorld)
-    geneViewer.generate_gene_data(myWorld)
-    worldViewer.view_world(myWorld)
+    worldViewer.generate_data()
+    geneViewer.generate_gene_data()
+    worldViewer.view_world()
     myWorld.time += 1
 
-worldViewer.output_data(myWorld)
-geneViewer.output_gene_data(myWorld)
-geneViewer.plot_gene_data(myWorld)
+worldViewer.output_data()
+geneViewer.output_gene_data()
+# geneViewer.plot_gene_data()

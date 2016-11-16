@@ -1,46 +1,42 @@
 import numpy as np
 import os
-import datetime
 from matplotlib import pyplot as plt
 
 
-# Do we need this class?
 class GeneViewer:
     """
     A class to output the data for genes and to plot them in gene space.
     """
-    def __init__(self, time_stamp=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+    def __init__(self, world):
         """
         Gene Viewer Initialisation
-        :param time_stamp: The beginning of time
+        :param world: The world being viewed
         """
-        self.time_stamp = time_stamp
+        self.world = world
 
-        if not os.path.exists(os.path.join('data', self.time_stamp)):
-            os.makedirs(os.path.join('data', self.time_stamp))
+        if not os.path.exists(os.path.join('data', self.world.seed)):
+            os.makedirs(os.path.join('data', self.world.seed))
 
-    @staticmethod
-    def generate_gene_data(self, world):
+    def generate_gene_data(self):
         """Add data for genes for the current world iteration to a list."""
 
-        world.bug_gene_data[0].append('time=%r' % world.time)
-        world.bug_gene_data[1].append(None)
-#       I could define a blank class here to use instead of None
-        for bug in world.bugList:
-            world.bug_gene_data[0].append(bug.reproduction_threshold)
-            world.bug_gene_data[1].append(None)
+        self.world.bug_gene_data['reproduction_threshold'].append('time=%r' % self.world.time)
+        self.world.bug_gene_data['evolutionary_trait'].append(None)
+        for bug in self.world.bugList:
+            self.world.bug_gene_data['reproduction_threshold'].append(bug.reproduction_threshold)
+            self.world.bug_gene_data['evolutionary_trait'].append(None)
 
-    def output_gene_data(self, world):
+    def output_gene_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
 
-        with open(os.path.join('data', self.time_stamp, 'bug_gene_data.csv'), 'a') as bug_gene_file:
-            for evolutionary_trait, reproduction_threshold in zip(*world.bug_gene_data):
+        with open(os.path.join('data', self.world.seed, 'bug_gene_data.csv'), 'a') as bug_gene_file:
+            for evolutionary_trait, reproduction_threshold in zip(*self.world.bug_gene_data.values()):
                 bug_gene_file.write('%r,' % evolutionary_trait + '%r,' % reproduction_threshold + '\n')
 
     def plot_gene_data(self):
         """Read the CSV (comma-separated values) output and plot as bar charts in gene space."""
 
-        gene_data = np.genfromtxt(os.path.join('data', self.time_stamp, 'bug_gene_data.csv'), delimiter=',',
+        gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_gene_data.csv'), delimiter=',',
                                   names=['reproduction_threshold', 'trait'])
 
         gene_data['reproduction_threshold'][np.isnan(gene_data['reproduction_threshold'])] = -1
@@ -73,9 +69,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Population')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.time_stamp, 'gene_data_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'gene_data_%s.png' % i))
             plt.close()
 
             plt.show()
-
-# either fill in missing values after dictionary is generated (prob best idea) or add before and somehow count as zero
