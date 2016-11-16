@@ -20,7 +20,7 @@ worldViewer.world_seed(myWorld)  #seed information irrelevant until we start col
 
 for i in range(2):
 
-    if len(myWorld.foodList) == len(worldSpaces)
+    if len(myWorld.bugList) == 0:
         break
 
     myWorld.available_spaces()
@@ -39,8 +39,8 @@ for i in range(2):
                 if random_direction is not None:
                     myWorld.foodList.append(food.reproduce(random_direction))
         food.lifetime += 1
-
-    for bug in myWorld.bugList:
+    
+    for bug in list(myWorld.bugList):
         bug.respire()
         if bug.energy <= 0:
             # Bug die
@@ -50,7 +50,7 @@ for i in range(2):
             if bug.lifetime > 0:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
-                if random_direction is not None:
+                if random_direction:
                     bug.move(random_direction)
 
             # for i in myWorld.grid[bug.position[0]][bug.position[1]]:
@@ -67,7 +67,7 @@ for i in range(2):
             if bug.energy >= bug.reproduction_threshold:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
-                if random_direction is not None:
+                if random_direction:
                     myWorld.bugList.append(bug.reproduce(random_direction))
             bug.lifetime += 1
 
