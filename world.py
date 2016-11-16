@@ -11,13 +11,14 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, time=0, rows=10, columns=10):
+    def __init__(self, time=0, rows=10, columns=10, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
         """
         World Initialisation
         :param time: Time at which the world begins to exist
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
         """
+        self.seed = seed
         self.time = time
         self.columns = columns
         self.rows = rows
@@ -26,8 +27,8 @@ class World:
         self.foodList = []
         self.bugListDead = []
         self.foodListDead = []
-        self.food_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'],
-                          ['average_lifespan']]
+        self.food_data = {'time':[], 'population':[], ['dead_population'], ['average_alive_lifetime'],
+                          ['average_lifespan']}
         self.bug_data = [['time'], ['population'], ['dead_population'], ['average_alive_lifetime'],
                          ['average_lifespan']]
         self.bug_gene_data = [[] for _ in range(2)]
