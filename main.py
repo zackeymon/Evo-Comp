@@ -12,6 +12,7 @@ worldViewer = WorldViewer()
 geneViewer = GeneViewer()
 random.seed(worldViewer.time_stamp)
 
+worldSpaces= myWorld.grid
 myWorld.spawn_food(100)
 myWorld.spawn_bug(10)
 
@@ -19,7 +20,7 @@ worldViewer.world_seed(myWorld)  #seed information irrelevant until we start col
 
 for i in range(2):
 
-    if len(myWorld.foodList) == len([[x, y] for x in range(myWorld.columns) for y in range(myWorld.rows)]):
+    if len(myWorld.foodList) == len(worldSpaces)
         break
 
     myWorld.available_spaces()
