@@ -19,7 +19,7 @@ worldViewer.world_seed(myWorld)  #seed information irrelevant until we start col
 
 for i in range(2):
 
-    if len(myWorld.foodList) == len(myWorld.grid):
+    if len(myWorld.foodList) == len([[x, y] for x in range(myWorld.columns) for y in range(myWorld.rows)]):
         break
 
     myWorld.available_spaces()
