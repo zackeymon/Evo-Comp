@@ -10,15 +10,15 @@ class WorldViewer:
     """
     A class to view the world visually as it develops.
     """
-    def __init__(self, time_stamp=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+    def __init__(self, world):
         """
         World Viewer Initialisation
         :param time_stamp: The real time and data at which the beginning of time occurs
         """
-        self.time_stamp = time_stamp
+        self.world = world
 
-        if not os.path.exists(os.path.join('data', self.time_stamp)):
-            os.makedirs(os.path.join('data', self.time_stamp))
+        if not os.path.exists(os.path.join('data', self.world.seed)):
+            os.makedirs(os.path.join('data', self.world.seed))
 
         if not os.path.isfile(os.path.join('data', 'world_seeds.csv')):
             with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
