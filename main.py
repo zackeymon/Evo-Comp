@@ -7,10 +7,12 @@ from organism_type import OrganismType
 from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
+
 myWorld = World(rows=30, columns=30)
+random.seed(myWorld.seed)
+
 worldViewer = WorldViewer()
 geneViewer = GeneViewer()
-random.seed(worldViewer.time_stamp)
 
 worldSpaces= myWorld.grid
 myWorld.spawn_food(100)
