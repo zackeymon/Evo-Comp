@@ -25,7 +25,7 @@ class WorldViewer:
 
         with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
             seed.write('%r,' % world.seed + '%r,' % world.columns + '%r,' % world.rows + '%r,'
-                       % len(world.foodList) + '%r,' % len(world.bugList) + '\n')
+                       % len(world.food_list) + '%r,' % len(world.bug_list) + '\n')
 
     @staticmethod
     def sum_list_lifetime(object_list):
@@ -38,7 +38,7 @@ class WorldViewer:
         """"Draw the world: rectangles=food, circles=bugs"""
         ax = plt.figure(figsize=(self.world.columns, self.world.rows)).add_subplot(1, 1, 1)
 
-        for food in self.world.foodList:
+        for food in self.world.food_list:
             food_size = food.energy*0.01
             if food_size <= 0.3:
                 ax.add_patch(Rectangle((food.position[0]+(0.5-0.3/2), food.position[1]+(0.5-0.3/2)), 0.3, 0.3,
@@ -47,7 +47,7 @@ class WorldViewer:
                 ax.add_patch(Rectangle((food.position[0]+(0.5-food_size/2), food.position[1]+(0.5-food_size/2)),
                                        food_size, food_size, facecolor="#228b22"))
                 
-        for bug in self.world.bugList:
+        for bug in self.world.bug_list:
             bug_size = bug.energy*0.01
             if bug_size <= 0.3:
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=0.3, height=0.3,
@@ -58,7 +58,7 @@ class WorldViewer:
             
         ax.set_xticks(np.arange(0, self.world.columns+1, 1))
         ax.set_yticks(np.arange(0, self.world.rows+1, 1))
-        plt.xlabel('time=%s' % self.world.time, fontsize=(2*self.world.columns))
+        plt.title('time=%s' % self.world.time, fontsize=(2*self.world.columns))
 #       ax.grid(b=True, which='major', color='black', linestyle='-')
 
         plt.savefig(os.path.join('data', self.world.seed, '%s.png' % self.world.time))
@@ -68,31 +68,34 @@ class WorldViewer:
         """Add data for the current world iteration to a list."""
 
         self.world.food_data['time'].append(self.world.time)
-        self.world.food_data['population'].append(len(self.world.foodList))
-        self.world.food_data['dead_population'].append(len(self.world.foodListDead))
-        if len(self.world.foodList) <= 0:
+        self.world.food_data['population'].append(len(self.world.food_list))
+        if self.world.time > 50:
+            del self.world.dead_food_list[0]
+        self.world.food_data['dead_population'].append(len(self.world.dead_food_list))
+        if len(self.world.food_list) <= 0:
             self.world.food_data['average_alive_lifetime'].append('0')
         else:
-            self.world.food_data['average_alive_lifetime'].append(self.sum_list_lifetime(self.world.foodList) /
-                                                                  len(self.world.foodList))
-        if len(self.world.foodListDead) <= 0:
+            self.world.food_data['average_alive_lifetime'].append(self.sum_list_lifetime(self.world.food_list) /
+                                                                  len(self.world.food_list))
+        if len(self.world.dead_food_list) <= 0:
             self.world.food_data['average_lifespan'].append('N/A')
         else:
             self.world.food_data['average_lifespan'].append(
-                self.sum_list_lifetime(self.world.foodListDead) / len(self.world.foodListDead))
+                self.sum_list_lifetime(self.world.dead_food_list) / len(self.world.dead_food_list))
 
         self.world.bug_data['time'].append(self.world.time)
-        self.world.bug_data['population'].append(len(self.world.bugList))
-        self.world.bug_data['dead_population'].append(len(self.world.bugListDead))
-        if len(self.world.bugList) <= 0:
+        self.world.bug_data['population'].append(len(self.world.bug_list))
+        self.world.bug_data['dead_population'].append(len(self.world.dead_bug_list))
+        if len(self.world.bug_list) <= 0:
             self.world.bug_data['average_alive_lifetime'].append('0')
         else:
-            self.world.bug_data['average_alive_lifetime'].append(self.sum_list_lifetime(self.world.bugList) /
-                                                                 len(self.world.bugList))
-        if len(self.world.bugListDead) <= 0:
+            self.world.bug_data['average_alive_lifetime'].append(self.sum_list_lifetime(self.world.bug_list) /
+                                                                 len(self.world.bug_list))
+        if len(self.world.dead_bug_list) <= 0:
             self.world.bug_data['average_lifespan'].append('N/A')
         else:
-            self.world.bug_data['average_lifespan'].append(self.sum_list_lifetime(self.world.bugListDead) / len(self.world.bugListDead))
+            self.world.bug_data['average_lifespan'].append(self.sum_list_lifetime(self.world.dead_bug_list) /
+                                                           len(self.world.dead_bug_list))
 
     def output_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
@@ -101,10 +104,57 @@ class WorldViewer:
             for time, population, dead_population, average_alive_lifetime, average_lifespan \
                     in zip(*self.world.food_data.values()):
                 food_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,'
-                               % average_alive_lifetime + '%r,' % average_lifespan + '\n')
+                                % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
         with open(os.path.join('data', self.world.seed, 'bug_data.csv'), 'a') as bug_file:
             for time, population, dead_population, average_alive_lifetime, average_lifespan \
                     in zip(*self.world.bug_data.values()):
                 bug_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,'
                                % average_alive_lifetime + '%r,' % average_lifespan + '\n')
+
+    def plot_data(self):
+        """Read the CSV (comma-separated values) output and plot trends."""
+
+        food_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_data.csv'), delimiter=',',
+                                  names=['time', 'population', 'dead_population', 'average_alive_lifetime',
+                                         'average_lifespan'])
+
+        plt.plot(food_data['time'], food_data['population'], label='Alive')
+        plt.plot(food_data['time'], food_data['dead_population'], label='Deaths in last 50 cycles')
+        plt.xlabel('Time')
+        plt.ylabel('Number of Food')
+        plt.legend()
+        plt.title('Food Populations')
+        plt.savefig(os.path.join('data', self.world.seed, 'plot_food_population'))
+        plt.close()
+
+        plt.plot(food_data['time'], food_data['average_alive_lifetime'], label='Average_Alive_Lifetime')
+        plt.plot(food_data['time'], food_data['average_lifespan'], label='Average_Lifespan')
+        plt.xlabel('Time')
+        plt.ylabel('Lifetime')
+        plt.legend()
+        plt.title('Food Lifetimes')
+        plt.savefig(os.path.join('data', self.world.seed, 'plot_food_lifetime'))
+        plt.close()
+
+        bug_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_data.csv'), delimiter=',',
+                                 names=['time', 'population', 'dead_population', 'average_alive_lifetime',
+                                        'average_lifespan'])
+
+        plt.plot(bug_data['time'], bug_data['population'], label='Alive')
+        plt.plot(bug_data['time'], bug_data['dead_population'], label='Dead')
+        plt.xlabel('Time')
+        plt.ylabel('Number of Bugs')
+        plt.legend()
+        plt.title('Bug Populations')
+        plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_population'))
+        plt.close()
+
+        plt.plot(bug_data['time'], bug_data['average_alive_lifetime'], label='Average_Alive_Lifetime')
+        plt.plot(bug_data['time'], bug_data['average_lifespan'], label='Average_Lifespan')
+        plt.xlabel('Time')
+        plt.ylabel('Lifetime')
+        plt.legend()
+        plt.title('Bug Lifetimes')
+        plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_lifetime'))
+        plt.close()

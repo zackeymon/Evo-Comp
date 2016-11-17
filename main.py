@@ -9,16 +9,21 @@ from gene_viewer import GeneViewer
 myWorld = World(rows=30, columns=30)
 random.seed(myWorld.seed)
 
+myWorld.spawn_food(100)
+myWorld.spawn_bug(10)
+
 worldViewer = WorldViewer(myWorld)
 geneViewer = GeneViewer(myWorld)
 
-myWorld.spawn_food(100)
-myWorld.spawn_bug(10)
 
 # seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
 # to keep them but can check them later
 
-for _ in range(100):
+for _ in range(6):
+
+    worldViewer.generate_data()
+    geneViewer.generate_gene_data()
+    worldViewer.view_world()
 
     if len(myWorld.bug_list) == 0:
         break
@@ -75,11 +80,9 @@ for _ in range(100):
             bug.lifetime += 1
             i += 1
 
-    worldViewer.generate_data()
-    geneViewer.generate_gene_data()
-    worldViewer.view_world()
     myWorld.time += 1
 
 worldViewer.output_data()
+worldViewer.plot_data()
 geneViewer.output_gene_data()
-# geneViewer.plot_gene_data()
+geneViewer.plot_gene_data()

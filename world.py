@@ -25,10 +25,10 @@ class World:
         self.rows = rows
         self.seed = seed
         self.grid = [[x, y] for x in range(columns) for y in range(rows)]
-        self.bug_list = []
         self.food_list = []
-        self.dead_bug_list = []
+        self.bug_list = []
         self.dead_food_list = []
+        self.dead_bug_list = []
         self.food_data = OrderedDict([('time', []), ('population', []), ('dead_population', []),
                                       ('average_alive_lifetime', []), ('average_lifespan', [])])
         self.bug_data = OrderedDict([('time', []), ('population', []), ('dead_population', []),
