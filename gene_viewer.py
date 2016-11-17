@@ -41,7 +41,7 @@ class GeneViewer:
 
         gene_data['reproduction_threshold'][np.isnan(gene_data['reproduction_threshold'])] = -1
 
-#       will turn this into a function later, splits into separate lists based on time
+        #       will turn this into a function later, splits into separate lists based on time
         split_gene_data = []
         for item in gene_data['reproduction_threshold']:
             if item == -1:
@@ -49,23 +49,46 @@ class GeneViewer:
             else:
                 split_gene_data[-1].append(item)
 
-#       remove value that allows for splitting lists
+            #       remove value that allows for splitting lists
         for time_segment in split_gene_data:
             time_segment.remove(-1)
 
-        for i in range(len(split_gene_data)):
+        for i, day in enumerate(split_gene_data):
+            rep_dict = {j: 0 for j in range(20, 101)}
 
-#           count number of occurences of each reproduction threshold for each time
-            for_plotting = {x: split_gene_data[i].count(x) for x in split_gene_data[i]}
-            values, frequencies = for_plotting.keys(), for_plotting.values()
-            sum_frequencies = sum(frequencies)
-            for_plotting.update((x, y/sum_frequencies) for x, y in for_plotting.items())
+            for rep_thresh in day:
 
-#           bar chart
-            y_pos = np.arange(len(values))
+                # count number of occurences of each reproduction threshold for each time
+                rep_dict[int(rep_thresh)] += 1
 
-            plt.bar(y_pos, frequencies, align='center', color='red')
-            plt.xticks(y_pos, values)
+            # for_plotting = {x: val.count(x) for x in val}
+            # values, frequencies = for_plotting.keys(), for_plotting.values()
+            # sum_frequencies = sum(frequencies)
+            # for_plotting.update((x, y / sum_frequencies) for x, y in for_plotting.items())
+
+            # fig, axs = plt.subplots(1, 2)
+
+            # x = np.linspace(0, 1, 100)
+            # x, y = np.meshgrid(values, one)
+            #
+            # levels = np.linspace(-1, 1, 40)
+            #
+            # cs = axs[0].contourf(x, y, frequencies, levels=levels)
+            # fig.colorbar(cs, ax=axs[0], format="%.2f")
+            #
+            # cs = axs[1].contourf(x, y, frequencies, levels=[-1, 0, 1])
+            # fig.colorbar(cs, ax=axs[1])
+            #
+            # fig.savefig(os.path.join('data', self.time_stamp, 'gene_data_%s.png' % i))
+            #
+            # fig.close()
+            # fig.show()
+
+            # bar chart
+            y_pos = np.arange(len(rep_dict.keys()))
+
+            plt.bar(y_pos, rep_dict.values(), align='center', color='red')
+            #plt.xticks(y_pos, rep_dict.keys())
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Population')
             plt.title('time=%s' % i)
