@@ -9,7 +9,7 @@ class WorldTests(unittest.TestCase):
         self.assertEqual(my_world.grid, [[0, 0]])
 
         my_world.spawn_food(number=1)
-        self.assertEqual(len(my_world.foodList), 1)
+        self.assertEqual(len(my_world.food_list), 1)
         self.assertEqual(my_world.grid, [])
 
 

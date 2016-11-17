@@ -12,7 +12,7 @@ class Direction:
     right = 4
 
     @staticmethod
-    def random(disallowed_directions = []):
+    def random(disallowed_directions):
         """Check up, down, left, right for disallowed collisions and pick a random direction from allowed directions."""
 
         directions = range(1, 5)

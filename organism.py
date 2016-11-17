@@ -26,8 +26,8 @@ class Organism:
 
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d Emax:%d)' % (
-            self.__class__.__name__, self.position[0], self.position[1], self.energy, self.reproduction_threshold,
-            self.energy_max)
+            self.__class__.__name__, self.position[0], self.position[1], self.lifetime, self.energy,
+            self.reproduction_threshold, self.energy_max)
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""

@@ -1,7 +1,5 @@
 import random
 from world import World
-from food import Food
-from bug import Bug
 from direction import Direction
 from organism_type import OrganismType
 from world_viewer import WorldViewer
@@ -20,18 +18,18 @@ myWorld.spawn_bug(10)
 # seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
 # to keep them but can check them later
 
-for i in range(100):
+for _ in range(100):
 
-    if len(myWorld.bugList) == 0:
+    if len(myWorld.bug_list) == 0:
         break
 
     myWorld.available_spaces()
     myWorld.spawn_food(1)
 
-    random.shuffle(myWorld.foodList)
-    random.shuffle(myWorld.bugList)
+    random.shuffle(myWorld.food_list)
+    random.shuffle(myWorld.bug_list)
 
-    for food in myWorld.foodList:
+    for food in myWorld.food_list:
         if food.lifetime > 0:
             food.grow()
             if food.energy >= food.reproduction_threshold:
@@ -39,19 +37,20 @@ for i in range(100):
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(food.position, OrganismType.food))
                 if random_direction is not None:
-                    myWorld.foodList.append(food.reproduce(random_direction))
+                    myWorld.food_list.append(food.reproduce(random_direction))
         food.lifetime += 1
-    
-    for bug in list(myWorld.bugList):
+
+    i = 0
+    while i < len(myWorld.bug_list):
+        bug = myWorld.bug_list[i]
         bug.respire()
         if bug.energy <= 0:
             # Bug die
-            myWorld.bugList.remove(bug)
-            myWorld.bugListDead.append(bug)
+            myWorld.dead_bug_list.append(myWorld.bug_list.pop(i))
         else:
+            # Bug won't move if born this turn
             if bug.lifetime > 0:
-                random_direction = Direction.random(
-                    myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
+                random_direction = Direction.random(myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
                     bug.move(random_direction)
 
@@ -59,20 +58,22 @@ for i in range(100):
             #     if isinstance(i, Food):
             #         bug.eat(i)
 
-            for food in list(myWorld.foodList):
+            # Check if bug can eat food
+            for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
                     bug.eat(food)
-                    myWorld.foodList.remove(food)
-                    myWorld.foodListDead.append(food)
+                    myWorld.dead_food_list.append(myWorld.food_list.pop(j))
                     break
 
+            # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
                     spawn = bug.reproduce(random_direction)
-                    myWorld.bugList.append(spawn)
+                    myWorld.bug_list.append(spawn)
             bug.lifetime += 1
+            i += 1
 
     worldViewer.generate_data()
     geneViewer.generate_gene_data()
