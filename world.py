@@ -29,9 +29,9 @@ class World:
         self.bug_list = []
         self.dead_food_list = []
         self.dead_bug_list = []
-        self.food_data = OrderedDict([('time', []), ('population', []), ('dead_population', []),
+        self.food_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
                                       ('average_alive_lifetime', []), ('average_lifespan', [])])
-        self.bug_data = OrderedDict([('time', []), ('population', []), ('dead_population', []),
+        self.bug_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
         self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('evolutionary_trait', [])])
 

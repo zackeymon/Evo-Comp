@@ -19,7 +19,7 @@ geneViewer = GeneViewer(myWorld)
 # seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
 # to keep them but can check them later
 
-for _ in range(6):
+for _ in range(50):
 
     worldViewer.generate_data()
     geneViewer.generate_gene_data()
@@ -46,12 +46,14 @@ for _ in range(6):
         food.lifetime += 1
 
     i = 0
+    myWorld.dead_food_list.append([])
+    myWorld.dead_bug_list.append([])
     while i < len(myWorld.bug_list):
         bug = myWorld.bug_list[i]
         bug.respire()
         if bug.energy <= 0:
             # Bug die
-            myWorld.dead_bug_list.append(myWorld.bug_list.pop(i))
+            myWorld.dead_bug_list[-1].append(myWorld.bug_list.pop(i))
         else:
             # Bug won't move if born this turn
             if bug.lifetime > 0:
@@ -67,7 +69,7 @@ for _ in range(6):
             for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
                     bug.eat(food)
-                    myWorld.dead_food_list.append(myWorld.food_list.pop(j))
+                    myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
                     break
 
             # Check if bug can reproduce

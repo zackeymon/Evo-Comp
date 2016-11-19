@@ -28,11 +28,21 @@ class WorldViewer:
                        % len(world.food_list) + '%r,' % len(world.bug_list) + '\n')
 
     @staticmethod
-    def sum_list_lifetime(object_list):
+    def sum_list_lifetime(object_list, living=False):
         lifetime = 0
-        for thing in object_list:
-            lifetime += thing.lifetime
-        return lifetime
+
+        if living is False:
+            for i in object_list:
+                for thing in i:
+                    lifetime += thing.lifetime
+
+            return lifetime
+
+        else:
+            for thing in object_list:
+                lifetime += thing.lifetime
+
+            return lifetime
 
     def view_world(self):
         """"Draw the world: rectangles=food, circles=bugs"""
@@ -66,36 +76,37 @@ class WorldViewer:
 
     def generate_data(self):
         """Add data for the current world iteration to a list."""
+        if self.world.time > 10:
+            del self.world.dead_food_list[0]
+            del self.world.dead_bug_list[0]
 
         self.world.food_data['time'].append(self.world.time)
         self.world.food_data['population'].append(len(self.world.food_list))
-        if self.world.time > 50:
-            del self.world.dead_food_list[0]
-        self.world.food_data['dead_population'].append(len(self.world.dead_food_list))
+        self.world.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list]))
         if len(self.world.food_list) <= 0:
-            self.world.food_data['average_alive_lifetime'].append('0')
+            self.world.food_data['average_alive_lifetime'].append(0)
         else:
-            self.world.food_data['average_alive_lifetime'].append(self.sum_list_lifetime(self.world.food_list) /
-                                                                  len(self.world.food_list))
-        if len(self.world.dead_food_list) <= 0:
-            self.world.food_data['average_lifespan'].append('N/A')
+            self.world.food_data['average_alive_lifetime'].append(
+                self.sum_list_lifetime(self.world.food_list, living=True) / len(self.world.food_list))
+        if sum([len(i) for i in self.world.dead_food_list]) <= 0:
+            self.world.food_data['average_lifespan'].append(0)
         else:
             self.world.food_data['average_lifespan'].append(
-                self.sum_list_lifetime(self.world.dead_food_list) / len(self.world.dead_food_list))
+                self.sum_list_lifetime(self.world.dead_food_list) / sum([len(i) for i in self.world.dead_food_list]))
 
         self.world.bug_data['time'].append(self.world.time)
         self.world.bug_data['population'].append(len(self.world.bug_list))
-        self.world.bug_data['dead_population'].append(len(self.world.dead_bug_list))
+        self.world.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list]))
         if len(self.world.bug_list) <= 0:
-            self.world.bug_data['average_alive_lifetime'].append('0')
+            self.world.bug_data['average_alive_lifetime'].append(0)
         else:
-            self.world.bug_data['average_alive_lifetime'].append(self.sum_list_lifetime(self.world.bug_list) /
-                                                                 len(self.world.bug_list))
-        if len(self.world.dead_bug_list) <= 0:
-            self.world.bug_data['average_lifespan'].append('N/A')
+            self.world.bug_data['average_alive_lifetime'].append(
+                self.sum_list_lifetime(self.world.bug_list, living=True) / len(self.world.bug_list))
+        if sum([len(i) for i in self.world.dead_bug_list]) <= 0:
+            self.world.bug_data['average_lifespan'].append(0)
         else:
-            self.world.bug_data['average_lifespan'].append(self.sum_list_lifetime(self.world.dead_bug_list) /
-                                                           len(self.world.dead_bug_list))
+            self.world.bug_data['average_lifespan'].append(
+                self.sum_list_lifetime(self.world.dead_bug_list) / sum([len(i) for i in self.world.dead_bug_list]))
 
     def output_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
@@ -120,7 +131,7 @@ class WorldViewer:
                                          'average_lifespan'])
 
         plt.plot(food_data['time'], food_data['population'], label='Alive')
-        plt.plot(food_data['time'], food_data['dead_population'], label='Deaths in last 50 cycles')
+        plt.plot(food_data['time'], food_data['dead_population'], label='Deaths')
         plt.xlabel('Time')
         plt.ylabel('Number of Food')
         plt.legend()
@@ -128,8 +139,8 @@ class WorldViewer:
         plt.savefig(os.path.join('data', self.world.seed, 'plot_food_population'))
         plt.close()
 
-        plt.plot(food_data['time'], food_data['average_alive_lifetime'], label='Average_Alive_Lifetime')
-        plt.plot(food_data['time'], food_data['average_lifespan'], label='Average_Lifespan')
+        plt.plot(food_data['time'], food_data['average_alive_lifetime'], label='Average Alive Lifetime')
+        plt.plot(food_data['time'], food_data['average_lifespan'], label='Average Lifespan (last 10 cycles)')
         plt.xlabel('Time')
         plt.ylabel('Lifetime')
         plt.legend()
@@ -142,7 +153,7 @@ class WorldViewer:
                                         'average_lifespan'])
 
         plt.plot(bug_data['time'], bug_data['population'], label='Alive')
-        plt.plot(bug_data['time'], bug_data['dead_population'], label='Dead')
+        plt.plot(bug_data['time'], bug_data['dead_population'], label='Deaths')
         plt.xlabel('Time')
         plt.ylabel('Number of Bugs')
         plt.legend()
@@ -150,8 +161,8 @@ class WorldViewer:
         plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_population'))
         plt.close()
 
-        plt.plot(bug_data['time'], bug_data['average_alive_lifetime'], label='Average_Alive_Lifetime')
-        plt.plot(bug_data['time'], bug_data['average_lifespan'], label='Average_Lifespan')
+        plt.plot(bug_data['time'], bug_data['average_alive_lifetime'], label='Average Alive Lifetime')
+        plt.plot(bug_data['time'], bug_data['average_lifespan'], label='Average Lifespan (last 10 cycles)')
         plt.xlabel('Time')
         plt.ylabel('Lifetime')
         plt.legend()
