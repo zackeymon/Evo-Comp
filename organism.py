@@ -6,7 +6,6 @@ class Organism:
     """
     The parent class for all organisms living in the world.
     """
-
     def __init__(self, position, lifetime, energy, reproduction_threshold, energy_max):
         """
         Organism Initialisation
@@ -19,7 +18,7 @@ class Organism:
         self.position = np.array(position)
         self.lifetime = lifetime
         self.energy = energy
-        self.reproduction_threshold = reproduction_threshold + randint(-5, 5)
+        self.reproduction_threshold = reproduction_threshold #+ randint(-5, 5)
         self.energy_max = energy_max
         if self.reproduction_threshold > energy_max:
             self.reproduction_threshold = self.energy_max

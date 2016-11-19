@@ -1,5 +1,6 @@
 import numpy as np
 import os
+from collections import OrderedDict
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
@@ -15,6 +16,10 @@ class WorldViewer:
         :param world: The world being viewed
         """
         self.world = world
+        self.food_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
+                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
+        self.bug_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
+                                     ('average_alive_lifetime', []), ('average_lifespan', [])])
 
         if not os.path.exists(os.path.join('data', world.seed)):
             os.makedirs(os.path.join('data', world.seed))
@@ -80,32 +85,32 @@ class WorldViewer:
             del self.world.dead_food_list[0]
             del self.world.dead_bug_list[0]
 
-        self.world.food_data['time'].append(self.world.time)
-        self.world.food_data['population'].append(len(self.world.food_list))
-        self.world.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list]))
+        self.food_data['time'].append(self.world.time)
+        self.food_data['population'].append(len(self.world.food_list))
+        self.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list]))
         if len(self.world.food_list) <= 0:
-            self.world.food_data['average_alive_lifetime'].append(0)
+            self.food_data['average_alive_lifetime'].append(0)
         else:
-            self.world.food_data['average_alive_lifetime'].append(
+            self.food_data['average_alive_lifetime'].append(
                 self.sum_list_lifetime(self.world.food_list, living=True) / len(self.world.food_list))
         if sum([len(i) for i in self.world.dead_food_list]) <= 0:
-            self.world.food_data['average_lifespan'].append(0)
+            self.food_data['average_lifespan'].append(0)
         else:
-            self.world.food_data['average_lifespan'].append(
+            self.food_data['average_lifespan'].append(
                 self.sum_list_lifetime(self.world.dead_food_list) / sum([len(i) for i in self.world.dead_food_list]))
 
-        self.world.bug_data['time'].append(self.world.time)
-        self.world.bug_data['population'].append(len(self.world.bug_list))
-        self.world.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list]))
+        self.bug_data['time'].append(self.world.time)
+        self.bug_data['population'].append(len(self.world.bug_list))
+        self.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list]))
         if len(self.world.bug_list) <= 0:
-            self.world.bug_data['average_alive_lifetime'].append(0)
+            self.bug_data['average_alive_lifetime'].append(0)
         else:
-            self.world.bug_data['average_alive_lifetime'].append(
+            self.bug_data['average_alive_lifetime'].append(
                 self.sum_list_lifetime(self.world.bug_list, living=True) / len(self.world.bug_list))
         if sum([len(i) for i in self.world.dead_bug_list]) <= 0:
-            self.world.bug_data['average_lifespan'].append(0)
+            self.bug_data['average_lifespan'].append(0)
         else:
-            self.world.bug_data['average_lifespan'].append(
+            self.bug_data['average_lifespan'].append(
                 self.sum_list_lifetime(self.world.dead_bug_list) / sum([len(i) for i in self.world.dead_bug_list]))
 
     def output_data(self):
@@ -113,13 +118,13 @@ class WorldViewer:
 
         with open(os.path.join('data', self.world.seed, 'food_data.csv'), 'a') as food_file:
             for time, population, dead_population, average_alive_lifetime, average_lifespan \
-                    in zip(*self.world.food_data.values()):
+                    in zip(*self.food_data.values()):
                 food_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,'
                                 % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
         with open(os.path.join('data', self.world.seed, 'bug_data.csv'), 'a') as bug_file:
             for time, population, dead_population, average_alive_lifetime, average_lifespan \
-                    in zip(*self.world.bug_data.values()):
+                    in zip(*self.bug_data.values()):
                 bug_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,'
                                % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
@@ -131,7 +136,7 @@ class WorldViewer:
                                          'average_lifespan'])
 
         plt.plot(food_data['time'], food_data['population'], label='Alive')
-        plt.plot(food_data['time'], food_data['dead_population'], label='Deaths')
+        plt.plot(food_data['time'], food_data['dead_population'], label='Deaths (last 10 cycles)')
         plt.xlabel('Time')
         plt.ylabel('Number of Food')
         plt.legend()
@@ -153,7 +158,7 @@ class WorldViewer:
                                         'average_lifespan'])
 
         plt.plot(bug_data['time'], bug_data['population'], label='Alive')
-        plt.plot(bug_data['time'], bug_data['dead_population'], label='Deaths')
+        plt.plot(bug_data['time'], bug_data['dead_population'], label='Deaths (last 10 cycles)')
         plt.xlabel('Time')
         plt.ylabel('Number of Bugs')
         plt.legend()

@@ -34,10 +34,13 @@ Evolution/Mutation (random reproduction threshold.etc)
 
 ------TO DO------
 
+1. non random walk seems like a lot of effort, probably better spend time elsewhere
+2. no point tracking the movement of each individual bug (a tail) in a such a big world, especially if not doing random walk
+3. so we should collect data now? Then do different food distributions, then decide on another trait to evolve so we can implement contours
+4. this gives us time to look into population models (equations), percolation, and try to optimise and implement SOLID I guess
+
 DESIGN DECISIONS -> Number of offspring (currently set at 2)/ Or need another evolutionary trait
-Gene Contours
-Random Walk
-Give the bugs a tail
+Gene Contours (2D gene plots)
 Run Faster
 SOLID
 

@@ -1,7 +1,6 @@
 import random
 import datetime
 import numpy as np
-from collections import OrderedDict
 from bug import Bug
 from food import Food
 from organism_type import OrganismType
@@ -12,7 +11,6 @@ class World:
     """
     A class to create in the environment in which our organisms live.
     """
-
     def __init__(self, time=0, rows=10, columns=10, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
         """
         World Initialisation
@@ -29,11 +27,6 @@ class World:
         self.bug_list = []
         self.dead_food_list = []
         self.dead_bug_list = []
-        self.food_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
-                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
-        self.bug_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
-                                     ('average_alive_lifetime', []), ('average_lifespan', [])])
-        self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('evolutionary_trait', [])])
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)
@@ -78,22 +71,18 @@ class World:
         for bug in self.bug_list:
             self.grid.remove(bug.position.tolist())
 
-    def spawn_food(self, number=10, energy=20, reproduction_threshold=30, energy_max=100):
+    def spawn_food(self, number=10):
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
-                self.food_list.append(
-                    Food(self.grid.pop(random.randint(0, len(self.grid) - 1)), 0, energy, reproduction_threshold,
-                         energy_max))
+                self.food_list.append(Food(self.grid.pop(random.randint(0, len(self.grid) - 1))))
             except ValueError:
                 break
 
-    def spawn_bug(self, number=10, energy=5, reproduction_threshold=70, energy_max=100):
+    def spawn_bug(self, number=10):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         for i in range(number):
             try:
-                self.bug_list.append(
-                    Bug(self.grid.pop(random.randint(0, len(self.grid) - 1)), 0, energy, reproduction_threshold,
-                        energy_max))
+                self.bug_list.append(Bug(self.grid.pop(random.randint(0, len(self.grid) - 1))))
             except ValueError:
                 break

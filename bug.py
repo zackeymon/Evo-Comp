@@ -5,7 +5,7 @@ class Bug(Organism):
     """
     A class for a simple bug organism that moves, eats, and reproduces.
     """
-    def __init__(self, position, lifetime=0, energy=30, reproduction_threshold=70, energy_max=100):
+    def __init__(self, position, lifetime=0, energy=10, reproduction_threshold=70, energy_max=100):
         """
         Bug Initialisation
         :param position: The current position of the bug in the world
@@ -27,4 +27,3 @@ class Bug(Organism):
 
     def move(self, del_pos):
         self.position += del_pos
-

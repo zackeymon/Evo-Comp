@@ -19,10 +19,10 @@ geneViewer = GeneViewer(myWorld)
 # seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
 # to keep them but can check them later
 
-for _ in range(50):
+for _ in range(1001):
 
     worldViewer.generate_data()
-    geneViewer.generate_gene_data()
+    # geneViewer.generate_gene_data()
     worldViewer.view_world()
 
     if len(myWorld.bug_list) == 0:
@@ -86,5 +86,5 @@ for _ in range(50):
 
 worldViewer.output_data()
 worldViewer.plot_data()
-geneViewer.output_gene_data()
-geneViewer.plot_gene_data()
+# geneViewer.output_gene_data()
+# geneViewer.plot_gene_data()
