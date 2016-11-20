@@ -16,9 +16,9 @@ class WorldViewer:
         :param world: The world being viewed
         """
         self.world = world
-        self.food_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
+        self.food_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
                                       ('average_alive_lifetime', []), ('average_lifespan', [])])
-        self.bug_data = OrderedDict([('time', []), ('population', []), ('deaths', []),
+        self.bug_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
 
         if not os.path.exists(os.path.join('data', world.seed)):
@@ -48,6 +48,15 @@ class WorldViewer:
                 lifetime += thing.lifetime
 
             return lifetime
+
+    @staticmethod
+    def sum_list_energy(object_list):
+        energy = 0
+
+        for thing in object_list:
+            energy += thing.energy
+
+        return energy
 
     def view_world(self):
         """"Draw the world: rectangles=food, circles=bugs"""
@@ -86,6 +95,7 @@ class WorldViewer:
             del self.world.dead_bug_list[0]
 
         self.food_data['time'].append(self.world.time)
+        self.food_data['energy'].append(self.sum_list_energy(self.world.food_list))
         self.food_data['population'].append(len(self.world.food_list))
         self.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list]))
         if len(self.world.food_list) <= 0:
@@ -100,6 +110,7 @@ class WorldViewer:
                 self.sum_list_lifetime(self.world.dead_food_list) / sum([len(i) for i in self.world.dead_food_list]))
 
         self.bug_data['time'].append(self.world.time)
+        self.bug_data['energy'].append(self.sum_list_energy(self.world.bug_list))
         self.bug_data['population'].append(len(self.world.bug_list))
         self.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list]))
         if len(self.world.bug_list) <= 0:
@@ -117,22 +128,22 @@ class WorldViewer:
         """Output data in CSV (comma-separated values) format for analysis."""
 
         with open(os.path.join('data', self.world.seed, 'food_data.csv'), 'a') as food_file:
-            for time, population, dead_population, average_alive_lifetime, average_lifespan \
+            for time, energy, population, dead_population, average_alive_lifetime, average_lifespan \
                     in zip(*self.food_data.values()):
-                food_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,'
+                food_file.write('%r,' % time + '%r,' % energy + '%r,' % population + '%r,' % dead_population + '%r,'
                                 % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
         with open(os.path.join('data', self.world.seed, 'bug_data.csv'), 'a') as bug_file:
-            for time, population, dead_population, average_alive_lifetime, average_lifespan \
+            for time, energy, population, dead_population, average_alive_lifetime, average_lifespan \
                     in zip(*self.bug_data.values()):
-                bug_file.write('%r,' % time + '%r,' % population + '%r,' % dead_population + '%r,'
+                bug_file.write('%r,' % time + '%r,' % energy + '%r,' % population + '%r,' % dead_population + '%r,'
                                % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
     def plot_data(self):
         """Read the CSV (comma-separated values) output and plot trends."""
 
         food_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_data.csv'), delimiter=',',
-                                  names=['time', 'population', 'dead_population', 'average_alive_lifetime',
+                                  names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
                                          'average_lifespan'])
 
         plt.plot(food_data['time'], food_data['population'], label='Alive')
@@ -154,7 +165,7 @@ class WorldViewer:
         plt.close()
 
         bug_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_data.csv'), delimiter=',',
-                                 names=['time', 'population', 'dead_population', 'average_alive_lifetime',
+                                 names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
                                         'average_lifespan'])
 
         plt.plot(bug_data['time'], bug_data['population'], label='Alive')
@@ -173,4 +184,14 @@ class WorldViewer:
         plt.legend()
         plt.title('Bug Lifetimes')
         plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_lifetime'))
+        plt.close()
+
+        plt.plot(food_data['time'], food_data['energy'], label='Food')
+        plt.plot(bug_data['time'], bug_data['energy'], label='Bugs')
+        plt.plot(food_data['time'], (food_data['energy'] + bug_data['energy']), label='Food + Bugs')
+        plt.xlabel('Time')
+        plt.ylabel('Energy')
+        plt.legend()
+        plt.title('World Energy')
+        plt.savefig(os.path.join('data', self.world.seed, 'world_energy'))
         plt.close()

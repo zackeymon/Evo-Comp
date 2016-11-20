@@ -20,8 +20,8 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold #+ randint(-5, 5)
         self.energy_max = energy_max
-        if self.reproduction_threshold > energy_max:
-            self.reproduction_threshold = self.energy_max
+        # if self.reproduction_threshold > energy_max:
+        #     self.reproduction_threshold = self.energy_max
 
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d Emax:%d)' % (

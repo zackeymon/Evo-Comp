@@ -20,10 +20,10 @@ class Bug(Organism):
         self.energy -= 1
 
     def eat(self, food):
-        if (self.energy + food.energy) > self.energy_max:
-            self.energy = self.energy_max
-        else:
-            self.energy += food.energy
+        # if (self.energy + food.energy) > self.energy_max:
+        #     self.energy = self.energy_max
+        # else:
+        self.energy += food.energy
 
     def move(self, del_pos):
         self.position += del_pos
