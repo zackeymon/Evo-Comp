@@ -6,7 +6,7 @@ class Organism:
     """
     The parent class for all organisms living in the world.
     """
-    def __init__(self, position, energy, reproduction_threshold, energy_max):
+    def __init__(self, position, energy, reproduction_threshold, energy_max, gene_val):
         """
         Organism Initialisation
         :param position: The current position of the organism in the world
@@ -19,6 +19,7 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold #+ randint(-5, 5)  # TODO: Evolution 1 switch
         self.energy_max = energy_max
+        self.gene_val = gene_val
         if self.reproduction_threshold > energy_max:
             self.reproduction_threshold = self.energy_max
 
