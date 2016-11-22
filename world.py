@@ -69,25 +69,19 @@ class World:
         self.grid = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         for food in self.food_list:
             self.grid.remove(food.position.tolist())
-        for bug in self.bug_list:
-            self.grid.remove(bug.position.tolist())
 
-    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100):
+    def spawn_food(self, number):
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
-                self.food_list.append(
-                    Food(self.grid.pop(random.randint(0, len(self.grid) - 1)), energy,
-                         reproduction_threshold, energy_max))
+                self.food_list.append(Food(self.grid.pop(random.randint(0, len(self.grid) - 1))))
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100):
+    def spawn_bug(self, number):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         for i in range(number):
             try:
-                self.bug_list.append(
-                    Bug(self.grid.pop(random.randint(0, len(self.grid) - 1)), energy,
-                        reproduction_threshold, energy_max))
+                self.bug_list.append(Bug(self.grid.pop(random.randint(0, len(self.grid) - 1))))
             except ValueError:
                 break
