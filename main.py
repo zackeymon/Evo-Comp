@@ -69,9 +69,10 @@ for _ in range(1001):
             # Check if bug can eat food
             for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
-                    bug.eat(food)
-                    myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
-                    break
+                    if food.gene-10 <= bug.gene <= food.gene+10
+                        bug.eat(food)
+                        myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
+                        break
 
             # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold:
