@@ -11,6 +11,7 @@ class World:
     """
     A class to create in the environment in which our organisms live.
     """
+
     def __init__(self, time=0, rows=10, columns=10, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
         """
         World Initialisation
@@ -71,18 +72,22 @@ class World:
         for bug in self.bug_list:
             self.grid.remove(bug.position.tolist())
 
-    def spawn_food(self, number=10):
+    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100):
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
-                self.food_list.append(Food(self.grid.pop(random.randint(0, len(self.grid) - 1))))
+                self.food_list.append(
+                    Food(self.grid.pop(random.randint(0, len(self.grid) - 1)), energy,
+                         reproduction_threshold, energy_max))
             except ValueError:
                 break
 
-    def spawn_bug(self, number=10):
+    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         for i in range(number):
             try:
-                self.bug_list.append(Bug(self.grid.pop(random.randint(0, len(self.grid) - 1))))
+                self.bug_list.append(
+                    Bug(self.grid.pop(random.randint(0, len(self.grid) - 1)), energy,
+                        reproduction_threshold, energy_max))
             except ValueError:
                 break
