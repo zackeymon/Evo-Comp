@@ -186,6 +186,16 @@ class WorldViewer:
         plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_lifetime'))
         plt.close()
 
+        plt.plot(food_data['time'], food_data['population'], label='Food')
+        plt.plot(bug_data['time'], bug_data['population'], label='Bugs')
+        plt.plot(food_data['time'], (food_data['population'] + bug_data['population']), label='Food + Bugs')
+        plt.xlabel('Time')
+        plt.ylabel('Number')
+        plt.legend()
+        plt.title('World Population')
+        plt.savefig(os.path.join('data', self.world.seed, 'world_population'))
+        plt.close()
+
         plt.plot(food_data['time'], food_data['energy'], label='Food')
         plt.plot(bug_data['time'], bug_data['energy'], label='Bugs')
         plt.plot(food_data['time'], (food_data['energy'] + bug_data['energy']), label='Food + Bugs')
