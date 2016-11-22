@@ -12,6 +12,7 @@ class WorldTests(unittest.TestCase):
         self.assertEqual(len(my_world.food_list), 1)
         self.assertEqual(my_world.grid, [])
 
+
 class OrganismTests(unittest.TestCase):
     def setUp(self):
         self.my_world = World(rows=10, columns=10)
@@ -36,6 +37,7 @@ class OrganismTests(unittest.TestCase):
 
         self.assertEqual(old_food.energy, 30)
         self.assertEqual(new_food.energy, 30)
+
 
 if __name__ == '__main__':
     unittest.main()

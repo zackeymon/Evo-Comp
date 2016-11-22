@@ -12,4 +12,4 @@ We aim to follow a Test-Driven-Development (TDD) method, which ideally means tha
 
 Author:
 Zack (Zixu) Xiang - zixu.xiang@gmail.com
-Anthony Li - 
+Anthony Li - anthonyli358@gmail.com
