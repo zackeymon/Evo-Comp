@@ -29,5 +29,13 @@ class OrganismTests(unittest.TestCase):
         self.assertEqual(len(self.my_world.bug_list), 3)
         self.assertEqual(self.my_world.bug_list[1].energy_max, 150)
 
+    def test_simple_reproduction(self):
+        self.my_world.spawn_food(1, energy=61)
+        old_food = self.my_world.food_list[0]
+        new_food = old_food.reproduce([1, 0])
+
+        self.assertEqual(old_food.energy, 30)
+        self.assertEqual(new_food.energy, 30)
+
 if __name__ == '__main__':
     unittest.main()

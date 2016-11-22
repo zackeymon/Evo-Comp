@@ -29,7 +29,7 @@ class Organism:
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
         # Half of the energy goes to the offspring
-        self.energy /= 2
+        self.energy = int(self.energy / 2)
 
         # Set new parameters
         new_position = self.position + direction
