@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import colorsys
 from collections import OrderedDict
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
@@ -66,19 +67,19 @@ class WorldViewer:
             food_size = food.energy*0.01
             if food_size <= 0.3:
                 ax.add_patch(Rectangle((food.position[0]+(0.5-0.3/2), food.position[1]+(0.5-0.3/2)), 0.3, 0.3,
-                                       facecolor="#228b22"))
+                                       facecolor=colorsys.hsv_to_rgb(food.gene_val, 1, 1)))
             else:
                 ax.add_patch(Rectangle((food.position[0]+(0.5-food_size/2), food.position[1]+(0.5-food_size/2)),
-                                       food_size, food_size, facecolor="#228b22"))
+                                       food_size, food_size, facecolor=colorsys.hsv_to_rgb(food.gene_val, 1, 1)))
                 
         for bug in self.world.bug_list:
             bug_size = bug.energy*0.01
             if bug_size <= 0.3:
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=0.3, height=0.3,
-                                     facecolor="#ff0000"))
+                                     facecolor=colorsys.hsv_to_rgb(bug.gene_val, 1, 1)))
             else:
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=bug_size, height=bug_size,
-                                     facecolor="#ff0000"))
+                                     facecolor=colorsys.hsv_to_rgb(bug.gene_val, 1, 1)))
             
         ax.set_xticks(np.arange(0, self.world.columns+1, 1))
         ax.set_yticks(np.arange(0, self.world.rows+1, 1))
