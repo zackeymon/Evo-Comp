@@ -15,6 +15,7 @@ class Organism:
         :param energy_max: The maximum energy the organism can store
         """
         self.position = np.array(position)
+        self.lifetime = 0
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold #+ randint(-5, 5)  # TODO: Evolution 1 switch
         self.energy_max = energy_max

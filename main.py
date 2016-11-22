@@ -6,10 +6,11 @@ from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
 
-myWorld = World(rows=30, columns=30)
+myWorld = World(rows=50, columns=50)
 random.seed(myWorld.seed)
 
-myWorld.spawn_food(100)
+for i in range(-5, 5):
+    myWorld.spawn_food(10, energy=20+i)
 myWorld.spawn_bug(10)
 
 worldViewer = WorldViewer(myWorld)
