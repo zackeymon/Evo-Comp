@@ -69,7 +69,7 @@ for _ in range(1001):
             # Check if bug can eat food
             for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
-                    if food.gene-10 <= bug.gene <= food.gene+10
+                    if food.gene_val-10 <= bug.gene_val <= food.gene_val+10
                         bug.eat(food)
                         myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
                         break
