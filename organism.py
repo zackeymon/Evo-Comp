@@ -13,6 +13,7 @@ class Organism:
         :param energy: The energy the organism has stored
         :param reproduction_threshold: The energy value at which the organism reproduces
         :param energy_max: The maximum energy the organism can store
+        :param gene_val: The gene parameter of the organism
         """
         self.position = np.array(position)
         self.lifetime = 0
