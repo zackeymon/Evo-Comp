@@ -17,9 +17,11 @@ class Organism:
         self.position = np.array(position)
         self.lifetime = 0
         self.energy = energy
-        self.reproduction_threshold = reproduction_threshold #+ randint(-5, 5)  # TODO: Evolution 1 switch
+        self.reproduction_threshold = reproduction_threshold + randint(-5, 5)  # TODO: Evolution 1 switch
         self.energy_max = energy_max
-        if self.reproduction_threshold > energy_max:
+        if self.reproduction_threshold < 2:
+            self.reproduction_threshold = 2
+        elif self.reproduction_threshold > energy_max:
             self.reproduction_threshold = self.energy_max
 
     def __repr__(self):
