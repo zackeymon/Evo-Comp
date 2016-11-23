@@ -1,3 +1,4 @@
+import _thread
 import random
 from world import World
 from direction import Direction
@@ -5,29 +6,28 @@ from organism_type import OrganismType
 from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
-
+# #######Initialisation####### #
 myWorld = World(rows=50, columns=50)
-random.seed(myWorld.seed)
-
-for i in range(-5, 5):
-    myWorld.spawn_food(10, energy=20+i)
-myWorld.spawn_bug(10)
-
 worldViewer = WorldViewer(myWorld)
 geneViewer = GeneViewer(myWorld)
+random.seed(myWorld.seed)
 
+myWorld.spawn_food(100)
+myWorld.spawn_bug(20)
 
-# seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
-# to keep them but can check them later
+def input_thread(list):
+    input()
+    list.append(None)
 
-for _ in range(1001):
+_list = []
+_thread.start_new_thread(input_thread, (_list,))
+
+# #######Run####### #
+while len(myWorld.bug_list) > 0 and not _list:
 
     worldViewer.generate_data()
-    # geneViewer.generate_gene_data()
+    geneViewer.generate_gene_data()
     worldViewer.view_world()
-
-    if len(myWorld.bug_list) == 0:
-        break
 
     myWorld.available_spaces()
     myWorld.spawn_food(1)
@@ -58,7 +58,8 @@ for _ in range(1001):
         else:
             # Bug won't move if born this turn
             if bug.lifetime > 0:
-                random_direction = Direction.random(myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
+                random_direction = Direction.random(
+                    myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
                     bug.move(random_direction)
 
@@ -83,9 +84,11 @@ for _ in range(1001):
             bug.lifetime += 1
             i += 1
 
+    print("time: %i" % myWorld.time)
     myWorld.time += 1
 
+# #######Plot####### #
 worldViewer.output_data()
 worldViewer.plot_data()
-# geneViewer.output_gene_data()
-# geneViewer.plot_gene_data()
+geneViewer.output_gene_data()
+geneViewer.plot_gene_data()
