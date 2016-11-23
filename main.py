@@ -15,9 +15,12 @@ random.seed(myWorld.seed)
 myWorld.spawn_food(100)
 myWorld.spawn_bug(20)
 
-def input_thread(list):
+
+# Kill switch set up
+def input_thread(list_):
     input()
-    list.append(None)
+    list_.append(None)
+
 
 _list = []
 _thread.start_new_thread(input_thread, (_list,))
