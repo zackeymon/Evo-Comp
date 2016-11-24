@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import scipy.interpolate
 from collections import OrderedDict
 from matplotlib import pyplot as plt
 
@@ -109,27 +110,67 @@ class GeneViewer:
             plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_data_%s.png' % i))
             plt.close()
         
-        #2D plot (contours)
-        for i, day, day2 in enumerate(self.split_list(food_gene_data['reproduction_threshold']), self.split_list(food_gene_data['gene_val'])): 
+        # 2D plot(contours)
+        for i in range(self.world.time):
 
-                trait_dict = {j: {k:0 for k in range(360)} for j in range(101)}
-                for rep_thresh in day:
-                    for gene_val in day2:
-                        trait_dict[int(rep_thresh)][int(gene_val)] += 1
-                
-                x = trait_dict.keys()
-                y = trait_dict[0].keys()
-                X,Y = np.meshgrid(x, y)
-                
-                fig, axs = plt.subplots(1,1)
-                levels = np.linspace(0, 1, 40)
-                
-                cs = axs.contourf(X, Y, trait_dict[i].values(), levels=levels)
-                fig.colorbar(cs, ax=axs, format="%.2f")
-                
-                plt.show()
-                    
-                    
-                    
-                    
-                    
+            rep_thresh = self.split_list(food_gene_data['reproduction_threshold'])[i]
+            gene_val = self.split_list(food_gene_data['gene_val'])[i]
+            z_list = []
+            for value in zip(rep_thresh, gene_val):
+                z_list.append(value)
+
+            data = OrderedDict([(x, z_list.count(x)) for x in z_list])
+            old_z = [x for x in data.values()]
+            total = sum(old_z)
+            z = [x / total for x in old_z]
+
+            trait_dict = OrderedDict.fromkeys(zip(rep_thresh, gene_val))
+            x = [d[0] for d in trait_dict]
+            y = [d[1] for d in trait_dict]
+
+            xi, yi = np.linspace(0, 101, 101), np.linspace(0, 359, 359)
+            xi, yi = np.meshgrid(xi, yi)
+
+            rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
+            zi = rbf(xi, yi)
+
+            plt.imshow(zi, vmin=min(z), vmax=max(z), origin='lower', aspect='auto')
+            plt.scatter(x, y, c=z)
+            plt.colorbar()
+            plt.xlabel('Reproduction Threshold')
+            plt.ylabel('Gene Value')
+            plt.title('time=%s' % i)
+            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_space_%s.png' % i))
+            plt.close()
+
+        for i in range(self.world.time):
+
+            rep_thresh = self.split_list(bug_gene_data['reproduction_threshold'])[i]
+            gene_val = self.split_list(bug_gene_data['gene_val'])[i]
+            z_list = []
+            for value in zip(rep_thresh, gene_val):
+                z_list.append(value)
+
+            data = OrderedDict([(x, z_list.count(x)) for x in z_list])
+            old_z = [x for x in data.values()]
+            total = sum(old_z)
+            z = [x / total for x in old_z]
+
+            trait_dict = OrderedDict.fromkeys(zip(rep_thresh, gene_val))
+            x = [d[0] for d in trait_dict]
+            y = [d[1] for d in trait_dict]
+
+            xi, yi = np.linspace(0, 101, 101), np.linspace(0, 359, 359)
+            xi, yi = np.meshgrid(xi, yi)
+
+            rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
+            zi = rbf(xi, yi)
+
+            plt.imshow(zi, vmin=min(z), vmax=max(z), origin='lower', aspect='auto')
+            plt.scatter(x, y, c=z)
+            plt.colorbar()
+            plt.xlabel('Reproduction Threshold')
+            plt.ylabel('Gene Value')
+            plt.title('time=%s' % i)
+            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_space_%s.png' % i))
+            plt.close()

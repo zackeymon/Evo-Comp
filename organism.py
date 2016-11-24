@@ -20,14 +20,14 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold #+ randint(-5, 5)  # TODO: Evolution 1 switch
         self.energy_max = energy_max
-        self.gene_val = (gene_val + randint(-5, 5)) % 360
+        self.gene_val = (gene_val + randint(-10, 10)) % 360
         if self.reproduction_threshold > energy_max:
             self.reproduction_threshold = self.energy_max
 
     def __repr__(self):
-        return '%s(P:[%d, %d] L:%d E:%d RT:%d Emax:%d)' % (
+        return '%s(P:[%d, %d] L:%d E:%d RT:%d Emax:%d g:%d)' % (
             self.__class__.__name__, self.position[0], self.position[1], self.lifetime, self.energy,
-            self.reproduction_threshold, self.energy_max)
+            self.reproduction_threshold, self.energy_max, self.gene_val)
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
@@ -39,6 +39,7 @@ class Organism:
         new_energy = self.energy
         new_energy_max = self.energy_max
         new_reproduction_threshold = self.reproduction_threshold
+        new_gene_val = self.gene_val
 
         # Create new object
-        return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max)
+        return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_gene_val)

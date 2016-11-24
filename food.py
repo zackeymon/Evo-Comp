@@ -12,7 +12,7 @@ class Food(Organism):
         :param energy: The energy stored in the food
         :param reproduction_threshold: The energy value at which the food reproduces
         :param energy_max: The maximum energy the food can hold
-        :param gene_val: The gene paramter of the food
+        :param gene_val: The gene parameter of the food
         """
         Organism.__init__(self, position, energy, reproduction_threshold, energy_max, gene_val)
 
