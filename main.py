@@ -33,7 +33,7 @@ while len(myWorld.bug_list) > 0 and not _list:
     worldViewer.view_world()
 
     myWorld.available_spaces()
-    myWorld.spawn_food(1)
+    myWorld.spawn_food(1, gene_val=0.0 + random.randint(0, 359))
 
     random.shuffle(myWorld.food_list)
     random.shuffle(myWorld.bug_list)
@@ -73,9 +73,10 @@ while len(myWorld.bug_list) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
-                    bug.eat(food)
-                    myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
-                    break
+                    if food.gene_val-10 <= bug.gene_val <= food.gene_val+10:
+                        bug.eat(food)
+                        myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
+                        break
 
             # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold:
