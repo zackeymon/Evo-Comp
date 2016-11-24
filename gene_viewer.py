@@ -80,8 +80,9 @@ class GeneViewer:
 
             y_pos = np.arange(len(rep_dict.keys()))
             total = sum(rep_dict.values())
-            for key, value in rep_dict.items():
-                rep_dict[key] = value / total
+            if total > 0:
+                for key, value in rep_dict.items():
+                    rep_dict[key] = value / total
 
             plt.bar(y_pos, rep_dict.values(), align='center', color='red')
             plt.xlabel('Reproduction Threshold')
@@ -131,12 +132,15 @@ class GeneViewer:
             xi, yi = np.linspace(0, 101, 101), np.linspace(0, 359, 359)
             xi, yi = np.meshgrid(xi, yi)
 
-            rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
-            zi = rbf(xi, yi)
+            if len(z) > 1:
+                rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
+                zi = rbf(xi, yi)
+                plt.imshow(zi, vmin=min(z), vmax=max(z), origin='lower', aspect='auto')
 
-            plt.imshow(zi, vmin=min(z), vmax=max(z), origin='lower', aspect='auto')
             plt.scatter(x, y, c=z)
             plt.colorbar()
+            plt.xlim(0, 101)
+            plt.ylim(0, 359)
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Gene Value')
             plt.title('time=%s' % i)
@@ -163,12 +167,15 @@ class GeneViewer:
             xi, yi = np.linspace(0, 101, 101), np.linspace(0, 359, 359)
             xi, yi = np.meshgrid(xi, yi)
 
-            rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
-            zi = rbf(xi, yi)
+            if len(z) > 1:
+                rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
+                zi = rbf(xi, yi)
+                plt.imshow(zi, vmin=min(z), vmax=max(z), origin='lower', aspect='auto')
 
-            plt.imshow(zi, vmin=min(z), vmax=max(z), origin='lower', aspect='auto')
             plt.scatter(x, y, c=z)
             plt.colorbar()
+            plt.xlim(0, 101)
+            plt.ylim(0, 359)
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Gene Value')
             plt.title('time=%s' % i)
