@@ -6,7 +6,7 @@ from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
 
-myWorld = World(rows=30, columns=30)
+myWorld = World(rows=50, columns=50)
 random.seed(myWorld.seed)
 
 for i in range(-5, 5):
@@ -20,14 +20,14 @@ geneViewer = GeneViewer(myWorld)
 # seed information irrelevant until we start collecting data properly, can put bad results in here so we don't need
 # to keep them but can check them later
 
-for _ in range(2):
+for _ in range(101):
+
+    if len(myWorld.bug_list) == 0:
+        break
 
     worldViewer.generate_data()
     geneViewer.generate_gene_data()
     worldViewer.view_world()
-
-    if len(myWorld.bug_list) == 0:
-        break
 
     myWorld.available_spaces()
     myWorld.spawn_food(1, gene_val=0.0 + random.randint(0, 359))
