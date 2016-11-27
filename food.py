@@ -1,3 +1,4 @@
+from random import randint
 from organism import Organism
 
 
@@ -14,7 +15,7 @@ class Food(Organism):
         :param energy_max: The maximum energy the food can hold
         :param gene_val: The gene parameter of the food
         """
-        Organism.__init__(self, position, energy, reproduction_threshold, energy_max, gene_val)
+        Organism.__init__(self, position, energy, 30 + randint(-5, 5), energy_max)
 
     def grow(self):
         if self.energy < self.energy_max:
