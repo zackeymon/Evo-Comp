@@ -15,7 +15,7 @@ class Bug(Organism):
         :param energy_max: The maximum energy the bug can store
         :param gene_val: The gene parameter of the bug
         """
-        Organism.__init__(self, position, energy, reproduction_threshold + randint(-5, 5), energy_max)
+        Organism.__init__(self, position, energy, reproduction_threshold + randint(-5, 5), energy_max, gene_val)
 
     def respire(self):
         self.energy -= 1
