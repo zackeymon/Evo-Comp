@@ -10,6 +10,7 @@ class GeneViewer:
     """
     A class to output the data for genes and to plot them in gene space.
     """
+
     def __init__(self, world):
         """
         Gene Viewer Initialisation
@@ -19,7 +20,6 @@ class GeneViewer:
         self.food_gene_average = 0
         self.food_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
         self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
-
 
     @staticmethod
     def split_list(data):
@@ -49,7 +49,12 @@ class GeneViewer:
             if food.gene_val >= 180:
                 gene_av = food.gene_val - 360
             food_gene_val.append(gene_av)
+
         self.food_gene_average = np.average(food_gene_val)
+
+        # Check if the average is NaN (caused by no food)
+        if self.food_gene_average != self.food_gene_average:
+            self.food_gene_average = 0
 
         self.bug_gene_data['reproduction_threshold'].append('time=%r' % self.world.time)
         self.bug_gene_data['gene_val'].append(None)
@@ -59,7 +64,7 @@ class GeneViewer:
 
     def output_gene_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
-        
+
         with open(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data.csv'), 'a') as food_gene_file:
             for reproduction_threshold, gene_val in zip(*self.food_gene_data.values()):
                 food_gene_file.write('%r,' % reproduction_threshold + '%r,' % gene_val + '\n')
@@ -71,9 +76,11 @@ class GeneViewer:
     def plot_gene_data(self):
         """Read the CSV (comma-separated values) output and plot in gene space."""
 
-        food_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data.csv'), delimiter=',',
+        food_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data.csv'),
+                                       delimiter=',',
                                        names=['reproduction_threshold', 'gene_val'])
-        bug_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data.csv'), delimiter=',',
+        bug_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data.csv'),
+                                      delimiter=',',
                                       names=['reproduction_threshold', 'gene_val'])
 
         # 1D Plot (bar chart)
@@ -81,7 +88,6 @@ class GeneViewer:
             rep_dict = {j: 0 for j in range(101)}
 
             for rep_thresh in day:
-
                 # count number of occurences of each reproduction threshold for each time
                 rep_dict[int(rep_thresh)] += 1
 
@@ -102,7 +108,6 @@ class GeneViewer:
             rep_dict = {j: 0 for j in range(101)}
 
             for rep_thresh in day:
-
                 # count number of occurences of each reproduction threshold for each time
                 rep_dict[int(rep_thresh)] += 1
 
