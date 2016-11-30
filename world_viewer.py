@@ -26,6 +26,10 @@ class WorldViewer:
 
         if not os.path.exists(os.path.join('data', world.seed)):
             os.makedirs(os.path.join('data', world.seed, 'world'))
+            os.makedirs(os.path.join('data', world.seed, 'food_gene_data'))
+            os.makedirs(os.path.join('data', world.seed, 'food_gene_space'))
+            os.makedirs(os.path.join('data', world.seed, 'bug_gene_data'))
+            os.makedirs(os.path.join('data', world.seed, 'bug_gene_space'))
 
         if not os.path.isfile(os.path.join('data', 'world_seeds.csv')):
             with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
@@ -110,12 +114,7 @@ class WorldViewer:
             list.append(row)
 
         list = self.split_list(list)
-
-        for thingy in list:
-            for value in thingy:
-                for i, thing in enumerate(value):
-                    if i >= 1:
-                        value[i] = float(thing)
+        del list[-1]
 
         for i, day in enumerate(list):
 
@@ -124,36 +123,36 @@ class WorldViewer:
             for thing in day:
 
                 if thing[0] == "'food'":
-                    food_size = thing[3] * 0.01
+                    food_size = float(thing[3]) * 0.01
                     if food_size <= 0.3:
                         ax.add_patch(
-                            Rectangle((thing[1] + (0.5 - 0.3 / 2), thing[2] + (0.5 - 0.3 / 2)), 0.3, 0.3,
-                                      facecolor=colorsys.hsv_to_rgb(thing[4] / 360, 1, 1)))
+                            Rectangle((float(thing[1]) + (0.5 - 0.3 / 2), float(thing[2]) + (0.5 - 0.3 / 2)), 0.3, 0.3,
+                                      facecolor=colorsys.hsv_to_rgb(float(thing[4]) / 360, 1, 1)))
                     else:
                         ax.add_patch(
-                            Rectangle((thing[1] + (0.5 - food_size / 2), thing[2] + (0.5 - food_size / 2)),
-                                      food_size, food_size, facecolor=colorsys.hsv_to_rgb(thing[4] / 360, 1, 1)))
+                            Rectangle((float(thing[1]) + (0.5 - food_size / 2), float(thing[2]) + (0.5 - food_size / 2)),
+                                      food_size, food_size, facecolor=colorsys.hsv_to_rgb(float(thing[4]) / 360, 1, 1)))
 
                 if thing[0] == "'bug'":
-                    bug_size = thing[3] * 0.01
+                    bug_size = float(thing[3]) * 0.01
                     if bug_size <= 0.4:
-                        ax.add_patch(Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=0.4, height=0.4,
+                        ax.add_patch(Ellipse(xy=(float(thing[1]) + 0.5, float(thing[2]) + 0.5), width=0.4, height=0.4,
                                              facecolor='k'))
-                        ax.add_patch(Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=0.25, height=0.25,
-                                             facecolor=colorsys.hsv_to_rgb(thing[4] / 360, 1, 1)))
+                        ax.add_patch(Ellipse(xy=(float(thing[1]) + 0.5, float(thing[2]) + 0.5), width=0.25, height=0.25,
+                                             facecolor=colorsys.hsv_to_rgb(float(thing[4]) / 360, 1, 1)))
                     else:
                         ax.add_patch(
-                            Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=bug_size, height=bug_size,
+                            Ellipse(xy=(float(thing[1]) + 0.5, float(thing[2]) + 0.5), width=bug_size, height=bug_size,
                                     facecolor='k'))
-                        ax.add_patch(Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=bug_size / 1.5,
-                                             height=bug_size / 1.5, facecolor=colorsys.hsv_to_rgb(thing[4], 1, 1)))
+                        ax.add_patch(Ellipse(xy=(float(thing[1]) + 0.5, float(thing[2]) + 0.5), width=bug_size / 1.5,
+                                             height=bug_size / 1.5, facecolor=colorsys.hsv_to_rgb(float(thing[4]), 1, 1)))
 
             ax.set_xticks(np.arange(0, self.world.columns + 1, 1))
             ax.set_yticks(np.arange(0, self.world.rows + 1, 1))
             plt.title('time=%s' % i, fontsize=(2 * self.world.columns))
             #       ax.grid(b=True, which='major', color='black', linestyle='-')
 
-            plt.savefig(os.path.join('data', self.world.seed, '%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'world', '%s.png' % i))
             plt.close()
 
 
@@ -255,7 +254,7 @@ class WorldViewer:
         plt.ylabel('Number of Food')
         plt.legend()
         plt.title('Food Populations')
-        plt.savefig(os.path.join('data', self.world.seed, 'plot_food_population'))
+        plt.savefig(os.path.join('data', self.world.seed, 'food_population.png'))
         plt.close()
 
         plt.plot(food_data['time'], food_data['average_alive_lifetime'], label='Average Alive Lifetime')
@@ -264,7 +263,7 @@ class WorldViewer:
         plt.ylabel('Lifetime')
         plt.legend()
         plt.title('Food Lifetimes')
-        plt.savefig(os.path.join('data', self.world.seed, 'plot_food_lifetime'))
+        plt.savefig(os.path.join('data', self.world.seed, 'food_lifetime.png'))
         plt.close()
 
         bug_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_data.csv'), delimiter=',',
@@ -277,7 +276,7 @@ class WorldViewer:
         plt.ylabel('Number of Bugs')
         plt.legend()
         plt.title('Bug Populations')
-        plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_population'))
+        plt.savefig(os.path.join('data', self.world.seed, 'bug_population.png'))
         plt.close()
 
         plt.plot(bug_data['time'], bug_data['average_alive_lifetime'], label='Average Alive Lifetime')
@@ -286,7 +285,7 @@ class WorldViewer:
         plt.ylabel('Lifetime')
         plt.legend()
         plt.title('Bug Lifetimes')
-        plt.savefig(os.path.join('data', self.world.seed, 'plot_bug_lifetime'))
+        plt.savefig(os.path.join('data', self.world.seed, 'bug_lifetime.png'))
         plt.close()
 
         plt.plot(food_data['time'], food_data['population'], label='Food')
@@ -296,7 +295,7 @@ class WorldViewer:
         plt.ylabel('Number')
         plt.legend()
         plt.title('World Population')
-        plt.savefig(os.path.join('data', self.world.seed, 'world_population'))
+        plt.savefig(os.path.join('data', self.world.seed, 'world_population.png'))
         plt.close()
 
         plt.plot(food_data['time'], food_data['energy'], label='Food')
@@ -306,5 +305,5 @@ class WorldViewer:
         plt.ylabel('Energy')
         plt.legend()
         plt.title('World Energy')
-        plt.savefig(os.path.join('data', self.world.seed, 'world_energy'))
+        plt.savefig(os.path.join('data', self.world.seed, 'world_energy.png'))
         plt.close()

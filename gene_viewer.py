@@ -19,13 +19,6 @@ class GeneViewer:
         self.food_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
         self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
 
-        if not os.path.exists(os.path.join('data', self.world.seed)):
-            os.makedirs(os.path.join('data', self.world.seed))
-            os.makedirs(os.path.join('data', world.seed, 'food_gene_data'))
-            os.makedirs(os.path.join('data', world.seed, 'food_gene_space'))
-            os.makedirs(os.path.join('data', world.seed, 'bug_gene_data'))
-            os.makedirs(os.path.join('data', world.seed, 'bug_gene_space'))
-
 
     @staticmethod
     def split_list(data):
@@ -101,7 +94,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Population')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_data', '%s.png' % i))
             plt.close()
 
         for i, day in enumerate(self.split_list(bug_gene_data['reproduction_threshold'])):
@@ -121,7 +114,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Population')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_data', '%s.png' % i))
             plt.close()
         
         # 2D plot(contours)
@@ -157,7 +150,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Gene Value')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_space', 'food_gene_space_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_space', '%s.png' % i))
             plt.close()
 
         for i in range(self.world.time):
@@ -192,5 +185,5 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Gene Value')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_space', 'bug_gene_space_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_space', '%s.png' % i))
             plt.close()

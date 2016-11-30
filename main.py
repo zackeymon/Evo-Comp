@@ -77,7 +77,7 @@ while len(myWorld.bug_list) > 0 and not _list:
                     if food.gene_val-10 <= bug.gene_val <= food.gene_val+10:
                         bug.eat(food)
                         myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
-                        break
+                    break
 
             # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold:
