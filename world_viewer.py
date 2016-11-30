@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import csv
 import colorsys
 from collections import OrderedDict
 from matplotlib import pyplot as plt
@@ -17,14 +18,14 @@ class WorldViewer:
         :param world: The world being viewed
         """
         self.world = world
-        self.data = OrderedDict([('value', []), ('position', []), ('energy', [])])
+        self.data = OrderedDict([('value', []), ('x', []), ('y', []), ('energy', []), ('gene_val', [])])
         self.food_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
                                       ('average_alive_lifetime', []), ('average_lifespan', [])])
         self.bug_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
 
         if not os.path.exists(os.path.join('data', world.seed)):
-            os.makedirs(os.path.join('data', world.seed))
+            os.makedirs(os.path.join('data', world.seed, 'world'))
 
         if not os.path.isfile(os.path.join('data', 'world_seeds.csv')):
             with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
@@ -59,31 +60,101 @@ class WorldViewer:
             energy += thing.energy
 
         return energy
-    #
-    # def view_world_data(self):
-    #     self.data['value'].append('world')
-    #     self.data['position'].append(self.world.columns)
-    #     self.data['energy'].append(self.world.rows)
-    #
-    #     for food in self.world.food_list:
-    #         self.data['value'].append('food')
-    #         self.data['position'].append(food.position)
-    #         self.data['energy'].append(food.energy)
-    #
-    #     for bug in self.world.bug_list:
-    #         self.data['value'].append('bug')
-    #         self.data['position'].append(bug.position)
-    #         self.data['energy'].append(bug.energy)
-    #
-    #     self.data['value'].append(' ')
-    #     self.data['position'].append(' ')
-    #     self.data['energy'].append(' ')
-    #
-    #
-    # def plot_world_data(self):
-    #     split at None by using file.readlines()
-    #     zip each part of the split
-    #     read each line in the split list
+
+    def view_world_data(self):
+
+        for food in self.world.food_list:
+            self.data['value'].append('food')
+            self.data['x'].append(food.position[0])
+            self.data['y'].append(food.position[1])
+            self.data['energy'].append(food.energy)
+            self.data['gene_val'].append(food.gene_val)
+
+        for bug in self.world.bug_list:
+            self.data['value'].append('bug')
+            self.data['x'].append(bug.position[0])
+            self.data['y'].append(bug.position[1])
+            self.data['energy'].append(bug.energy)
+            self.data['gene_val'].append(bug.gene_val)
+
+        self.data['value'].append('none')
+        self.data['x'].append('none')
+        self.data['y'].append('none')
+        self.data['energy'].append('none')
+        self.data['gene_val'].append('none')
+
+    def output_world_data(self):
+
+        with open(os.path.join('data', self.world.seed, 'world', 'world_data.csv'), 'a') as world_file:
+            for value, x, y, energy, gene_val in zip(*self.data.values()):
+                world_file.write('%r,' % value + '%r,' % x + '%r,' % y + '%r,' % energy + '%r,' % gene_val + '\n')
+
+    @staticmethod
+    def split_list(data):
+        split_data = [[]]
+        for item in data:
+            if "'none'" in item:
+                split_data.append([])
+            else:
+                split_data[-1].append(item)
+
+        data = split_data
+
+        return data
+
+    def plot_world_data(self):
+        csv_file = csv.reader(open(os.path.join('data', self.world.seed, 'world', 'world_data.csv')), delimiter=",")
+        list = []
+        for row in csv_file:
+            row.remove(row[-1])
+            list.append(row)
+
+        list = self.split_list(list)
+
+        for thingy in list:
+            for value in thingy:
+                for i, thing in enumerate(value):
+                    if i >= 1:
+                        value[i] = float(thing)
+
+        for i, day in enumerate(list):
+
+            ax = plt.figure(figsize=(self.world.columns, self.world.rows)).add_subplot(1, 1, 1)
+
+            for thing in day:
+
+                if thing[0] == "'food'":
+                    food_size = thing[3] * 0.01
+                    if food_size <= 0.3:
+                        ax.add_patch(
+                            Rectangle((thing[1] + (0.5 - 0.3 / 2), thing[2] + (0.5 - 0.3 / 2)), 0.3, 0.3,
+                                      facecolor=colorsys.hsv_to_rgb(thing[4] / 360, 1, 1)))
+                    else:
+                        ax.add_patch(
+                            Rectangle((thing[1] + (0.5 - food_size / 2), thing[2] + (0.5 - food_size / 2)),
+                                      food_size, food_size, facecolor=colorsys.hsv_to_rgb(thing[4] / 360, 1, 1)))
+
+                if thing[0] == "'bug'":
+                    bug_size = thing[3] * 0.01
+                    if bug_size <= 0.4:
+                        ax.add_patch(Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=0.4, height=0.4,
+                                             facecolor='k'))
+                        ax.add_patch(Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=0.25, height=0.25,
+                                             facecolor=colorsys.hsv_to_rgb(thing[4] / 360, 1, 1)))
+                    else:
+                        ax.add_patch(
+                            Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=bug_size, height=bug_size,
+                                    facecolor='k'))
+                        ax.add_patch(Ellipse(xy=(thing[1] + 0.5, thing[2] + 0.5), width=bug_size / 1.5,
+                                             height=bug_size / 1.5, facecolor=colorsys.hsv_to_rgb(thing[4], 1, 1)))
+
+            ax.set_xticks(np.arange(0, self.world.columns + 1, 1))
+            ax.set_yticks(np.arange(0, self.world.rows + 1, 1))
+            plt.title('time=%s' % i, fontsize=(2 * self.world.columns))
+            #       ax.grid(b=True, which='major', color='black', linestyle='-')
+
+            plt.savefig(os.path.join('data', self.world.seed, '%s.png' % i))
+            plt.close()
 
 
     def view_world(self):

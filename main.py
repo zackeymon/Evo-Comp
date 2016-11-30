@@ -28,6 +28,7 @@ _thread.start_new_thread(input_thread, (_list,))
 # #######Run####### #
 while len(myWorld.bug_list) > 0 and not _list:
 
+    worldViewer.view_world_data()
     worldViewer.generate_data()
     geneViewer.generate_gene_data()
     worldViewer.view_world()
@@ -96,3 +97,5 @@ worldViewer.output_data()
 worldViewer.plot_data()
 geneViewer.output_gene_data()
 geneViewer.plot_gene_data()
+worldViewer.output_world_data()
+worldViewer.plot_world_data()

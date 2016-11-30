@@ -21,6 +21,11 @@ class GeneViewer:
 
         if not os.path.exists(os.path.join('data', self.world.seed)):
             os.makedirs(os.path.join('data', self.world.seed))
+            os.makedirs(os.path.join('data', world.seed, 'food_gene_data'))
+            os.makedirs(os.path.join('data', world.seed, 'food_gene_space'))
+            os.makedirs(os.path.join('data', world.seed, 'bug_gene_data'))
+            os.makedirs(os.path.join('data', world.seed, 'bug_gene_space'))
+
 
     @staticmethod
     def split_list(data):
@@ -61,20 +66,20 @@ class GeneViewer:
     def output_gene_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
         
-        with open(os.path.join('data', self.world.seed, 'food_gene_data.csv'), 'a') as food_gene_file:
+        with open(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data.csv'), 'a') as food_gene_file:
             for reproduction_threshold, gene_val in zip(*self.food_gene_data.values()):
                 food_gene_file.write('%r,' % reproduction_threshold + '%r,' % gene_val + '\n')
 
-        with open(os.path.join('data', self.world.seed, 'bug_gene_data.csv'), 'a') as bug_gene_file:
+        with open(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data.csv'), 'a') as bug_gene_file:
             for reproduction_threshold, gene_val in zip(*self.bug_gene_data.values()):
                 bug_gene_file.write('%r,' % reproduction_threshold + '%r,' % gene_val + '\n')
 
     def plot_gene_data(self):
         """Read the CSV (comma-separated values) output and plot in gene space."""
 
-        food_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_gene_data.csv'), delimiter=',',
+        food_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data.csv'), delimiter=',',
                                        names=['reproduction_threshold', 'gene_val'])
-        bug_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_gene_data.csv'), delimiter=',',
+        bug_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data.csv'), delimiter=',',
                                       names=['reproduction_threshold', 'gene_val'])
 
         # 1D Plot (bar chart)
@@ -96,7 +101,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Population')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_data_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data_%s.png' % i))
             plt.close()
 
         for i, day in enumerate(self.split_list(bug_gene_data['reproduction_threshold'])):
@@ -116,7 +121,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Population')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_data_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data_%s.png' % i))
             plt.close()
         
         # 2D plot(contours)
@@ -152,7 +157,7 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Gene Value')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_space_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'food_gene_space', 'food_gene_space_%s.png' % i))
             plt.close()
 
         for i in range(self.world.time):
@@ -187,5 +192,5 @@ class GeneViewer:
             plt.xlabel('Reproduction Threshold')
             plt.ylabel('Gene Value')
             plt.title('time=%s' % i)
-            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_space_%s.png' % i))
+            plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_space', 'bug_gene_space_%s.png' % i))
             plt.close()
