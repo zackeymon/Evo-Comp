@@ -12,14 +12,13 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, time=0, rows=10, columns=10, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+    def __init__(self, rows, columns, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
         """
         World Initialisation
-        :param time: Time at which the world begins to exist
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
         """
-        self.time = time
+        self.time = 0
         self.columns = columns
         self.rows = rows
         self.seed = seed
