@@ -20,11 +20,9 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold # TODO: Evolution 1 switch
         self.energy_max = energy_max
-        self.gene_val = gene_val
+        self.gene_val = (gene_val + randint(-10, 10)) % 360
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2
-        elif self.reproduction_threshold > energy_max:
-            self.gene_val = (gene_val + randint(-10, 10)) % 360
         if self.reproduction_threshold > energy_max:
             self.reproduction_threshold = self.energy_max
 

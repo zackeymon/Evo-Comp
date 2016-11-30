@@ -17,6 +17,7 @@ class WorldViewer:
         :param world: The world being viewed
         """
         self.world = world
+        self.data = OrderedDict([('value', []), ('position', []), ('energy', [])])
         self.food_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
                                       ('average_alive_lifetime', []), ('average_lifespan', [])])
         self.bug_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
@@ -58,6 +59,32 @@ class WorldViewer:
             energy += thing.energy
 
         return energy
+    #
+    # def view_world_data(self):
+    #     self.data['value'].append('world')
+    #     self.data['position'].append(self.world.columns)
+    #     self.data['energy'].append(self.world.rows)
+    #
+    #     for food in self.world.food_list:
+    #         self.data['value'].append('food')
+    #         self.data['position'].append(food.position)
+    #         self.data['energy'].append(food.energy)
+    #
+    #     for bug in self.world.bug_list:
+    #         self.data['value'].append('bug')
+    #         self.data['position'].append(bug.position)
+    #         self.data['energy'].append(bug.energy)
+    #
+    #     self.data['value'].append(' ')
+    #     self.data['position'].append(' ')
+    #     self.data['energy'].append(' ')
+    #
+    #
+    # def plot_world_data(self):
+    #     split at None by using file.readlines()
+    #     zip each part of the split
+    #     read each line in the split list
+
 
     def view_world(self):
         """"Draw the world: rectangles=food, circles=bugs"""
@@ -78,12 +105,12 @@ class WorldViewer:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=0.4, height=0.4,
                                      facecolor='k'))
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=0.25, height=0.25,
-                                     facecolor=colorsys.hsv_to_rgb(bug.gene_val/360, 0.5, 1)))
+                                     facecolor=colorsys.hsv_to_rgb(bug.gene_val/360, 1, 1)))
             else:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size, height=bug_size,
                                      facecolor='k'))
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=bug_size/1.5,
-                                     height=bug_size/1.5, facecolor=colorsys.hsv_to_rgb(bug.gene_val, 0.5, 1)))
+                                     height=bug_size/1.5, facecolor=colorsys.hsv_to_rgb(bug.gene_val, 1, 1)))
 
         ax.set_xticks(np.arange(0, self.world.columns+1, 1))
         ax.set_yticks(np.arange(0, self.world.rows+1, 1))

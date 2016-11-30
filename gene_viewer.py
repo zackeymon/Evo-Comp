@@ -15,6 +15,7 @@ class GeneViewer:
         :param world: The world being viewed
         """
         self.world = world
+        self.food_gene_average = 0
         self.food_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
         self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
 
@@ -37,13 +38,20 @@ class GeneViewer:
 
     def generate_gene_data(self):
         """Add data for genes for the current world iteration to a list."""
-        
+
+        food_gene_val = []
         self.food_gene_data['reproduction_threshold'].append('time=%r' % self.world.time)
         self.food_gene_data['gene_val'].append(None)
         for food in self.world.food_list:
             self.food_gene_data['reproduction_threshold'].append(food.reproduction_threshold)
             self.food_gene_data['gene_val'].append(food.gene_val)
-            
+            gene_av = food.gene_val
+
+            if food.gene_val >= 180:
+                gene_av = food.gene_val - 360
+            food_gene_val.append(gene_av)
+        self.food_gene_average = np.average(food_gene_val)
+
         self.bug_gene_data['reproduction_threshold'].append('time=%r' % self.world.time)
         self.bug_gene_data['gene_val'].append(None)
         for bug in self.world.bug_list:

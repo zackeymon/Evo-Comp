@@ -7,7 +7,7 @@ from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
 # #######Initialisation####### #
-myWorld = World(rows=50, columns=50)
+myWorld = World(rows=30, columns=30)
 worldViewer = WorldViewer(myWorld)
 geneViewer = GeneViewer(myWorld)
 random.seed(myWorld.seed)
@@ -33,7 +33,7 @@ while len(myWorld.bug_list) > 0 and not _list:
     worldViewer.view_world()
 
     myWorld.available_spaces()
-    myWorld.spawn_food(1, gene_val=0.0 + random.randint(0, 359))
+    myWorld.spawn_food(1, gene_val=0.0 + geneViewer.food_gene_average)
 
     random.shuffle(myWorld.food_list)
     random.shuffle(myWorld.bug_list)
