@@ -1,5 +1,6 @@
 import thread
 import random
+import evolution_switches as es
 from world import World
 from direction import Direction
 from organism_type import OrganismType
@@ -98,4 +99,4 @@ worldViewer.plot_data()
 geneViewer.output_gene_data()
 geneViewer.plot_gene_data()
 worldViewer.output_world_data()
-worldViewer.plot_world_data()
+# worldViewer.plot_world_data()

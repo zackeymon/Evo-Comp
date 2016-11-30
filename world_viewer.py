@@ -2,6 +2,7 @@ import numpy as np
 import os
 import csv
 import colorsys
+import evolution_switches as es
 from collections import OrderedDict
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
@@ -161,26 +162,36 @@ class WorldViewer:
         ax = plt.figure(figsize=(self.world.columns, self.world.rows)).add_subplot(1, 1, 1)
 
         for food in self.world.food_list:
+            if es.gene_value:
+                color = colorsys.hsv_to_rgb(food.gene_val/360, 1, 1)
+            else:
+                color = 'g'
+
             food_size = food.energy*0.01
             if food_size <= 0.3:
                 ax.add_patch(Rectangle((food.position[0]+(0.5-0.3/2), food.position[1]+(0.5-0.3/2)), 0.3, 0.3,
-                                       facecolor=colorsys.hsv_to_rgb(food.gene_val/360, 1, 1)))
+                                       facecolor=color))
             else:
                 ax.add_patch(Rectangle((food.position[0]+(0.5-food_size/2), food.position[1]+(0.5-food_size/2)),
-                                       food_size, food_size, facecolor=colorsys.hsv_to_rgb(food.gene_val/360, 1, 1)))
+                                       food_size, food_size, facecolor=color))
                 
         for bug in self.world.bug_list:
             bug_size = bug.energy*0.01
+            if es.gene_value:
+                color = 'r'
+            else:
+                color = colorsys.hsv_to_rgb(bug.gene_val/360, 1, 1)
+
             if bug_size <= 0.4:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=0.4, height=0.4,
                                      facecolor='k'))
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=0.25, height=0.25,
-                                     facecolor=colorsys.hsv_to_rgb(bug.gene_val/360, 1, 1)))
+                                     facecolor=color))
             else:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size, height=bug_size,
                                      facecolor='k'))
                 ax.add_patch(Ellipse(xy=(bug.position[0]+0.5, bug.position[1]+0.5), width=bug_size/1.5,
-                                     height=bug_size/1.5, facecolor=colorsys.hsv_to_rgb(bug.gene_val, 1, 1)))
+                                     height=bug_size/1.5, facecolor=color))
 
         ax.set_xticks(np.arange(0, self.world.columns+1, 1))
         ax.set_yticks(np.arange(0, self.world.rows+1, 1))
