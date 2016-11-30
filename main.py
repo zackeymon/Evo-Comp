@@ -1,4 +1,4 @@
-import _thread
+import thread
 import random
 from world import World
 from direction import Direction
@@ -16,14 +16,14 @@ myWorld.spawn_food(100)
 myWorld.spawn_bug(20)
 
 
-# Kill switch set up
+# Kill switch
 def input_thread(list_):
-    input()
+    raw_input()
     list_.append(None)
 
 
 _list = []
-_thread.start_new_thread(input_thread, (_list,))
+thread.start_new_thread(input_thread, (_list,))
 
 # #######Run####### #
 while len(myWorld.bug_list) > 0 and not _list:
@@ -74,10 +74,10 @@ while len(myWorld.bug_list) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
-                    if food.gene_val-10 <= bug.gene_val <= food.gene_val+10:
+                    if bug.gene_val-10 < food.gene_val < bug.gene_val+10:
                         bug.eat(food)
                         myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
-                        break
+                    break
 
             # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold:
