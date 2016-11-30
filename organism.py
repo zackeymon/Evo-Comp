@@ -23,9 +23,9 @@ class Organism:
         self.energy_max = energy_max
 
         if es.gene_value:
-            self.gene_val = gene_val
-        else:
             self.gene_val = (gene_val + randint(-10, 10)) % 360
+        else:
+            self.gene_val = gene_val
 
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2
