@@ -1,3 +1,4 @@
+import evolution_switches as es
 from random import randint
 from organism import Organism
 
@@ -15,7 +16,11 @@ class Bug(Organism):
         :param energy_max: The maximum energy the bug can store
         :param gene_val: The gene parameter of the bug
         """
-        Organism.__init__(self, position, energy, reproduction_threshold + randint(-5, 5), energy_max, gene_val)
+        if es.bug_reproduction_threshold:
+            new_rep_thresh = reproduction_threshold + randint(-5, 5)
+        else:
+            new_rep_thresh = reproduction_threshold
+        Organism.__init__(self, position, energy, new_rep_thresh, energy_max, gene_val)
 
     def respire(self):
         self.energy -= 1
