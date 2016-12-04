@@ -72,7 +72,10 @@ class World:
     def available_spaces(self):
         self.spawnable_squares = list(self.fertile_squares)
         for food in self.food_list:
-            self.spawnable_squares.remove(food.position.tolist())
+            try:
+                self.spawnable_squares.remove(food.position.tolist())
+            except ValueError:
+                pass
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, gene_val=0.0):
         """Spawn food and check spawn square is available."""
