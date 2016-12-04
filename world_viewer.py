@@ -12,6 +12,7 @@ class WorldViewer:
     """
     A class to view the world visually as it develops.
     """
+
     def __init__(self, world):
         """
         World Viewer Initialisation
@@ -19,19 +20,23 @@ class WorldViewer:
         """
         self.world = world
         self.data = OrderedDict([('value', []), ('x', []), ('y', []), ('energy', []), ('taste', [])])
-        self.food_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
-                                      ('average_alive_lifetime', []), ('average_lifespan', [])])
-        self.bug_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
-                                     ('average_alive_lifetime', []), ('average_lifespan', [])])
 
+        # Initiate two dicts to store food and bug data
+        self.food_data, self.bug_data = (OrderedDict
+                                         ([('time', []),
+                                           ('energy', []),
+                                           ('population', []),
+                                           ('deaths', []),
+                                           ('average_alive_lifetime', []),
+                                           ('average_lifespan', [])])
+                                         for _ in range(2))
+
+        # Create directories if they don't exist
         if not os.path.exists(os.path.join('data', world.seed)):
-            os.makedirs(os.path.join('data', world.seed, 'world'))
-            os.makedirs(os.path.join('data', world.seed, 'data_files'))
-            os.makedirs(os.path.join('data', world.seed, 'food_gene_data'))
-            os.makedirs(os.path.join('data', world.seed, 'food_gene_space'))
-            os.makedirs(os.path.join('data', world.seed, 'bug_gene_data'))
-            os.makedirs(os.path.join('data', world.seed, 'bug_gene_space'))
+            for i in ['world', 'data_files', 'food_gene_data', 'food_gene_space', 'bug_gene_data', 'bug_gene_space']:
+                os.makedirs(os.path.join('data', world.seed, i))
 
+        # Create the world_seeds file and write the headings if it doesn't exist
         if not os.path.isfile(os.path.join('data', 'world_seeds.csv')):
             with open(os.path.join('data', 'world_seeds.csv'), 'a') as seed:
                 seed.write('time_stamp,' + 'columns,' + 'rows,' + 'food,' + 'bugs,' + 'results,' + '\n')
@@ -148,7 +153,8 @@ class WorldViewer:
 
     def plot_view_world_data(self):
         """Read the CSV (comma-separated values) output and plot the world."""
-        csv_file = csv.reader(open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv')), delimiter=",")
+        csv_file = csv.reader(open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv')),
+                              delimiter=",")
         organism_list = []
         for row in csv_file:
             row.remove(row[-1])  # remove the '\n' for CSV files
