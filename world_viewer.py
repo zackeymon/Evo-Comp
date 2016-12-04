@@ -216,12 +216,13 @@ class WorldViewer:
         self.food_data['energy'].append(self.sum_list_energy(self.world.food_list))
         self.food_data['population'].append(len(self.world.food_list))
         self.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list]))
-        if len(self.world.food_list) <= 0:
+
+        if len(self.world.food_list) == 0:
             self.food_data['average_alive_lifetime'].append(0)
         else:
             self.food_data['average_alive_lifetime'].append(
                 self.sum_list_lifetime(self.world.food_list, living=True) / len(self.world.food_list))
-        if sum([len(i) for i in self.world.dead_food_list]) <= 0:
+        if sum([len(i) for i in self.world.dead_food_list]) == 0:
             self.food_data['average_lifespan'].append(0)
         else:
             self.food_data['average_lifespan'].append(
@@ -231,12 +232,12 @@ class WorldViewer:
         self.bug_data['energy'].append(self.sum_list_energy(self.world.bug_list))
         self.bug_data['population'].append(len(self.world.bug_list))
         self.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list]))
-        if len(self.world.bug_list) <= 0:
+        if len(self.world.bug_list) == 0:
             self.bug_data['average_alive_lifetime'].append(0)
         else:
             self.bug_data['average_alive_lifetime'].append(
                 self.sum_list_lifetime(self.world.bug_list, living=True) / len(self.world.bug_list))
-        if sum([len(i) for i in self.world.dead_bug_list]) <= 0:
+        if sum([len(i) for i in self.world.dead_bug_list]) == 0:
             self.bug_data['average_lifespan'].append(0)
         else:
             self.bug_data['average_lifespan'].append(
