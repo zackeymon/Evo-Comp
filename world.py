@@ -38,11 +38,6 @@ class World:
 
         self.spawnable_squares = list(self.fertile_squares)
 
-    def random_position(self):
-        x = random.randint(0, self.columns - 1)
-        y = random.randint(0, self.rows - 1)
-        return [x, y]
-
     def get_disallowed_directions(self, current_position, organism_type):
         """Each organism cannot collide with itself (no overlap)."""
         disallowed_directions = []
@@ -75,7 +70,7 @@ class World:
         return False
 
     def available_spaces(self):
-        self.spawnable_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+        self.spawnable_squares = list(self.fertile_squares)
         for food in self.food_list:
             self.spawnable_squares.remove(food.position.tolist())
 
