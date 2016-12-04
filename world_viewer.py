@@ -46,21 +46,15 @@ class WorldViewer:
                        % len(world.food_list) + '%r,' % len(world.bug_list) + '\n')
 
     @staticmethod
-    def sum_list_lifetime(object_list, living=False):
-        lifetime = 0
+    def average_lifetime(organism_list):
+        """organism_list[turn][organism_index]"""
+        total_number = sum([len(i) for i in organism_list])
+        if total_number == 0:
+            return 0
 
-        if living is False:
-            for i in object_list:
-                for thing in i:
-                    lifetime += thing.lifetime
+        total_lifetime = sum([sum([i.lifetime for i in turn]) for turn in organism_list])
 
-            return lifetime
-
-        else:
-            for thing in object_list:
-                lifetime += thing.lifetime
-
-            return lifetime
+        return total_lifetime/total_number
 
     @staticmethod
     def sum_list_energy(object_list):
@@ -208,40 +202,19 @@ class WorldViewer:
 
     def generate_world_data(self):
         """Add data for the current world iteration to a list."""
-        if self.world.time > 10:
-            del self.world.dead_food_list[0]
-            del self.world.dead_bug_list[0]
-
         self.food_data['time'].append(self.world.time)
         self.food_data['energy'].append(self.sum_list_energy(self.world.food_list))
         self.food_data['population'].append(len(self.world.food_list))
-        self.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list]))
-
-        if len(self.world.food_list) == 0:
-            self.food_data['average_alive_lifetime'].append(0)
-        else:
-            self.food_data['average_alive_lifetime'].append(
-                self.sum_list_lifetime(self.world.food_list, living=True) / len(self.world.food_list))
-        if sum([len(i) for i in self.world.dead_food_list]) == 0:
-            self.food_data['average_lifespan'].append(0)
-        else:
-            self.food_data['average_lifespan'].append(
-                self.sum_list_lifetime(self.world.dead_food_list) / sum([len(i) for i in self.world.dead_food_list]))
+        self.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list[-10:]]))
+        self.food_data['average_alive_lifetime'].append(self.average_lifetime([self.world.food_list]))
+        self.food_data['average_lifespan'].append(self.average_lifetime(self.world.dead_food_list[-10:]))
 
         self.bug_data['time'].append(self.world.time)
         self.bug_data['energy'].append(self.sum_list_energy(self.world.bug_list))
         self.bug_data['population'].append(len(self.world.bug_list))
-        self.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list]))
-        if len(self.world.bug_list) == 0:
-            self.bug_data['average_alive_lifetime'].append(0)
-        else:
-            self.bug_data['average_alive_lifetime'].append(
-                self.sum_list_lifetime(self.world.bug_list, living=True) / len(self.world.bug_list))
-        if sum([len(i) for i in self.world.dead_bug_list]) == 0:
-            self.bug_data['average_lifespan'].append(0)
-        else:
-            self.bug_data['average_lifespan'].append(
-                self.sum_list_lifetime(self.world.dead_bug_list) / sum([len(i) for i in self.world.dead_bug_list]))
+        self.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list[-10:]]))
+        self.bug_data['average_alive_lifetime'].append(self.average_lifetime([self.world.bug_list]))
+        self.bug_data['average_lifespan'].append(self.average_lifetime(self.world.dead_bug_list[-10:]))
 
     def output_world_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
