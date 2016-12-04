@@ -8,13 +8,14 @@ from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
 # #######Initialisation####### #
-my_world = World(rows=30, columns=30)
+my_world = World(rows=80, columns=80, fertile_lands=[[[20, 20], [29, 29]], [[50, 20], [59, 29]],
+                                                     [[20, 50], [29, 59]], [[50, 50], [59, 59]]])
 world_viewer = WorldViewer(my_world)
 gene_viewer = GeneViewer(my_world)
 random.seed(my_world.seed)
 
-my_world.spawn_food(100)
-my_world.spawn_bug(20)
+my_world.spawn_food(200)
+my_world.spawn_bug(30)
 
 
 # Kill switch
@@ -75,7 +76,7 @@ while len(my_world.bug_list) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(my_world.food_list):
                 if (bug.position == food.position).all():
-                    if bug.gene_val-10 < food.gene_val < bug.gene_val+10:
+                    if bug.gene_val - 10 < food.gene_val < bug.gene_val + 10:
                         bug.eat(food)
                         my_world.dead_food_list[-1].append(my_world.food_list.pop(j))
                     break
