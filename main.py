@@ -13,7 +13,7 @@ geneViewer = GeneViewer(myWorld)
 random.seed(myWorld.seed)
 
 myWorld.spawn_food(100)
-myWorld.spawn_bug(20)
+myWorld.spawn_bug(10)
 
 
 # Kill switch set up
@@ -28,17 +28,23 @@ _thread.start_new_thread(input_thread, (_list,))
 # #######Run####### #
 while len(myWorld.bug_list) > 0 and not _list:
 
-    worldViewer.view_world_data()
-    worldViewer.generate_data()
-    geneViewer.generate_gene_data()
+    # generate data
     worldViewer.view_world()
+    worldViewer.generate_view_world_data()
+    worldViewer.generate_world_data()
+    geneViewer.generate_gene_data()
 
+    # spawn food
     myWorld.available_spaces()
-    myWorld.spawn_food(1, gene_val=0.0 + geneViewer.food_gene_average)
+    if len(myWorld.food_list) == 0:
+        myWorld.spawn_food(1)
+    else:
+        myWorld.spawn_food(1, taste=0.0 + geneViewer.food_taste_average)
 
     random.shuffle(myWorld.food_list)
     random.shuffle(myWorld.bug_list)
 
+    # food life cycle
     for food in myWorld.food_list:
         if food.lifetime > 0:
             food.grow()
@@ -50,6 +56,7 @@ while len(myWorld.bug_list) > 0 and not _list:
                     myWorld.food_list.append(food.reproduce(random_direction))
         food.lifetime += 1
 
+    # bug life cycle
     i = 0
     myWorld.dead_food_list.append([])
     myWorld.dead_bug_list.append([])
@@ -74,7 +81,7 @@ while len(myWorld.bug_list) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(myWorld.food_list):
                 if (bug.position == food.position).all():
-                    if food.gene_val-10 <= bug.gene_val <= food.gene_val+10:
+                    if bug.taste-10 <= food.taste <= bug.taste+10:
                         bug.eat(food)
                         myWorld.dead_food_list[-1].append(myWorld.food_list.pop(j))
                     break
@@ -93,9 +100,9 @@ while len(myWorld.bug_list) > 0 and not _list:
     myWorld.time += 1
 
 # #######Plot####### #
-worldViewer.output_data()
-worldViewer.plot_data()
-geneViewer.output_gene_data()
-geneViewer.plot_gene_data()
+worldViewer.output_view_world_data()
+worldViewer.plot_view_world_data()
 worldViewer.output_world_data()
 worldViewer.plot_world_data()
+geneViewer.output_gene_data()
+geneViewer.plot_gene_data()

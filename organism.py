@@ -7,14 +7,14 @@ class Organism:
     """
     The parent class for all organisms living in the world.
     """
-    def __init__(self, position, energy, reproduction_threshold, energy_max, gene_val):
+    def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
         Organism Initialisation
         :param position: The current position of the organism in the world
         :param energy: The energy the organism has stored
         :param reproduction_threshold: The energy value at which the organism reproduces
         :param energy_max: The maximum energy the organism can store
-        :param gene_val: The gene parameter of the organism
+        :param taste: The gene parameter of the organism
         """
         self.position = np.array(position)
         self.lifetime = 0
@@ -22,10 +22,10 @@ class Organism:
         self.reproduction_threshold = reproduction_threshold
         self.energy_max = energy_max
 
-        if es.gene_value:
-            self.gene_val = (gene_val + randint(-10, 10)) % 360
+        if es.taste:
+            self.taste = (taste + randint(-10, 10)) % 360
         else:
-            self.gene_val = gene_val
+            self.taste = taste
 
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2
@@ -35,7 +35,7 @@ class Organism:
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d Emax:%d g:%d)' % (
             self.__class__.__name__, self.position[0], self.position[1], self.lifetime, self.energy,
-            self.reproduction_threshold, self.energy_max, self.gene_val)
+            self.reproduction_threshold, self.energy_max, self.taste)
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
@@ -47,7 +47,7 @@ class Organism:
         new_energy = self.energy
         new_energy_max = self.energy_max
         new_reproduction_threshold = self.reproduction_threshold
-        new_gene_val = self.gene_val
+        new_taste = self.taste
 
         # Create new object
-        return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_gene_val)
+        return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_taste)
