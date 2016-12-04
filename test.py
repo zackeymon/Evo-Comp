@@ -6,11 +6,15 @@ class WorldTests(unittest.TestCase):
     def test_grid_variable(self):
         my_world = World(rows=1, columns=1)
         my_world.available_spaces()
-        self.assertEqual(my_world.grid, [[0, 0]])
+        self.assertEqual(my_world.spawnable_squares, [[0, 0]])
 
         my_world.spawn_food(number=1)
         self.assertEqual(len(my_world.food_list), 1)
-        self.assertEqual(my_world.grid, [])
+        self.assertEqual(my_world.spawnable_squares, [])
+
+    def test_fertile_lands(self):
+        world2 = World(3, 3, fertile_lands=[[[1, 1], [1, 1]]])
+        self.assertEqual(world2.fertile_squares, [[1, 1]])
 
 
 class OrganismTests(unittest.TestCase):

@@ -12,7 +12,7 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, rows, columns, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+    def __init__(self, rows, columns, fertile_lands=None, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
         """
         World Initialisation
         :param rows: Number of rows in the world
@@ -22,11 +22,21 @@ class World:
         self.columns = columns
         self.rows = rows
         self.seed = seed
-        self.grid = [[x, y] for x in range(columns) for y in range(rows)]
         self.food_list = []
         self.bug_list = []
         self.dead_food_list = []
         self.dead_bug_list = []
+
+        self.fertile_squares = []
+        if fertile_lands is None:
+            # Whole world is fertile
+            self.fertile_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+        else:
+            for i in fertile_lands:
+                min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
+                self.fertile_squares += [[x, y] for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
+
+        self.spawnable_squares = list(self.fertile_squares)
 
     def random_position(self):
         x = random.randint(0, self.columns - 1)
@@ -65,16 +75,16 @@ class World:
         return False
 
     def available_spaces(self):
-        self.grid = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+        self.spawnable_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         for food in self.food_list:
-            self.grid.remove(food.position.tolist())
+            self.spawnable_squares.remove(food.position.tolist())
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, gene_val=0.0):
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
                 self.food_list.append(
-                    Food(self.grid.pop(random.randint(0, len(self.grid) - 1)), energy,
+                    Food(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
                          reproduction_threshold, energy_max, gene_val))
             except ValueError:
                 break
@@ -84,7 +94,7 @@ class World:
         for i in range(number):
             try:
                 self.bug_list.append(
-                    Bug(self.grid.pop(random.randint(0, len(self.grid) - 1)), energy,
+                    Bug(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
                         reproduction_threshold, energy_max, gene_val))
             except ValueError:
                 break
