@@ -26,6 +26,7 @@ class World:
         self.bug_list = []
         self.dead_food_list = []
         self.dead_bug_list = []
+        self.food_taste_average = 0.0
 
         self.fertile_squares = []
         if fertile_lands is None:
@@ -70,12 +71,26 @@ class World:
         return False
 
     def available_spaces(self):
+        """Get available spawn spaces and the average of the food taste value."""
         self.spawnable_squares = list(self.fertile_squares)
+        food_taste_list = []
+
         for food in self.food_list:
+
             try:
                 self.spawnable_squares.remove(food.position.tolist())
             except ValueError:
                 pass
+
+            if food.taste >= 180:
+                food_taste_list.append(food.taste - 360)
+            else:
+                food_taste_list.append(food.taste)
+
+            self.food_taste_average = np.average(food_taste_list)
+            # NaN != NaN
+            if self.food_taste_average != self.food_taste_average:
+                self.food_taste_average = 0.0
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=0.0):
         """Spawn food and check spawn square is available."""

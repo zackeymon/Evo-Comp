@@ -4,17 +4,17 @@ import evolution_switches as es
 from world import World
 from direction import Direction
 from organism_type import OrganismType
+from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
-from gene_viewer import GeneViewer
 
 # #######Initialisation####### #
 my_world = World(rows=80, columns=80, fertile_lands=[[[20, 20], [29, 29]], [[50, 20], [59, 29]],
                                                      [[20, 50], [29, 59]], [[50, 50], [59, 59]]])
-world_viewer = WorldViewer(my_world)
-gene_viewer = GeneViewer(my_world)
+world_recorder = WorldRecorder(my_world)
+world_viewer = WorldViewer(my_world.seed)
 random.seed(my_world.seed)
 
-# my_world.spawn_food(200)
+my_world.spawn_food(100)
 my_world.spawn_bug(30)
 
 
@@ -31,14 +31,13 @@ _thread.start_new_thread(input_thread, (_list,))
 while len(my_world.bug_list) > 0 and not _list:
 
     # generate data
-    world_viewer.generate_view_world_data()
-    world_viewer.generate_world_data()
-    gene_viewer.generate_gene_data()
-    world_viewer.view_world()
+    world_recorder.generate_world_stats()
+    world_recorder.generate_world_data()
+    world_viewer.view_world(my_world)
 
     # spawn food
     my_world.available_spaces()
-    my_world.spawn_food(1, taste=0.0 + gene_viewer.food_taste_average)
+    my_world.spawn_food(1, taste=0.0 + my_world.food_taste_average)
 
     random.shuffle(my_world.food_list)
     random.shuffle(my_world.bug_list)
@@ -99,9 +98,7 @@ while len(my_world.bug_list) > 0 and not _list:
     my_world.time += 1
 
 # #######Plot####### #
-world_viewer.output_view_world_data()
-# world_viewer.plot_view_world_data()
-world_viewer.output_world_data()
-world_viewer.plot_world_data()
-gene_viewer.output_gene_data()
-gene_viewer.plot_gene_data()
+world_recorder.output_world_stats()
+world_recorder.output_world_data()
+world_viewer.plot_world_stats()
+world_viewer.plot_world_data(world=True, genes=True)
