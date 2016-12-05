@@ -22,19 +22,19 @@ class World:
         self.columns = columns
         self.rows = rows
         self.seed = seed
-        self.food_list = []
-        self.bug_list = []
-        self.dead_food_list = []
-        self.dead_bug_list = []
+        random.seed(self.seed)
+
+        self.grid = np.zeros(shape=(rows, columns))
+        self.food_list, self.bug_list, self.dead_food_list, self.dead_bug_list = ([] for _ in range(4))
 
         self.fertile_squares = []
         if fertile_lands is None:
-            # Whole world is fertile
+            # Make the whole world fertile
             self.fertile_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         else:
             for i in fertile_lands:
                 min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
-                self.fertile_squares += [[x, y] for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
+                self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
 
         self.spawnable_squares = list(self.fertile_squares)
 
@@ -55,17 +55,13 @@ class World:
 
     def check_collision(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
+        # Collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
 
-        if organism_type == OrganismType.food:
-            for food in self.food_list:
-                if (position == food.position).all():
-                    return True
-        elif organism_type == OrganismType.bug:
-            for bug in self.bug_list:
-                if (position == bug.position).all():
-                    return True
+        # Collide with organism of the same type
+        if self.grid[position[0], position[1]] == organism_type or self.grid[position[0], position[1]] == OrganismType.food_bug:
+            return True
 
         return False
 
@@ -77,13 +73,26 @@ class World:
             except ValueError:
                 pass
 
+    def kill(self, organism):
+        death_position = organism.position
+
+        if organism.__class__ == Food:
+            self.dead_food_list[-1].append(organism)
+            self.food_list.remove(organism)
+            self.grid[death_position] -= OrganismType.food
+
+        elif organism.__class__ == Bug:
+            self.dead_bug_list[-1].append(organism)
+            self.bug_list.remove(organism)
+            self.grid[death_position] -= OrganismType.bug
+
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=0.0):
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
-                self.food_list.append(
-                    Food(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
-                         reproduction_threshold, energy_max, taste))
+                spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
+                self.food_list.append(Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
+                self.grid[spawn_position] += OrganismType.food
             except ValueError:
                 break
 
@@ -91,8 +100,8 @@ class World:
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         for i in range(number):
             try:
-                self.bug_list.append(
-                    Bug(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
-                        reproduction_threshold, energy_max, taste))
+                spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
+                self.bug_list.append(Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
+                self.grid[spawn_position] += OrganismType.bug
             except ValueError:
                 break

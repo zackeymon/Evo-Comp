@@ -1,5 +1,7 @@
 
 
 class OrganismType:
-    food = 0
-    bug = 1
+    empty = 0
+    food = 1
+    bug = 2
+    food_bug = 3

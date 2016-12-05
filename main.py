@@ -8,13 +8,11 @@ from world_viewer import WorldViewer
 from gene_viewer import GeneViewer
 
 # #######Initialisation####### #
-my_world = World(rows=80, columns=80, fertile_lands=[[[20, 20], [29, 29]], [[50, 20], [59, 29]],
-                                                     [[20, 50], [29, 59]], [[50, 50], [59, 59]]])
+my_world = World(rows=80, columns=80, fertile_lands=[[[10, 10], [69, 69]]])
 world_viewer = WorldViewer(my_world)
 gene_viewer = GeneViewer(my_world)
-random.seed(my_world.seed)
 
-# my_world.spawn_food(200)
+my_world.spawn_food(200)
 my_world.spawn_bug(30)
 
 
@@ -52,7 +50,9 @@ while len(my_world.bug_list) > 0 and not _list:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(food.position, OrganismType.food))
                 if random_direction is not None:
-                    my_world.food_list.append(food.reproduce(random_direction))
+                    new_food = food.reproduce(random_direction)
+                    my_world.food_list.append(new_food)
+                    my_world.grid[new_food.position] -= OrganismType.food
         food.lifetime += 1
 
     # bug life cycle
@@ -64,7 +64,7 @@ while len(my_world.bug_list) > 0 and not _list:
         bug.respire()
         if bug.energy <= 0:
             # Bug die
-            my_world.dead_bug_list[-1].append(my_world.bug_list.pop(i))
+            my_world.kill(bug)
         else:
             # Bug won't move if born this turn
             if bug.lifetime > 0 or my_world.time == 0:
@@ -80,9 +80,9 @@ while len(my_world.bug_list) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(my_world.food_list):
                 if (bug.position == food.position).all():
-                    if bug.taste-10 <= food.taste <= bug.taste+10:
+                    if bug.taste - 10 <= food.taste <= bug.taste + 10:
                         bug.eat(food)
-                        my_world.dead_food_list[-1].append(my_world.food_list.pop(j))
+                        my_world.kill(food)
                     break
 
             # Check if bug can reproduce
@@ -90,8 +90,9 @@ while len(my_world.bug_list) > 0 and not _list:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
-                    spawn = bug.reproduce(random_direction)
-                    my_world.bug_list.append(spawn)
+                    new_bug = bug.reproduce(random_direction)
+                    my_world.bug_list.append(new_bug)
+                    my_world.grid[new_bug.position] -= OrganismType.bug
             bug.lifetime += 1
             i += 1
 
