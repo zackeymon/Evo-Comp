@@ -18,8 +18,8 @@ class GeneViewer:
         """
         self.world = world
         self.food_gene_average = 0
-        self.food_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
-        self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('gene_val', [])])
+        self.food_gene_data = OrderedDict([('reproduction_threshold', []), ('taste', [])])
+        self.bug_gene_data = OrderedDict([('reproduction_threshold', []), ('taste', [])])
 
     @staticmethod
     def split_list(data):
@@ -40,10 +40,10 @@ class GeneViewer:
 
         food_gene_val = []
         self.food_gene_data['reproduction_threshold'].append('time=%r' % self.world.time)
-        self.food_gene_data['gene_val'].append(None)
+        self.food_gene_data['taste'].append(None)
         for food in self.world.food_list:
             self.food_gene_data['reproduction_threshold'].append(food.reproduction_threshold)
-            self.food_gene_data['gene_val'].append(food.gene_val)
+            self.food_gene_data['taste'].append(food.gene_val)
             gene_av = food.gene_val
 
             if food.gene_val >= 180:
@@ -57,10 +57,10 @@ class GeneViewer:
             self.food_gene_average = 0
 
         self.bug_gene_data['reproduction_threshold'].append('time=%r' % self.world.time)
-        self.bug_gene_data['gene_val'].append(None)
+        self.bug_gene_data['taste'].append(None)
         for bug in self.world.bug_list:
             self.bug_gene_data['reproduction_threshold'].append(bug.reproduction_threshold)
-            self.bug_gene_data['gene_val'].append(bug.gene_val)
+            self.bug_gene_data['taste'].append(bug.gene_val)
 
     def output_gene_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
@@ -78,10 +78,10 @@ class GeneViewer:
 
         food_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'food_gene_data', 'food_gene_data.csv'),
                                        delimiter=',',
-                                       names=['reproduction_threshold', 'gene_val'])
+                                       names=['reproduction_threshold', 'taste'])
         bug_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'bug_gene_data', 'bug_gene_data.csv'),
                                       delimiter=',',
-                                      names=['reproduction_threshold', 'gene_val'])
+                                      names=['reproduction_threshold', 'taste'])
 
         # 1D Plot (bar chart)
         for i, day in enumerate(self.split_list(food_gene_data['reproduction_threshold'])):
@@ -128,7 +128,7 @@ class GeneViewer:
             for i in range(self.world.time):
 
                 rep_thresh = self.split_list(food_gene_data['reproduction_threshold'])[i]
-                gene_val = self.split_list(food_gene_data['gene_val'])[i]
+                gene_val = self.split_list(food_gene_data['taste'])[i]
                 z_list = []
                 for value in zip(rep_thresh, gene_val):
                     z_list.append(value)
@@ -163,7 +163,7 @@ class GeneViewer:
             for i in range(self.world.time):
 
                 rep_thresh = self.split_list(bug_gene_data['reproduction_threshold'])[i]
-                gene_val = self.split_list(bug_gene_data['gene_val'])[i]
+                gene_val = self.split_list(bug_gene_data['taste'])[i]
                 z_list = []
                 for value in zip(rep_thresh, gene_val):
                     z_list.append(value)

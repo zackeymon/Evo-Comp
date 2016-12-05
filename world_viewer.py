@@ -19,7 +19,7 @@ class WorldViewer:
         :param world: The world being viewed
         """
         self.world = world
-        self.data = OrderedDict([('value', []), ('x', []), ('y', []), ('energy', []), ('gene_val', [])])
+        self.data = OrderedDict([('value', []), ('x', []), ('y', []), ('energy', []), ('taste', [])])
         self.food_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
                                       ('average_alive_lifetime', []), ('average_lifespan', [])])
         self.bug_data = OrderedDict([('time', []), ('energy', []), ('population', []), ('deaths', []),
@@ -73,20 +73,20 @@ class WorldViewer:
             self.data['x'].append(food.position[0])
             self.data['y'].append(food.position[1])
             self.data['energy'].append(food.energy)
-            self.data['gene_val'].append(food.gene_val)
+            self.data['taste'].append(food.gene_val)
 
         for bug in self.world.bug_list:
             self.data['value'].append('bug')
             self.data['x'].append(bug.position[0])
             self.data['y'].append(bug.position[1])
             self.data['energy'].append(bug.energy)
-            self.data['gene_val'].append(bug.gene_val)
+            self.data['taste'].append(bug.gene_val)
 
         self.data['value'].append('none')
         self.data['x'].append('none')
         self.data['y'].append('none')
         self.data['energy'].append('none')
-        self.data['gene_val'].append('none')
+        self.data['taste'].append('none')
 
     def output_world_data(self):
 

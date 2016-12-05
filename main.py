@@ -36,7 +36,7 @@ while len(my_world.bug_list) > 0 and not _list:
     world_viewer.view_world()
 
     my_world.available_spaces()
-    my_world.spawn_food(1, gene_val=0.0 + gene_viewer.food_gene_average)
+    my_world.spawn_food(1, taste=0.0 + gene_viewer.food_gene_average)
 
     random.shuffle(my_world.food_list)
     random.shuffle(my_world.bug_list)
