@@ -58,6 +58,10 @@ class GeneViewer:
 
         self.food_taste_average = np.average(food_taste_list)
 
+        # NaN != NaN
+        if self.food_taste_average != self.food_taste_average:
+            self.food_taste_average = 0.0
+
     def output_gene_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
 
