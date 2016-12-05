@@ -43,12 +43,12 @@ class GeneViewer:
                             {'data': self.bug_gene_data, 'list': self.world.bug_list}]
         food_taste_list = []
 
-        for i, organism_type in enumerate(data_to_generate):
-            organism_type['data']['reproduction_threshold'].append('time=%r' % self.world.time)
-            organism_type['data']['taste'].append(None)
-            for organism in organism_type['list']:
-                organism_type['data']['reproduction_threshold'].append(organism.reproduction_threshold)
-                organism_type['data']['taste'].append(organism.taste)
+        for i, organism_data in enumerate(data_to_generate):
+            organism_data['data']['reproduction_threshold'].append('time=%r' % self.world.time)
+            organism_data['data']['taste'].append(None)
+            for organism in organism_data['list']:
+                organism_data['data']['reproduction_threshold'].append(organism.reproduction_threshold)
+                organism_data['data']['taste'].append(organism.taste)
 
                 if i == 0:
                     if organism.taste >= 180:
@@ -68,25 +68,27 @@ class GeneViewer:
         data_to_output = [{'data': self.food_gene_data.values(), 'path': 'food_gene_data'},
                           {'data': self.bug_gene_data.values(), 'path': 'bug_gene_data'}]
 
-        for organism_type in data_to_output:
+        for organism_data in data_to_output:
             with open(os.path.join('data', self.world.seed, 'data_files',
-                                   organism_type['path'] + '.csv'), 'a') as organism_gene_file:
-                for reproduction_threshold, taste in zip(*organism_type['data']):
+                                   organism_data['path'] + '.csv'), 'a') as organism_gene_file:
+                for reproduction_threshold, taste in zip(*organism_data['data']):
                     organism_gene_file.write('%r,' % reproduction_threshold + '%r,' % taste + '\n')
 
     def plot_gene_data(self):
         """Read the CSV (comma-separated values) output and plot in gene space."""
 
-        food_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'data_files', 'food_gene_data.csv'),
-                                       delimiter=',', names=['reproduction_threshold', 'taste'])
+        data_to_plot = [{'data': None, 'path': 'food_gene_data', 'colour': 'g',
+                         'colour_maps': 'Greens', 'path2': 'food_gene_space'},
+                        {'data': None, 'path': 'bug_gene_data', 'colour': 'r',
+                         'colour_maps': 'Reds', 'path2': 'bug_gene_space'}]
 
-        bug_gene_data = np.genfromtxt(os.path.join('data', self.world.seed, 'data_files', 'bug_gene_data.csv'),
-                                      delimiter=',', names=['reproduction_threshold', 'taste'])
-
-        for k, organism_data in enumerate([food_gene_data, bug_gene_data]):
+        for organism_data in data_to_plot:
+            organism_data['data'] = np.genfromtxt(os.path.join('data', self.world.seed, 'data_files',
+                                                               organism_data['path'] + '.csv'),
+                                                  delimiter=',', names=['reproduction_threshold', 'taste'])
 
             # 1D Plot (bar chart)
-            for i, day in enumerate(self.split_list(organism_data['reproduction_threshold'])):
+            for i, day in enumerate(self.split_list(organism_data['data']['reproduction_threshold'])):
                 rep_dict = {j: 0 for j in range(101)}
 
                 for rep_thresh in day:
@@ -99,30 +101,22 @@ class GeneViewer:
                     for key, value in rep_dict.items():
                         rep_dict[key] = value / total  # normalisation
 
-                plt.figure()
+                plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
                 plt.xlabel('Reproduction Threshold')
                 plt.ylabel('Population')
                 plt.title('time=%s' % i)
-
-                if k == 0:
-                    plt.bar(y_pos, rep_dict.values(), align='center', color='g')
-                    plt.savefig(os.path.join('data', self.world.seed, 'food_gene_data', '%s.png' % i))
-                    plt.close()
-
-                elif k == 1:
-                    plt.bar(y_pos, rep_dict.values(), align='center', color='r')
-                    plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_data', '%s.png' % i))
-                    plt.close()
+                plt.savefig(os.path.join('data', self.world.seed, organism_data['path'], '%s.png' % i))
+                plt.close()
 
             # 2D Plot (heat map)
             for i in range(self.world.time):
-                rep_thresh = self.split_list(organism_data['reproduction_threshold'])[i]
-                taste = self.split_list(organism_data['taste'])[i]
+                rep_thresh = self.split_list(organism_data['data']['reproduction_threshold'])[i]
+                taste = self.split_list(organism_data['data']['taste'])[i]
 
                 x = [i for i in range(52)]
                 y = [i for i in range(61)]
 
-                rep_thresh = [int(j / 2) for j in rep_thresh]  # bin food
+                rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
                 taste = [int(j / 6) for j in taste]
 
                 z = [[0 for _ in range(len(x))] for _ in range(len(y))]
@@ -137,21 +131,12 @@ class GeneViewer:
                 xi, yi = np.meshgrid(x, y)
                 zi = np.array(z)
 
-                plt.figure()
+                plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
+                plt.colorbar()
                 plt.xlim(0, 101)
                 plt.ylim(0, 359)
                 plt.xlabel('Reproduction Threshold')
                 plt.ylabel('Taste')
                 plt.title('time=%s' % i)
-
-                if k == 0:
-                    plt.pcolormesh(xi, yi, zi, cmap='Greens')
-                    plt.colorbar()
-                    plt.savefig(os.path.join('data', self.world.seed, 'food_gene_space', '%s.png' % i))
-                    plt.close()
-
-                elif k == 1:
-                    plt.pcolormesh(xi, yi, zi, cmap='Reds')
-                    plt.colorbar()
-                    plt.savefig(os.path.join('data', self.world.seed, 'bug_gene_space', '%s.png' % i))
-                    plt.close()
+                plt.savefig(os.path.join('data', self.world.seed, organism_data['path2'], '%s.png' % i))
+                plt.close()
