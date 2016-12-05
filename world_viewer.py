@@ -19,7 +19,7 @@ class WorldViewer:
         :param world: The world being viewed
         """
         self.world = world
-        self.data = OrderedDict([('value', []), ('x', []), ('y', []), ('energy', []), ('taste', [])])
+        self.world_data = OrderedDict([('organism', []), ('x', []), ('y', []), ('energy', []), ('taste', [])])
 
         # Initiate two dicts to store food and bug data
         self.food_data, self.bug_data = (OrderedDict
@@ -70,7 +70,7 @@ class WorldViewer:
         """Split the overall list of data into separate days."""
         split_data = [[]]
         for item in data:
-            if "'none'" in item:
+            if "'end_day'" in item:
                 split_data.append([])
             else:
                 split_data[-1].append(item)
@@ -81,6 +81,7 @@ class WorldViewer:
 
     def view_world(self):
         """"Draw the world: rectangles=food, circles=bugs"""
+
         ax = plt.figure(figsize=(self.world.columns, self.world.rows)).add_subplot(1, 1, 1)
 
         for food in self.world.food_list:  # draw a food
@@ -117,38 +118,37 @@ class WorldViewer:
 
     def generate_view_world_data(self):
         """Add data for current world iteration to a list."""
+        
+        data_to_generate = [{'list': self.world.food_list, 'name': 'food'},
+                            {'list': self.world.bug_list, 'name': 'bug'}]
+        
+        for organism_type in data_to_generate:
+            for organism in organism_type['list']:
+                self.world_data['organism'].append(organism_type['name'])
+                self.world_data['x'].append(organism.position[0])
+                self.world_data['y'].append(organism.position[1])
+                self.world_data['energy'].append(organism.energy)
+                self.world_data['taste'].append(organism.taste)
 
-        for food in self.world.food_list:
-            self.data['value'].append('food')
-            self.data['x'].append(food.position[0])
-            self.data['y'].append(food.position[1])
-            self.data['energy'].append(food.energy)
-            self.data['taste'].append(food.taste)
-
-        for bug in self.world.bug_list:
-            self.data['value'].append('bug')
-            self.data['x'].append(bug.position[0])
-            self.data['y'].append(bug.position[1])
-            self.data['energy'].append(bug.energy)
-            self.data['taste'].append(bug.taste)
-
-        self.data['value'].append('none')
-        self.data['x'].append('none')
-        self.data['y'].append('none')
-        self.data['energy'].append('none')
-        self.data['taste'].append('none')
+        self.world_data['organism'].append('end_day')
+        self.world_data['x'].append('end_day')
+        self.world_data['y'].append('end_day')
+        self.world_data['energy'].append('end_day')
+        self.world_data['taste'].append('end_day')
 
     def output_view_world_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
 
         with open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv'), 'a') as world_file:
-            for value, x, y, energy, taste in zip(*self.data.values()):
-                world_file.write('%r,' % value + '%r,' % x + '%r,' % y + '%r,' % energy + '%r,' % taste + '\n')
+            for organism, x, y, energy, taste in zip(*self.world_data.values()):
+                world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy + '%r,' % taste + '\n')
 
     def plot_view_world_data(self):
         """Read the CSV (comma-separated values) output and plot the world."""
+
         csv_file = csv.reader(open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv')),
                               delimiter=",")
+
         organism_list = []
         for row in csv_file:
             row.remove(row[-1])  # remove the '\n' for CSV files
@@ -202,34 +202,31 @@ class WorldViewer:
 
     def generate_world_data(self):
         """Add data for the current world iteration to a list."""
-        self.food_data['time'].append(self.world.time)
-        self.food_data['energy'].append(self.sum_list_energy(self.world.food_list))
-        self.food_data['population'].append(len(self.world.food_list))
-        self.food_data['deaths'].append(sum([len(i) for i in self.world.dead_food_list[-10:]]))
-        self.food_data['average_alive_lifetime'].append(self.average_lifetime([self.world.food_list]))
-        self.food_data['average_lifespan'].append(self.average_lifetime(self.world.dead_food_list[-10:]))
 
-        self.bug_data['time'].append(self.world.time)
-        self.bug_data['energy'].append(self.sum_list_energy(self.world.bug_list))
-        self.bug_data['population'].append(len(self.world.bug_list))
-        self.bug_data['deaths'].append(sum([len(i) for i in self.world.dead_bug_list[-10:]]))
-        self.bug_data['average_alive_lifetime'].append(self.average_lifetime([self.world.bug_list]))
-        self.bug_data['average_lifespan'].append(self.average_lifetime(self.world.dead_bug_list[-10:]))
+        data_to_generate = [{'data': self.food_data, 'list': self.world.food_list, 'd_list': self.world.dead_food_list},
+                            {'data': self.bug_data, 'list': self.world.bug_list, 'd_list': self.world.dead_bug_list}]
+
+        for organism_type in data_to_generate:
+            organism_type['data']['time'].append(self.world.time)
+            organism_type['data']['energy'].append(self.sum_list_energy(organism_type['list']))
+            organism_type['data']['population'].append(len(organism_type['list']))
+            organism_type['data']['deaths'].append(sum([len(i) for i in organism_type['d_list'][-10:]]))
+            organism_type['data']['average_alive_lifetime'].append(self.average_lifetime([organism_type['list']]))
+            organism_type['data']['average_lifespan'].append(self.average_lifetime(organism_type['d_list'][-10:]))
 
     def output_world_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
 
-        with open(os.path.join('data', self.world.seed, 'data_files', 'food_data.csv'), 'a') as food_file:
-            for time, energy, population, dead_population, average_alive_lifetime, average_lifespan \
-                    in zip(*self.food_data.values()):
-                food_file.write('%r,' % time + '%r,' % energy + '%r,' % population + '%r,' % dead_population + '%r,'
-                                % average_alive_lifetime + '%r,' % average_lifespan + '\n')
+        data_to_output = [{'path': 'food_data', 'data': self.food_data.values()},
+                          {'path': 'bug_data', 'data': self.bug_data.values()}]
 
-        with open(os.path.join('data', self.world.seed, 'data_files', 'bug_data.csv'), 'a') as bug_file:
-            for time, energy, population, dead_population, average_alive_lifetime, average_lifespan \
-                    in zip(*self.bug_data.values()):
-                bug_file.write('%r,' % time + '%r,' % energy + '%r,' % population + '%r,' % dead_population + '%r,'
-                               % average_alive_lifetime + '%r,' % average_lifespan + '\n')
+        for organism_type in data_to_output:
+            with open(os.path.join('data', self.world.seed, 'data_files',
+                                   organism_type['path'] + '.csv'), 'a') as organism_file:
+                for time, energy, population, dead_population, average_alive_lifetime, average_lifespan \
+                        in zip(*organism_type['data']):
+                    organism_file.write('%r,' % time + '%r,' % energy + '%r,' % population + '%r,' % dead_population
+                                        + '%r,' % average_alive_lifetime + '%r,' % average_lifespan + '\n')
 
     def plot_world_data(self):
         """Read the CSV (comma-separated values) output and plot trends."""
@@ -238,62 +235,50 @@ class WorldViewer:
                                   names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
                                          'average_lifespan'])
 
-        plt.plot(food_data['time'], food_data['population'], label='Alive')
-        plt.plot(food_data['time'], food_data['dead_population'], label='Deaths (last 10 cycles)')
-        plt.xlabel('Time')
-        plt.ylabel('Number of Food')
-        plt.legend()
-        plt.title('Food Populations')
-        plt.savefig(os.path.join('data', self.world.seed, 'food_population.png'))
-        plt.close()
-
-        plt.plot(food_data['time'], food_data['average_alive_lifetime'], label='Average Alive Lifetime')
-        plt.plot(food_data['time'], food_data['average_lifespan'], label='Average Lifespan (last 10 cycles)')
-        plt.xlabel('Time')
-        plt.ylabel('Lifetime')
-        plt.legend()
-        plt.title('Food Lifetimes')
-        plt.savefig(os.path.join('data', self.world.seed, 'food_lifetime.png'))
-        plt.close()
-
         bug_data = np.genfromtxt(os.path.join('data', self.world.seed, 'data_files', 'bug_data.csv'), delimiter=',',
                                  names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
                                         'average_lifespan'])
 
-        plt.plot(bug_data['time'], bug_data['population'], label='Alive')
-        plt.plot(bug_data['time'], bug_data['dead_population'], label='Deaths (last 10 cycles)')
-        plt.xlabel('Time')
-        plt.ylabel('Number of Bugs')
-        plt.legend()
-        plt.title('Bug Populations')
-        plt.savefig(os.path.join('data', self.world.seed, 'bug_population.png'))
-        plt.close()
+        data_to_plot = []
+        time = food_data['time']
 
-        plt.plot(bug_data['time'], bug_data['average_alive_lifetime'], label='Average Alive Lifetime')
-        plt.plot(bug_data['time'], bug_data['average_lifespan'], label='Average Lifespan (last 10 cycles)')
-        plt.xlabel('Time')
-        plt.ylabel('Lifetime')
-        plt.legend()
-        plt.title('Bug Lifetimes')
-        plt.savefig(os.path.join('data', self.world.seed, 'bug_lifetime.png'))
-        plt.close()
+        data1 = [(time, food_data['population'], 'Alive'), (time, food_data['dead_population'],
+                                                            'Deaths (last 10 cycles)')]
+        data_to_plot.append({'data': data1, 'x_label': 'Time', 'y_label': 'Number of Food', 'title': 'Food Populations',
+                             'filename': 'food_population.png'})
 
-        plt.plot(food_data['time'], food_data['population'], label='Food')
-        plt.plot(bug_data['time'], bug_data['population'], label='Bugs')
-        plt.plot(food_data['time'], (food_data['population'] + bug_data['population']), label='Food + Bugs')
-        plt.xlabel('Time')
-        plt.ylabel('Number')
-        plt.legend()
-        plt.title('World Population')
-        plt.savefig(os.path.join('data', self.world.seed, 'world_population.png'))
-        plt.close()
+        data2 = [(time, bug_data['population'], 'Alive'), (time, bug_data['dead_population'],
+                                                           'Deaths (last 10 cycles)')]
+        data_to_plot.append({'data': data2, 'x_label': 'Time', 'y_label': 'Number of Bugs', 'title': 'Bug Populations',
+                             'filename': 'bug_population.png'})
 
-        plt.plot(food_data['time'], food_data['energy'], label='Food')
-        plt.plot(bug_data['time'], bug_data['energy'], label='Bugs')
-        plt.plot(food_data['time'], (food_data['energy'] + bug_data['energy']), label='Food + Bugs')
-        plt.xlabel('Time')
-        plt.ylabel('Energy')
-        plt.legend()
-        plt.title('World Energy')
-        plt.savefig(os.path.join('data', self.world.seed, 'world_energy.png'))
-        plt.close()
+        data3 = [(time, food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
+                 (time, food_data['average_alive_lifetime'], 'Average Lifespan (last 10 cycles)')]
+        data_to_plot.append({'data': data3, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Food Lifetimes',
+                             'filename': 'food_lifetime.png'})
+
+        data4 = [(time, bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
+                 (time, bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
+        data_to_plot.append({'data': data4, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Bug Lifetimes',
+                             'filename': 'bug_lifetime.png'})
+
+        data5 = [(time, food_data['population'], 'Food'), (time, bug_data['population'], 'Bugs'),
+                 (time, food_data['population'] + bug_data['population'], 'Food + Bugs')]
+        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
+                             'filename': 'world_population.png'})
+
+        data6 = [(time, food_data['energy'], 'Food'), (time, bug_data['energy'], 'Bugs'),
+                 (time, food_data['energy'] + bug_data['energy'], 'Food + Bugs')]
+        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
+                             'filename': 'world_energy.png'})
+
+        for data_dict in data_to_plot:
+            plt.figure()
+            for (x, y, l) in data_dict['data']:
+                plt.plot(x, y, label=l)
+            plt.xlabel(data_dict['x_label'])
+            plt.ylabel(data_dict['y_label'])
+            plt.legend()
+            plt.title(data_dict['title'])
+            plt.savefig(os.path.join('data', self.world.seed, data_dict['filename']))
+            plt.close()

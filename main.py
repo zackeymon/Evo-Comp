@@ -46,7 +46,7 @@ while len(myWorld.bug_list) > 0 and not _list:
 
     # food life cycle
     for food in myWorld.food_list:
-        if food.lifetime > 0:
+        if food.lifetime > 0 or myWorld.time == 0:
             food.grow()
             if food.energy >= food.reproduction_threshold:
                 # Find an empty square
@@ -68,7 +68,7 @@ while len(myWorld.bug_list) > 0 and not _list:
             myWorld.dead_bug_list[-1].append(myWorld.bug_list.pop(i))
         else:
             # Bug won't move if born this turn
-            if bug.lifetime > 0:
+            if bug.lifetime > 0 or myWorld.time == 0:
                 random_direction = Direction.random(
                     myWorld.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
