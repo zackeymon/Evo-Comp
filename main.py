@@ -30,17 +30,20 @@ _thread.start_new_thread(input_thread, (_list,))
 # #######Run####### #
 while len(my_world.bug_list) > 0 and not _list:
 
+    # generate data
     world_viewer.view_world_data()
     world_viewer.generate_data()
     gene_viewer.generate_gene_data()
     world_viewer.view_world()
 
+    # spawn food
     my_world.available_spaces()
     my_world.spawn_food(1, taste=0.0 + gene_viewer.food_gene_average)
 
     random.shuffle(my_world.food_list)
     random.shuffle(my_world.bug_list)
 
+    # food life cycle
     for food in my_world.food_list:
         if food.lifetime > 0:
             food.grow()
@@ -52,6 +55,7 @@ while len(my_world.bug_list) > 0 and not _list:
                     my_world.food_list.append(food.reproduce(random_direction))
         food.lifetime += 1
 
+    # bug life cycle
     i = 0
     my_world.dead_food_list.append([])
     my_world.dead_bug_list.append([])
@@ -63,7 +67,7 @@ while len(my_world.bug_list) > 0 and not _list:
             my_world.dead_bug_list[-1].append(my_world.bug_list.pop(i))
         else:
             # Bug won't move if born this turn
-            if bug.lifetime > 0:
+            if bug.lifetime > 0 or myWorld.time == 0:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
@@ -76,7 +80,7 @@ while len(my_world.bug_list) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(my_world.food_list):
                 if (bug.position == food.position).all():
-                    if bug.gene_val - 10 < food.gene_val < bug.gene_val + 10:
+                    if bug.taste-10 <= food.taste <= bug.taste+10:
                         bug.eat(food)
                         my_world.dead_food_list[-1].append(my_world.food_list.pop(j))
                     break
@@ -95,9 +99,9 @@ while len(my_world.bug_list) > 0 and not _list:
     my_world.time += 1
 
 # #######Plot####### #
-world_viewer.output_data()
-world_viewer.plot_data()
-gene_viewer.output_gene_data()
-gene_viewer.plot_gene_data()
-world_viewer.output_world_data()
-# worldViewer.plot_world_data()
+worldViewer.output_view_world_data()
+worldViewer.plot_view_world_data()
+worldViewer.output_world_data()
+worldViewer.plot_world_data()
+geneViewer.output_gene_data()
+geneViewer.plot_gene_data()
