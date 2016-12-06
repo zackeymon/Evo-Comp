@@ -1,7 +1,5 @@
 import os
 from collections import OrderedDict
-from matplotlib.patches import Rectangle
-from matplotlib.patches import Ellipse
 
 
 class WorldRecorder:
@@ -61,22 +59,23 @@ class WorldRecorder:
     def generate_world_stats(self):
         """Add data for the current world iteration to a list."""
 
-        data_to_generate = [{'data': self.food_data, 'list': self.world.food_list, 'd_list': self.world.dead_food_list},
-                            {'data': self.bug_data, 'list': self.world.bug_list, 'd_list': self.world.dead_bug_list}]
+        data_to_generate = [{'data': self.food_data, 'list': self.world.organism_lists['food']},
+                            {'data': self.bug_data, 'list': self.world.organism_lists['bug']}]
 
         for organism_data in data_to_generate:
             organism_data['data']['time'].append(self.world.time)
-            organism_data['data']['energy'].append(self.sum_list_energy(organism_data['list']))
-            organism_data['data']['population'].append(len(organism_data['list']))
-            organism_data['data']['deaths'].append(sum([len(i) for i in organism_data['d_list'][-10:]]))
-            organism_data['data']['average_alive_lifetime'].append(self.average_lifetime([organism_data['list']]))
-            organism_data['data']['average_lifespan'].append(self.average_lifetime(organism_data['d_list'][-10:]))
+            organism_data['data']['energy'].append(self.sum_list_energy(organism_data['list']['alive']))
+            organism_data['data']['population'].append(len(organism_data['list']['alive']))
+            organism_data['data']['deaths'].append(sum([len(i) for i in organism_data['list']['dead'][-10:]]))
+            organism_data['data']['average_alive_lifetime'].append(
+                self.average_lifetime([organism_data['list']['alive']]))
+            organism_data['data']['average_lifespan'].append(self.average_lifetime(organism_data['list']['dead'][-10:]))
 
     def output_world_stats(self):
         """Output data in CSV (comma-separated values) format for analysis."""
 
-        data_to_output = [{'path': 'food_data', 'data': self.food_data.values()},
-                          {'path': 'bug_data', 'data': self.bug_data.values()}]
+        data_to_output = [{'data': self.food_data.values(), 'path': 'food_data'},
+                          {'data': self.bug_data.values(), 'path': 'bug_data'}]
 
         for organism_data in data_to_output:
             with open(os.path.join('data', self.world.seed, 'data_files',
@@ -89,8 +88,8 @@ class WorldRecorder:
     def generate_world_data(self):
         """Add data for current world iteration to a list."""
 
-        data_to_generate = [{'list': self.world.food_list, 'name': 'food'},
-                            {'list': self.world.bug_list, 'name': 'bug'}]
+        data_to_generate = [{'list': self.world.organism_lists['food']['alive'], 'name': 'food'},
+                            {'list': self.world.organism_lists['bug']['alive'], 'name': 'bug'}]
 
         for organism_data in data_to_generate:
             for organism in organism_data['list']:

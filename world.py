@@ -22,10 +22,7 @@ class World:
         self.columns = columns
         self.rows = rows
         self.seed = seed
-        self.food_list = []
-        self.bug_list = []
-        self.dead_food_list = []
-        self.dead_bug_list = []
+        self.organism_lists = {'food': {'alive': [], 'dead': []}, 'bug': {'alive': [], 'dead': []}}
         self.food_taste_average = 0.0
 
         self.fertile_squares = []
@@ -60,11 +57,11 @@ class World:
             return True
 
         if organism_type == OrganismType.food:
-            for food in self.food_list:
+            for food in self.organism_lists['food']['alive']:
                 if (position == food.position).all():
                     return True
         elif organism_type == OrganismType.bug:
-            for bug in self.bug_list:
+            for bug in self.organism_lists['bug']['alive']:
                 if (position == bug.position).all():
                     return True
 
@@ -75,7 +72,7 @@ class World:
         self.spawnable_squares = list(self.fertile_squares)
         food_taste_list = []
 
-        for food in self.food_list:
+        for food in self.organism_lists['food']['alive']:
 
             try:
                 self.spawnable_squares.remove(food.position.tolist())
@@ -96,7 +93,7 @@ class World:
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
-                self.food_list.append(
+                self.organism_lists['food']['alive'].append(
                     Food(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
                          reproduction_threshold, energy_max, taste))
             except ValueError:
@@ -110,7 +107,7 @@ class World:
 
         for i in range(number):
             try:
-                self.bug_list.append(
+                self.organism_lists['bug']['alive'].append(
                     Bug(spawn_squares.pop(random.randint(0, len(spawn_squares) - 1)), energy,
                         reproduction_threshold, energy_max, taste))
             except ValueError:

@@ -27,7 +27,7 @@ _list = []
 _thread.start_new_thread(input_thread, (_list,))
 
 # #######Run####### #
-while len(my_world.bug_list) > 0 and not _list:
+while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 
     # generate data
     world_recorder.generate_world_stats()
@@ -38,11 +38,11 @@ while len(my_world.bug_list) > 0 and not _list:
     my_world.available_spaces()
     my_world.spawn_food(1, taste=0.0 + my_world.food_taste_average)
 
-    random.shuffle(my_world.food_list)
-    random.shuffle(my_world.bug_list)
+    random.shuffle(my_world.organism_lists['food']['alive'])
+    random.shuffle(my_world.organism_lists['bug']['alive'])
 
     # food life cycle
-    for food in my_world.food_list:
+    for food in my_world.organism_lists['food']['alive']:
         if food.lifetime > 0 or my_world.time == 0:
             food.grow()
             if food.energy >= food.reproduction_threshold:
@@ -50,19 +50,19 @@ while len(my_world.bug_list) > 0 and not _list:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(food.position, OrganismType.food))
                 if random_direction is not None:
-                    my_world.food_list.append(food.reproduce(random_direction))
+                    my_world.organism_lists['food']['alive'].append(food.reproduce(random_direction))
         food.lifetime += 1
 
     # bug life cycle
     i = 0
-    my_world.dead_food_list.append([])
-    my_world.dead_bug_list.append([])
-    while i < len(my_world.bug_list):
-        bug = my_world.bug_list[i]
+    my_world.organism_lists['food']['dead'].append([])
+    my_world.organism_lists['bug']['dead'].append([])
+    while i < len(my_world.organism_lists['bug']['alive']):
+        bug = my_world.organism_lists['bug']['alive'][i]
         bug.respire()
         if bug.energy <= 0:
             # Bug die
-            my_world.dead_bug_list[-1].append(my_world.bug_list.pop(i))
+            my_world.organism_lists['bug']['dead'][-1].append(my_world.organism_lists['bug']['alive'].pop(i))
         else:
             # Bug won't move if born this turn
             if bug.lifetime > 0 or my_world.time == 0:
@@ -76,11 +76,11 @@ while len(my_world.bug_list) > 0 and not _list:
             #         bug.eat(i)
 
             # Check if bug can eat food
-            for j, food in enumerate(my_world.food_list):
+            for j, food in enumerate(my_world.organism_lists['food']['alive']):
                 if (bug.position == food.position).all():
                     if bug.taste-10 <= food.taste <= bug.taste+10:
                         bug.eat(food)
-                        my_world.dead_food_list[-1].append(my_world.food_list.pop(j))
+                        my_world.organism_lists['food']['dead'][-1].append(my_world.organism_lists['food']['alive'].pop(j))
                     break
 
             # Check if bug can reproduce
@@ -89,7 +89,7 @@ while len(my_world.bug_list) > 0 and not _list:
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
                     spawn = bug.reproduce(random_direction)
-                    my_world.bug_list.append(spawn)
+                    my_world.organism_lists['bug']['alive'].append(spawn)
             bug.lifetime += 1
             i += 1
 

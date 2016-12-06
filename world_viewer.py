@@ -36,65 +36,35 @@ class WorldViewer:
         return data
 
     @staticmethod
-    def draw_food(food_size, food_data, color, loop=False):
-
-        if loop:
-            x = food_data.position[0]
-            y = food_data.position[1]
-        else:
-            x = food_data[1]
-            y = food_data[2]
-
-        return Rectangle((x + (0.5 - food_size / 2), y + (0.5 - food_size / 2)), food_size, food_size, facecolor=color,
-                         linewidth=0)
-
-    @staticmethod
-    def draw_bug(bug_size, bug_data, color, outline=False, loop=False):
-
-        if loop:
-            x = bug_data.position[0]
-            y = bug_data.position[1]
-        else:
-            x = bug_data[1]
-            y = bug_data[2]
-
-        if outline:
-            return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size, height=bug_size, facecolor='k', linewidth=0)
-
-        return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size / 1.5, height=bug_size / 1.5, facecolor=color, linewidth=0)
-
-    def view_world(self, world):
+    def view_world(world):
         """"Draw the world: rectangles=food, circles=bugs"""
         ax = plt.figure(figsize=(world.columns, world.rows)).add_subplot(1, 1, 1)
 
-        for food in world.food_list:
+        for food in world.organism_lists['food']['alive']:
+            food_size = food.energy * 0.006
+
             if es.taste:
-                color = colorsys.hsv_to_rgb(food.taste / 360, 1, 1)
+                hue = food.taste / 360
             else:
-                color = 'g'
+                hue = 0.33
+            color = colorsys.hls_to_rgb(hue, food_size + 0.2, 1)
 
-            food_size = food.energy * 0.01
-            if food_size <= 0.3:
-                ax.add_patch(self.draw_food(0.3, food, color, loop=True))
-            else:
-                ax.add_patch(self.draw_food(food_size, food, color, loop=True))
+            ax.add_patch(Rectangle((food.position[0], food.position[1]), 1, 1, facecolor=color, linewidth=0))
 
-        for bug in world.bug_list:
+        for bug in world.organism_lists['bug']['alive']:
+            bug_size = bug.energy * 0.006
+            if bug_size > 1:
+                bug_size = 1
+
             if es.taste:
-                color = colorsys.hsv_to_rgb(bug.taste / 360, 1, 1)
-            else:
-                color = 'r'
+                ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
+                                     facecolor='k', linewidth=0))
+                ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=0.7, height=0.7,
+                                     facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
 
-            bug_size = bug.energy * 0.01
-            if bug_size <= 0.4:
-                ax.add_patch(self.draw_bug(0.4, bug, color, outline=True, loop=True))
-                ax.add_patch(self.draw_bug(0.4, bug, color, loop=True))
-            elif bug_size >= 1.0:
-                ax.add_patch(self.draw_bug(1.0, bug, color, outline=True, loop=True))
-                ax.add_patch(self.draw_bug(1.0, bug, color, loop=True))
             else:
-                ax.add_patch(self.draw_bug(bug_size, bug, color, outline=True, loop=True))
-                ax.add_patch(self.draw_bug(bug_size, bug, color, loop=True))
+                ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
+                                     facecolor=colorsys.hls_to_rgb(bug.taste / 360, bug_size + 0.2, 1), linewidth=0))
 
         ax.set_xticks(np.arange(0, world.columns + 1, 1))
         ax.set_yticks(np.arange(0, world.rows + 1, 1))
@@ -178,35 +148,33 @@ class WorldViewer:
                 for organism in day:
 
                     if organism[0] == "'food'":  # draw a food
+                        food_size = organism[3] * 0.006
 
                         if es.taste:
-                            color = colorsys.hsv_to_rgb(organism[5] / 360, 1, 1)
+                            hue = organism[5] / 360
                         else:
-                            color = 'g'
+                            hue = 0.33
+                        color = colorsys.hls_to_rgb(hue, food_size + 0.2, 1)
 
-                        food_size = organism[3] * 0.01
-                        if food_size <= 0.3:
-                            ax.add_patch(self.draw_food(0.3, organism, color))
-                        else:
-                            ax.add_patch(self.draw_food(food_size, organism, color))
+                        ax.add_patch(
+                            Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))
 
                     elif organism[0] == "'bug'":  # draw a bug(black edge)
+                        bug_size = organism[3] * 0.006
+                        if bug_size > 1:
+                            bug_size = 1
 
                         if es.taste:
-                            color = colorsys.hsv_to_rgb(organism[5] / 360, 1, 1)
-                        else:
-                            color = 'r'
+                            ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
+                                                 facecolor='k', linewidth=0))
+                            ax.add_patch(
+                                Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=0.7, height=0.7,
+                                        facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
 
-                        bug_size = organism[3] * 0.01
-                        if bug_size <= 0.4:
-                            ax.add_patch(self.draw_bug(0.4, organism, color, outline=True))
-                            ax.add_patch(self.draw_bug(0.4, organism, color))
-                        elif bug_size >= 1.0:
-                            ax.add_patch(self.draw_bug(1.0, organism, color, outline=True))
-                            ax.add_patch(self.draw_bug(1.0, organism, color))
                         else:
-                            ax.add_patch(self.draw_bug(bug_size, organism, color, outline=True))
-                            ax.add_patch(self.draw_bug(bug_size, organism, color))
+                            ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
+                                                 facecolor=colorsys.hls_to_rgb(organism[5] / 360, bug_size + 0.2, 1),
+                                                 linewidth=0))
 
                 ax.set_xticks(np.arange(0, dimensions['columns'][1] + 1, 1))
                 ax.set_yticks(np.arange(0, dimensions['rows'][1] + 1, 1))
