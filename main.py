@@ -12,7 +12,7 @@ my_world = World(rows=80, columns=80, fertile_lands=[[[10, 10], [69, 69]]])
 # my_world = World(rows=3, columns=3)
 
 world_recorder = WorldRecorder(my_world)
-world_viewer = WorldViewer(my_world)
+world_viewer = WorldViewer(my_world.seed)
 
 my_world.spawn_food(200)
 my_world.spawn_bug(50)
