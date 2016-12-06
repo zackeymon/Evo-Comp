@@ -9,11 +9,13 @@ from gene_viewer import GeneViewer
 
 # #######Initialisation####### #
 my_world = World(rows=80, columns=80, fertile_lands=[[[10, 10], [69, 69]]])
+# my_world = World(rows=3, columns=3)
+
 world_viewer = WorldViewer(my_world)
 gene_viewer = GeneViewer(my_world)
 
 my_world.spawn_food(200)
-my_world.spawn_bug(30)
+my_world.spawn_bug(50)
 
 
 # Kill switch
@@ -52,7 +54,7 @@ while len(my_world.bug_list) > 0 and not _list:
                 if random_direction is not None:
                     new_food = food.reproduce(random_direction)
                     my_world.food_list.append(new_food)
-                    my_world.grid[new_food.position] -= OrganismType.food
+                    my_world.grid[tuple(new_food.position)] += OrganismType.food
         food.lifetime += 1
 
     # bug life cycle
@@ -71,11 +73,9 @@ while len(my_world.bug_list) > 0 and not _list:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
+                    my_world.grid[tuple(bug.position)] -= OrganismType.bug
                     bug.move(random_direction)
-
-            # for i in my_world.grid[bug.position[0]][bug.position[1]]:
-            #     if isinstance(i, Food):
-            #         bug.eat(i)
+                    my_world.grid[tuple(bug.position)] += OrganismType.bug
 
             # Check if bug can eat food
             for j, food in enumerate(my_world.food_list):
@@ -92,7 +92,7 @@ while len(my_world.bug_list) > 0 and not _list:
                 if random_direction is not None:
                     new_bug = bug.reproduce(random_direction)
                     my_world.bug_list.append(new_bug)
-                    my_world.grid[new_bug.position] -= OrganismType.bug
+                    my_world.grid[tuple(new_bug.position)] += OrganismType.bug
             bug.lifetime += 1
             i += 1
 
@@ -101,7 +101,6 @@ while len(my_world.bug_list) > 0 and not _list:
 
 # #######Plot####### #
 world_viewer.output_view_world_data()
-# world_viewer.plot_view_world_data()
 world_viewer.output_world_data()
 world_viewer.plot_world_data()
 gene_viewer.output_gene_data()
