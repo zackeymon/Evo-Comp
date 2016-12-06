@@ -1,3 +1,3 @@
-bug_reproduction_threshold = True
 food_reproduction_threshold = True
+bug_reproduction_threshold = True
 taste = False

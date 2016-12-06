@@ -1,6 +1,5 @@
 import _thread
 import random
-import evolution_switches as es
 from world import World
 from direction import Direction
 from organism_type import OrganismType
@@ -101,4 +100,4 @@ while len(my_world.bug_list) > 0 and not _list:
 world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
-world_viewer.plot_world_data(world=True, genes=True)
+world_viewer.plot_world_data(world=True)

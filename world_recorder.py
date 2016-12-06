@@ -58,20 +58,6 @@ class WorldRecorder:
 
         return energy
 
-    @staticmethod
-    def draw_food(food_size, food, color):
-        return Rectangle((food.position[0] + (0.5 - food_size / 2), food.position[1] + (0.5 - food_size / 2)),
-                         food_size, food_size, facecolor=color)
-
-    @staticmethod
-    def draw_bug(bug_size, bug, color, outline=False):
-        if outline:
-            return Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size, height=bug_size,
-                           facecolor='k')
-
-        return Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size / 1.5, height=bug_size / 1.5,
-                       facecolor=color)
-
     def generate_world_stats(self):
         """Add data for the current world iteration to a list."""
 
