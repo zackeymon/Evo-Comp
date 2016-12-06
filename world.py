@@ -60,7 +60,7 @@ class World:
             return True
 
         # Collide with organism of the same type
-        if self.grid[position[0], position[1]] == organism_type or self.grid[position[0], position[1]] == OrganismType.food_bug:
+        if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == OrganismType.food_bug:
             return True
 
         return False
@@ -79,12 +79,12 @@ class World:
         if organism.__class__ == Food:
             self.dead_food_list[-1].append(organism)
             self.food_list.remove(organism)
-            self.grid[death_position] -= OrganismType.food
+            self.grid[tuple(death_position)] -= OrganismType.food
 
         elif organism.__class__ == Bug:
             self.dead_bug_list[-1].append(organism)
             self.bug_list.remove(organism)
-            self.grid[death_position] -= OrganismType.bug
+            self.grid[tuple(death_position)] -= OrganismType.bug
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=0.0):
         """Spawn food and check spawn square is available."""
@@ -92,7 +92,7 @@ class World:
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
                 self.food_list.append(Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
-                self.grid[spawn_position] += OrganismType.food
+                self.grid[tuple(spawn_position)] += OrganismType.food
             except ValueError:
                 break
 
@@ -102,6 +102,6 @@ class World:
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
                 self.bug_list.append(Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
-                self.grid[spawn_position] += OrganismType.bug
+                self.grid[tuple(spawn_position)] += OrganismType.bug
             except ValueError:
                 break

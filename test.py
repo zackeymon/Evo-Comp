@@ -1,6 +1,7 @@
 import unittest
 from world import World
 from world_viewer import WorldViewer
+import numpy as np
 
 
 class DummyBug():
@@ -21,11 +22,16 @@ class WorldTests(unittest.TestCase):
     def test_fertile_lands(self):
         world2 = World(3, 3, fertile_lands=[[[1, 1], [1, 1]]])
         self.assertEqual(world2.fertile_squares, [[1, 1]])
+        world2.spawn_food(1)
+        world2.spawn_bug(1)
+        self.assertEquals(len(world2.food_list), 1)
+        self.assertEquals(len(world2.bug_list), 0)
 
 
 class OrganismTests(unittest.TestCase):
     def setUp(self):
         self.my_world = World(rows=10, columns=10)
+        self.tiny_world = World(rows=1, columns=1)
 
     def test_simple_spawn(self):
         self.my_world.spawn_bug(1, energy=30)
