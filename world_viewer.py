@@ -45,7 +45,8 @@ class WorldViewer:
             x = food_data[1]
             y = food_data[2]
 
-        return Rectangle((x + (0.5 - food_size / 2), y + (0.5 - food_size / 2)), food_size, food_size, facecolor=color)
+        return Rectangle((x + (0.5 - food_size / 2), y + (0.5 - food_size / 2)), food_size, food_size, facecolor=color,
+                         linewidth=0)
 
     @staticmethod
     def draw_bug(bug_size, bug_data, color, outline=False, loop=False):
@@ -58,9 +59,9 @@ class WorldViewer:
             y = bug_data[2]
 
         if outline:
-            return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size, height=bug_size, facecolor='k')
+            return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size, height=bug_size, facecolor='k', linewidth=0)
 
-        return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size / 1.5, height=bug_size / 1.5, facecolor=color)
+        return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size / 1.5, height=bug_size / 1.5, facecolor=color, linewidth=0)
 
     def view_world(self, world):
         """"Draw the world: rectangles=food, circles=bugs"""
@@ -151,8 +152,8 @@ class WorldViewer:
             plt.savefig(os.path.join('data', self.seed, data_dict['filename']))
             plt.close()
 
-    def plot_world_data(self, world=False, genes=False):
-        """Read the CSV (comma-separated values) output and plot the world."""
+    def plot_world_data(self, world=False):
+        """Read the CSV (comma-separated values) output and plot the world and/or gene values for each time."""
 
         world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')),
                                 delimiter=',')
@@ -213,7 +214,7 @@ class WorldViewer:
                 plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % i))
                 plt.close()
 
-            if genes:
+            if es.bug_reproduction_threshold or es.food_reproduction_threshold or es.taste:
 
                 food_list = []
                 bug_list = []
@@ -250,39 +251,40 @@ class WorldViewer:
                     plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % i))
                     plt.close()
 
-                # 2D Plot (heat map)
+                    if es.taste:
+                        # 2D Plot (heat map)
 
-                    rep_thresh = []
-                    taste = []
+                        rep_thresh = []
+                        taste = []
 
-                    for organism in organism_data['data']:
-                        rep_thresh.append(organism[4])
-                        taste.append(organism[5])
+                        for organism in organism_data['data']:
+                            rep_thresh.append(organism[4])
+                            taste.append(organism[5])
 
-                    x = [i for i in range(52)]
-                    y = [i for i in range(61)]
+                        x = [i for i in range(52)]
+                        y = [i for i in range(61)]
 
-                    rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
-                    taste = [int(j / 6) for j in taste]
+                        rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
+                        taste = [int(j / 6) for j in taste]
 
-                    z = [[0 for _ in range(len(x))] for _ in range(len(y))]
-                    z_list = [list(i) for i in zip(rep_thresh, taste)]
+                        z = [[0 for _ in range(len(x))] for _ in range(len(y))]
+                        z_list = [list(i) for i in zip(rep_thresh, taste)]
 
-                    for value in z_list:
-                        z[value[1]][value[0]] += 1 / len(z_list)  # list of population frequencies
+                        for value in z_list:
+                            z[value[1]][value[0]] += 1 / len(z_list)  # list of population frequencies
 
-                    x = [j * 2 for j in x]
-                    y = [j * 6 for j in y]
+                        x = [j * 2 for j in x]
+                        y = [j * 6 for j in y]
 
-                    xi, yi = np.meshgrid(x, y)
-                    zi = np.array(z)
+                        xi, yi = np.meshgrid(x, y)
+                        zi = np.array(z)
 
-                    plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
-                    plt.colorbar()
-                    plt.xlim(0, 101)
-                    plt.ylim(0, 359)
-                    plt.xlabel('Reproduction Threshold')
-                    plt.ylabel('Taste')
-                    plt.title('time=%s' % i)
-                    plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % i))
-                    plt.close()
+                        plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
+                        plt.colorbar()
+                        plt.xlim(0, 101)
+                        plt.ylim(0, 359)
+                        plt.xlabel('Reproduction Threshold')
+                        plt.ylabel('Taste')
+                        plt.title('time=%s' % i)
+                        plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % i))
+                        plt.close()

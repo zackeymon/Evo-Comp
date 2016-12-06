@@ -102,12 +102,16 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=0.0):
+    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=0.0, random_spawn=False):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
+        spawn_squares = self.spawnable_squares
+        if random_spawn:
+            spawn_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+
         for i in range(number):
             try:
                 self.bug_list.append(
-                    Bug(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
+                    Bug(spawn_squares.pop(random.randint(0, len(spawn_squares) - 1)), energy,
                         reproduction_threshold, energy_max, taste))
             except ValueError:
                 break
