@@ -1,4 +1,5 @@
 import os
+import evolution_switches as es
 from collections import OrderedDict
 
 
@@ -27,14 +28,14 @@ class WorldRecorder:
                                          for _ in range(2))
 
         # Create directories if they don't exist
-        if not os.path.exists(os.path.join('data', world.seed)):
-            for i in ['world', 'data_files', 'food_gene_data', 'food_gene_space', 'bug_gene_data', 'bug_gene_space']:
-                os.makedirs(os.path.join('data', world.seed, i))
+        for path in ['world', 'data_files']:
+            os.makedirs(os.path.join('data', world.seed, path))
 
         # Create seed file with parameters of initialisation
         with open(os.path.join('data', world.seed, 'data_files', world.seed + '.csv'), 'a') as seed:
-            seed.write('columns,' + 'rows,' + '\n')
-            seed.write('%r,' % world.columns + '%r,' % world.rows + '\n')
+            seed.write('columns,' + 'rows,' + 'food_rep_thresh_evo,' + 'bug_rep_thresh_evo,' + 'taste_evo,' + '\n')
+            seed.write('%r,' % world.columns + '%r,' % world.rows + '%r,' % es.food_reproduction_threshold
+                       + '%r,' % es.bug_reproduction_threshold + '%r,' % es.taste + '\n')
 
     @staticmethod
     def average_lifetime(organism_list):
@@ -74,6 +75,8 @@ class WorldRecorder:
     def output_world_stats(self):
         """Output data in CSV (comma-separated values) format for analysis."""
 
+        print('outputting world statistics...')
+
         data_to_output = [{'data': self.food_data.values(), 'path': 'food_data'},
                           {'data': self.bug_data.values(), 'path': 'bug_data'}]
 
@@ -109,6 +112,8 @@ class WorldRecorder:
 
     def output_world_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""
+
+        print('outputting world data...')
 
         with open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv'), 'a') as world_file:
             for organism, x, y, energy, reproduction_threshold, taste in zip(*self.world_data.values()):
