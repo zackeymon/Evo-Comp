@@ -1,6 +1,6 @@
 import os
-import evolution_switches as es
 from collections import OrderedDict
+import evolution_switches as es
 
 
 class WorldRecorder:

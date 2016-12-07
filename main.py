@@ -1,8 +1,8 @@
 import _thread
 import random
-from world import World
 from direction import Direction
 from organism_type import OrganismType
+from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 

@@ -1,10 +1,10 @@
-import random
-import datetime
 import numpy as np
+import datetime
+from random import randint
+from direction import Direction
 from bug import Bug
 from food import Food
 from organism_type import OrganismType
-from direction import Direction
 
 
 class World:
@@ -94,7 +94,7 @@ class World:
         for i in range(number):
             try:
                 self.organism_lists['food']['alive'].append(
-                    Food(self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1)), energy,
+                    Food(self.spawnable_squares.pop(randint(0, len(self.spawnable_squares) - 1)), energy,
                          reproduction_threshold, energy_max, taste))
             except ValueError:
                 break
@@ -108,7 +108,7 @@ class World:
         for i in range(number):
             try:
                 self.organism_lists['bug']['alive'].append(
-                    Bug(spawn_squares.pop(random.randint(0, len(spawn_squares) - 1)), energy,
+                    Bug(spawn_squares.pop(randint(0, len(spawn_squares) - 1)), energy,
                         reproduction_threshold, energy_max, taste))
             except ValueError:
                 break

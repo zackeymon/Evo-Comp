@@ -154,12 +154,12 @@ class WorldViewer:
         organism_list = [[[float(organism[i]) if i > 0 else organism[i] for i in range(len(organism))]
                           for organism in day] for day in self.split_list(organism_list)]
 
-        if world:
+        for i, day in enumerate(organism_list):
 
-            for i, day in enumerate(organism_list):
+            sys.stdout.write('\r' + 'plotting world data, time: %r' % i + '/%r' % (len(organism_list) - 1) + '...')
+            sys.stdout.flush()
 
-                sys.stdout.write('\r' + 'plotting world, time: %r' % i + '/%r' % (len(organism_list) - 1) + '...')
-                sys.stdout.flush()
+            if world:
 
                 ax = plt.figure(figsize=(settings['columns'], settings['rows'])).add_subplot(1, 1, 1)
 
@@ -200,15 +200,7 @@ class WorldViewer:
                 plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % i))
                 plt.close()
 
-        if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] or settings['taste_evo'] == 'True':
-
-            sys.stdout.write('\n')
-
-            for i, day in enumerate(organism_list):
-
-                sys.stdout.write('\r' + 'plotting organism gene data, time: %r' % i + '/%r' % (
-                    len(organism_list) - 1) + '...')
-                sys.stdout.flush()
+            if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] or settings['taste_evo'] == 'True':
 
                 food_list = []
                 bug_list = []
