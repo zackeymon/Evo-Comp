@@ -78,9 +78,10 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
             # Check if bug can eat food
             for j, food in enumerate(my_world.organism_lists['food']['alive']):
                 if (bug.position == food.position).all():
-                    if bug.taste-10 <= food.taste <= bug.taste+10:
+                    if bug.taste - 10 <= food.taste <= bug.taste + 10:
                         bug.eat(food)
-                        my_world.organism_lists['food']['dead'][-1].append(my_world.organism_lists['food']['alive'].pop(j))
+                        my_world.organism_lists['food']['dead'][-1].append(
+                            my_world.organism_lists['food']['alive'].pop(j))
                     break
 
             # Check if bug can reproduce

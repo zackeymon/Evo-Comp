@@ -143,8 +143,7 @@ class WorldViewer:
                 if not os.path.exists(os.path.join('data', self.seed, path)):
                     os.makedirs(os.path.join('data', self.seed, path))
 
-        world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')),
-                                delimiter=',')
+        world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
 
         organism_list = []
         for row in world_file:

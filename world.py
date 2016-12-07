@@ -22,8 +22,11 @@ class World:
         self.columns = columns
         self.rows = rows
         self.seed = seed
-        self.organism_lists = {'food': {'alive': [], 'dead': []}, 'bug': {'alive': [], 'dead': []}}
         self.food_taste_average = 0.0
+
+        # Initiate two dicts to store lists of food and bugs
+        food_lists, bug_lists = ({'alive': [], 'dead': []} for _ in range(2))
+        self.organism_lists = {'food': food_lists, 'bug': bug_lists}
 
         self.fertile_squares = []
         if fertile_lands is None:
@@ -32,7 +35,7 @@ class World:
         else:
             for i in fertile_lands:
                 min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
-                self.fertile_squares += [[x, y] for x in range(min_x, max_x+1) for y in range(min_y, max_y+1)]
+                self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
 
         self.spawnable_squares = list(self.fertile_squares)
 
