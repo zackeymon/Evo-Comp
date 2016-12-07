@@ -176,19 +176,19 @@ class WorldViewer:
                         ax.add_patch(
                             Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))
 
-                    elif organism[0] == "'bug'":  # draw a bug(black edge)
+                    elif organism[0] == "'bug'":  # draw a bug
                         bug_size = organism[3] * 0.006
                         if bug_size > 1:
                             bug_size = 1
 
-                        if settings['taste_evo'] == 'True':
+                        if settings['taste_evo'] == 'True':  # black outline
                             ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
                                                  facecolor='k', linewidth=0))
                             ax.add_patch(
                                 Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=0.7, height=0.7,
                                         facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
 
-                        else:
+                        else:  # no outline
                             ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
                                                  facecolor=colorsys.hls_to_rgb(organism[5] / 360, bug_size + 0.2, 1),
                                                  linewidth=0))
@@ -258,8 +258,8 @@ class WorldViewer:
                         z = [[0 for _ in range(len(x))] for _ in range(len(y))]
                         z_list = [list(i) for i in zip(rep_thresh, taste)]
 
-                        for value in z_list:
-                            z[value[1]][value[0]] += 1 / len(z_list)  # list of population frequencies
+                        for coordinates in z_list:
+                            z[coordinates[1]][coordinates[0]] += 1 / len(z_list)  # list of population frequencies
 
                         x = [j * 2 for j in x]
                         y = [j * 6 for j in y]

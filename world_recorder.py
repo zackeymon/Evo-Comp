@@ -52,11 +52,11 @@ class WorldRecorder:
         return total_lifetime / total_number
 
     @staticmethod
-    def sum_list_energy(object_list):
+    def sum_list_energy(organism_list):
         energy = 0
 
-        for thing in object_list:
-            energy += thing.energy
+        for organism in organism_list:
+            energy += organism.energy
 
         return energy
 
@@ -64,16 +64,15 @@ class WorldRecorder:
         """Add data for the current world iteration to a list."""
 
         for organism in ['food', 'bug']:
+            alive = self.world.organism_lists[organism]['alive']
+            dead = self.world.organism_lists[organism]['dead']
+
             self.organism_data[organism]['time'].append(self.world.time)
-            self.organism_data[organism]['energy'].append(
-                self.sum_list_energy(self.world.organism_lists[organism]['alive']))
-            self.organism_data[organism]['population'].append(len(self.world.organism_lists[organism]['alive']))
-            self.organism_data[organism]['deaths'].append(
-                sum([len(i) for i in self.world.organism_lists[organism]['dead'][-10:]]))
-            self.organism_data[organism]['average_alive_lifetime'].append(
-                self.average_lifetime([self.world.organism_lists[organism]['alive']]))
-            self.organism_data[organism]['average_lifespan'].append(
-                self.average_lifetime(self.world.organism_lists[organism]['dead'][-10:]))
+            self.organism_data[organism]['energy'].append(self.sum_list_energy(alive))
+            self.organism_data[organism]['population'].append(len(alive))
+            self.organism_data[organism]['deaths'].append(sum([len(i) for i in dead[-10:]]))
+            self.organism_data[organism]['average_alive_lifetime'].append(self.average_lifetime([alive]))
+            self.organism_data[organism]['average_lifespan'].append(self.average_lifetime(dead[-10:]))
 
     def output_world_stats(self):
         """Output data in CSV (comma-separated values) format for analysis."""
