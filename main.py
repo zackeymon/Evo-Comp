@@ -1,9 +1,8 @@
 import _thread
 import random
-import evolution_switches as es
-from world import World
 from direction import Direction
 from organism_type import OrganismType
+from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
@@ -28,7 +27,7 @@ _list = []
 _thread.start_new_thread(input_thread, (_list,))
 
 # #######Run####### #
-while len(my_world.bug_list) > 0 and not _list:
+while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 
     # generate data
     world_recorder.generate_world_stats()
@@ -39,11 +38,11 @@ while len(my_world.bug_list) > 0 and not _list:
     my_world.available_spaces()
     my_world.spawn_food(1, taste=0.0 + my_world.food_taste_average)
 
-    random.shuffle(my_world.food_list)
-    random.shuffle(my_world.bug_list)
+    random.shuffle(my_world.organism_lists['food']['alive'])
+    random.shuffle(my_world.organism_lists['bug']['alive'])
 
     # food life cycle
-    for food in my_world.food_list:
+    for food in my_world.organism_lists['food']['alive']:
         if food.lifetime > 0 or my_world.time == 0:
             food.grow()
             if food.energy >= food.reproduction_threshold:
@@ -58,10 +57,10 @@ while len(my_world.bug_list) > 0 and not _list:
 
     # bug life cycle
     i = 0
-    my_world.dead_food_list.append([])
-    my_world.dead_bug_list.append([])
-    while i < len(my_world.bug_list):
-        bug = my_world.bug_list[i]
+    my_world.organism_lists['food']['dead'].append([])
+    my_world.organism_lists['bug']['dead'].append([])
+    while i < len(my_world.organism_lists['bug']['alive']):
+        bug = my_world.organism_lists['bug']['alive'][i]
         bug.respire()
         if bug.energy <= 0:
             # Bug die
@@ -106,4 +105,4 @@ while len(my_world.bug_list) > 0 and not _list:
 world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
-world_viewer.plot_world_data(world=True, genes=True)
+world_viewer.plot_world_data(world=True)

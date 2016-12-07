@@ -1,5 +1,5 @@
-import evolution_switches as es
 from random import randint
+import evolution_switches as es
 from organism import Organism
 
 

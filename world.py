@@ -1,10 +1,10 @@
-import random
-import datetime
 import numpy as np
+import datetime
+from random import randint
+from direction import Direction
 from bug import Bug
 from food import Food
 from organism_type import OrganismType
-from direction import Direction
 
 
 class World:
@@ -22,7 +22,7 @@ class World:
         self.columns = columns
         self.rows = rows
         self.seed = seed
-        random.seed(self.seed)
+        self.food_taste_average = 0.0
 
         self.grid = np.zeros(shape=(rows, columns))
         self.food_list, self.bug_list, self.dead_food_list, self.dead_bug_list = ([] for _ in range(4))
@@ -70,7 +70,7 @@ class World:
         self.spawnable_squares = list(self.fertile_squares)
         food_taste_list = []
 
-        for food in self.food_list:
+        for food in self.organism_lists['food']['alive']:
 
             try:
                 self.spawnable_squares.remove(food.position.tolist())
@@ -110,8 +110,12 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=0.0):
+    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=0.0, random_spawn=False):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
+        spawn_squares = self.spawnable_squares
+        if random_spawn:
+            spawn_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))

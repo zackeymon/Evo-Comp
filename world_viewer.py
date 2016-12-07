@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import sys
 import csv
 import colorsys
 import evolution_switches as es
@@ -36,64 +37,35 @@ class WorldViewer:
         return data
 
     @staticmethod
-    def draw_food(food_size, food_data, color, loop=False):
-
-        if loop:
-            x = food_data.position[0]
-            y = food_data.position[1]
-        else:
-            x = food_data[1]
-            y = food_data[2]
-
-        return Rectangle((x + (0.5 - food_size / 2), y + (0.5 - food_size / 2)), food_size, food_size, facecolor=color)
-
-    @staticmethod
-    def draw_bug(bug_size, bug_data, color, outline=False, loop=False):
-
-        if loop:
-            x = bug_data.position[0]
-            y = bug_data.position[1]
-        else:
-            x = bug_data[1]
-            y = bug_data[2]
-
-        if outline:
-            return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size, height=bug_size, facecolor='k')
-
-        return Ellipse(xy=(x + 0.5, y + 0.5), width=bug_size / 1.5, height=bug_size / 1.5, facecolor=color)
-
-    def view_world(self, world):
+    def view_world(world):
         """"Draw the world: rectangles=food, circles=bugs"""
         ax = plt.figure(figsize=(world.columns, world.rows)).add_subplot(1, 1, 1)
 
-        for food in world.food_list:
+        for food in world.organism_lists['food']['alive']:
+            food_size = food.energy * 0.006
+
             if es.taste:
-                color = colorsys.hsv_to_rgb(food.taste / 360, 1, 1)
+                hue = food.taste / 360
             else:
-                color = 'g'
+                hue = 0.33
+            color = colorsys.hls_to_rgb(hue, food_size + 0.2, 1)
 
-            food_size = food.energy * 0.01
-            if food_size <= 0.3:
-                ax.add_patch(self.draw_food(0.3, food, color, loop=True))
-            else:
-                ax.add_patch(self.draw_food(food_size, food, color, loop=True))
+            ax.add_patch(Rectangle((food.position[0], food.position[1]), 1, 1, facecolor=color, linewidth=0))
 
-        for bug in world.bug_list:
+        for bug in world.organism_lists['bug']['alive']:
+            bug_size = bug.energy * 0.006
+            if bug_size > 1:
+                bug_size = 1
+
             if es.taste:
-                color = colorsys.hsv_to_rgb(bug.taste / 360, 1, 1)
-            else:
-                color = 'r'
+                ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
+                                     facecolor='k', linewidth=0))
+                ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=0.7, height=0.7,
+                                     facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
 
-            bug_size = bug.energy * 0.01
-            if bug_size <= 0.4:
-                ax.add_patch(self.draw_bug(0.4, bug, color, outline=True, loop=True))
-                ax.add_patch(self.draw_bug(0.4, bug, color, loop=True))
-            elif bug_size >= 1.0:
-                ax.add_patch(self.draw_bug(1.0, bug, color, outline=True, loop=True))
-                ax.add_patch(self.draw_bug(1.0, bug, color, loop=True))
             else:
-                ax.add_patch(self.draw_bug(bug_size, bug, color, outline=True, loop=True))
-                ax.add_patch(self.draw_bug(bug_size, bug, color, loop=True))
+                ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
+                                     facecolor=colorsys.hls_to_rgb(bug.taste / 360, bug_size + 0.2, 1), linewidth=0))
 
         ax.set_xticks(np.arange(0, world.columns + 1, 1))
         ax.set_yticks(np.arange(0, world.rows + 1, 1))
@@ -103,6 +75,8 @@ class WorldViewer:
 
     def plot_world_stats(self):
         """Read the CSV (comma-separated values) output and plot trends."""
+
+        print('plotting world statistics...')
 
         data = [(np.genfromtxt(os.path.join('data', self.seed, 'data_files', path + '.csv'), delimiter=',',
                                names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
@@ -151,11 +125,25 @@ class WorldViewer:
             plt.savefig(os.path.join('data', self.seed, data_dict['filename']))
             plt.close()
 
-    def plot_world_data(self, world=False, genes=False):
-        """Read the CSV (comma-separated values) output and plot the world."""
+    def plot_world_data(self, world=False):
+        """Read the CSV (comma-separated values) output and plot the world and/or gene values for each time."""
 
-        world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')),
-                                delimiter=',')
+        settings_file = csv.DictReader(open(os.path.join('data', self.seed, 'data_files', self.seed + '.csv')))
+        for row in settings_file:
+            row.pop('', None)
+            row['columns'], row['rows'] = float(row['columns']), float(row['rows'])
+            settings = row
+
+        if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] == 'True':
+            for path in ['food_gene_data', 'bug_gene_data']:
+                if not os.path.exists(os.path.join('data', self.seed, path)):
+                    os.makedirs(os.path.join('data', self.seed, path))
+        if settings['taste_evo'] == 'True':
+            for path in ['food_gene_space', 'bug_gene_space']:
+                if not os.path.exists(os.path.join('data', self.seed, path)):
+                    os.makedirs(os.path.join('data', self.seed, path))
+
+        world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
 
         organism_list = []
         for row in world_file:
@@ -167,53 +155,51 @@ class WorldViewer:
 
         for i, day in enumerate(organism_list):
 
+            sys.stdout.write('\r' + 'plotting world data, time: %r' % i + '/%r' % (len(organism_list) - 1) + '...')
+            sys.stdout.flush()
+
             if world:
 
-                dimensions = np.genfromtxt(os.path.join('data', self.seed, 'data_files', self.seed + '.csv'),
-                                           delimiter=',', names=['columns', 'rows'])
-
-                ax = plt.figure(figsize=(dimensions['columns'][1], dimensions['rows'][1])).add_subplot(1, 1, 1)
+                ax = plt.figure(figsize=(settings['columns'], settings['rows'])).add_subplot(1, 1, 1)
 
                 for organism in day:
 
                     if organism[0] == "'food'":  # draw a food
+                        food_size = organism[3] * 0.006
 
-                        if es.taste:
-                            color = colorsys.hsv_to_rgb(organism[5] / 360, 1, 1)
+                        if settings['taste_evo'] == 'True':
+                            hue = organism[5] / 360
                         else:
-                            color = 'g'
+                            hue = 0.33
+                        color = colorsys.hls_to_rgb(hue, food_size + 0.2, 1)
 
-                        food_size = organism[3] * 0.01
-                        if food_size <= 0.3:
-                            ax.add_patch(self.draw_food(0.3, organism, color))
-                        else:
-                            ax.add_patch(self.draw_food(food_size, organism, color))
+                        ax.add_patch(
+                            Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))
 
                     elif organism[0] == "'bug'":  # draw a bug(black edge)
+                        bug_size = organism[3] * 0.006
+                        if bug_size > 1:
+                            bug_size = 1
 
-                        if es.taste:
-                            color = colorsys.hsv_to_rgb(organism[5] / 360, 1, 1)
+                        if settings['taste_evo'] == 'True':
+                            ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
+                                                 facecolor='k', linewidth=0))
+                            ax.add_patch(
+                                Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=0.7, height=0.7,
+                                        facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
+
                         else:
-                            color = 'r'
+                            ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
+                                                 facecolor=colorsys.hls_to_rgb(organism[5] / 360, bug_size + 0.2, 1),
+                                                 linewidth=0))
 
-                        bug_size = organism[3] * 0.01
-                        if bug_size <= 0.4:
-                            ax.add_patch(self.draw_bug(0.4, organism, color, outline=True))
-                            ax.add_patch(self.draw_bug(0.4, organism, color))
-                        elif bug_size >= 1.0:
-                            ax.add_patch(self.draw_bug(1.0, organism, color, outline=True))
-                            ax.add_patch(self.draw_bug(1.0, organism, color))
-                        else:
-                            ax.add_patch(self.draw_bug(bug_size, organism, color, outline=True))
-                            ax.add_patch(self.draw_bug(bug_size, organism, color))
-
-                ax.set_xticks(np.arange(0, dimensions['columns'][1] + 1, 1))
-                ax.set_yticks(np.arange(0, dimensions['rows'][1] + 1, 1))
-                plt.title('time=%s' % i, fontsize=(2 * dimensions['columns'][1]))
+                ax.set_xticks(np.arange(0, settings['columns'] + 1, 1))
+                ax.set_yticks(np.arange(0, settings['rows'] + 1, 1))
+                plt.title('time=%s' % i, fontsize=(2 * settings['columns']))
                 plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % i))
                 plt.close()
 
-            if genes:
+            if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] or settings['taste_evo'] == 'True':
 
                 food_list = []
                 bug_list = []
@@ -229,60 +215,64 @@ class WorldViewer:
                                 {'data': bug_list, 'path': 'bug_gene_data', 'colour': 'r',
                                  'colour_maps': 'Reds', 'path2': 'bug_gene_space'}]
 
-                # 1D Plot (bar chart)
                 for organism_data in data_to_plot:
-                    rep_dict = {j: 0 for j in range(101)}
 
-                    for organism in organism_data['data']:
-                        # count number of occurrences of each reproduction threshold for each time
-                        rep_dict[organism[4]] += 1
+                    # 1D Plot (bar chart)
+                    if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] == 'True':
 
-                    y_pos = np.arange(len(rep_dict.keys()))
-                    total = sum(rep_dict.values())
-                    if total > 0:
-                        for key, value in rep_dict.items():
-                            rep_dict[key] = value / total  # normalisation
+                        rep_dict = {j: 0 for j in range(101)}
 
-                    plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
-                    plt.xlabel('Reproduction Threshold')
-                    plt.ylabel('Population')
-                    plt.title('time=%s' % i)
-                    plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % i))
-                    plt.close()
+                        for organism in organism_data['data']:
+                            # count number of occurrences of each reproduction threshold for each time
+                            rep_dict[organism[4]] += 1
 
-                # 2D Plot (heat map)
+                        y_pos = np.arange(len(rep_dict.keys()))
+                        total = sum(rep_dict.values())
+                        if total > 0:
+                            for key, value in rep_dict.items():
+                                rep_dict[key] = value / total  # normalisation
 
-                    rep_thresh = []
-                    taste = []
+                        plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
+                        plt.xlabel('Reproduction Threshold')
+                        plt.ylabel('Population')
+                        plt.title('time=%s' % i)
+                        plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % i))
+                        plt.close()
 
-                    for organism in organism_data['data']:
-                        rep_thresh.append(organism[4])
-                        taste.append(organism[5])
+                    # 2D Plot (heat map)
+                    if settings['taste_evo'] == 'True':
 
-                    x = [i for i in range(52)]
-                    y = [i for i in range(61)]
+                        rep_thresh = []
+                        taste = []
 
-                    rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
-                    taste = [int(j / 6) for j in taste]
+                        for organism in organism_data['data']:
+                            rep_thresh.append(organism[4])
+                            taste.append(organism[5])
 
-                    z = [[0 for _ in range(len(x))] for _ in range(len(y))]
-                    z_list = [list(i) for i in zip(rep_thresh, taste)]
+                        x = [i for i in range(52)]
+                        y = [i for i in range(61)]
 
-                    for value in z_list:
-                        z[value[1]][value[0]] += 1 / len(z_list)  # list of population frequencies
+                        rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
+                        taste = [int(j / 6) for j in taste]
 
-                    x = [j * 2 for j in x]
-                    y = [j * 6 for j in y]
+                        z = [[0 for _ in range(len(x))] for _ in range(len(y))]
+                        z_list = [list(i) for i in zip(rep_thresh, taste)]
 
-                    xi, yi = np.meshgrid(x, y)
-                    zi = np.array(z)
+                        for value in z_list:
+                            z[value[1]][value[0]] += 1 / len(z_list)  # list of population frequencies
 
-                    plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
-                    plt.colorbar()
-                    plt.xlim(0, 101)
-                    plt.ylim(0, 359)
-                    plt.xlabel('Reproduction Threshold')
-                    plt.ylabel('Taste')
-                    plt.title('time=%s' % i)
-                    plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % i))
-                    plt.close()
+                        x = [j * 2 for j in x]
+                        y = [j * 6 for j in y]
+
+                        xi, yi = np.meshgrid(x, y)
+                        zi = np.array(z)
+
+                        plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
+                        plt.colorbar()
+                        plt.xlim(0, 101)
+                        plt.ylim(0, 359)
+                        plt.xlabel('Reproduction Threshold')
+                        plt.ylabel('Taste')
+                        plt.title('time=%s' % i)
+                        plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % i))
+                        plt.close()
