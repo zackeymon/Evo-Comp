@@ -1,6 +1,6 @@
 import unittest
 from world import World
-from world_viewer import WorldViewer
+from world_recorder import WorldRecorder
 
 
 class DummyBug():
@@ -23,8 +23,8 @@ class WorldTests(unittest.TestCase):
         self.assertEqual(world2.fertile_squares, [[1, 1]])
         world2.spawn_food(1)
         world2.spawn_bug(1)
-        self.assertEquals(len(world2.food_list), 1)
-        self.assertEquals(len(world2.bug_list), 0)
+        self.assertEquals(len(world2.organism_lists['food']['alive']), 1)
+        self.assertEquals(len(world2.organism_lists['bug']['alive']), 0)
 
 
 class OrganismTests(unittest.TestCase):
@@ -61,9 +61,9 @@ class WorldViewerTests(unittest.TestCase):
         self.my_world_recorder = WorldRecorder(dummy_world)
 
     def test_initialisation(self):
-        self.my_world_recorder.food_data['time'].append(0)
-        self.assertEqual(self.my_world_recorder.food_data['time'], [0])
-        self.assertEqual(self.my_world_recorder.bug_data['time'], [])
+        self.my_world_recorder.organism_data['food']['time'].append(0)
+        self.assertEqual(self.my_world_recorder.organism_data['food']['time'], [0])
+        self.assertEqual(self.my_world_recorder.organism_data['bug']['time'], [])
 
     def test_average_lifetime_function(self):
         average_lifetime = self.my_world_recorder.average_lifetime([self.dummy_bug_list])

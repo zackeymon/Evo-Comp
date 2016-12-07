@@ -31,7 +31,8 @@ class WorldRecorder:
 
         # Create directories if they don't exist
         for path in ['world', 'data_files']:
-            os.makedirs(os.path.join('data', world.seed, path))
+            if not os.path.exists(os.path.join('data', world.seed, path)):
+                os.makedirs(os.path.join('data', world.seed, path))
 
         # Create seed file with parameters of initialisation
         with open(os.path.join('data', world.seed, 'data_files', world.seed + '.csv'), 'a') as seed:

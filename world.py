@@ -1,6 +1,6 @@
 import numpy as np
 import datetime
-from random import randint
+import random
 from direction import Direction
 from bug import Bug
 from food import Food
@@ -123,7 +123,7 @@ class World:
 
         for i in range(number):
             try:
-                spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
+                spawn_position = self.spawnable_squares.pop(random.randint(0, len(spawn_squares) - 1))
                 self.organism_lists['bug']['alive'].append(
                     Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
                 self.grid[tuple(spawn_position)] += OrganismType.bug
