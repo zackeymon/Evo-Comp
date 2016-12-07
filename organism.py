@@ -7,6 +7,7 @@ class Organism:
     """
     The parent class for all organisms living in the world.
     """
+
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
         Organism Initialisation
@@ -49,3 +50,4 @@ class Organism:
 
         # Create new object
         return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_taste)
+

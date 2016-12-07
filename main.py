@@ -7,14 +7,14 @@ from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
 # #######Initialisation####### #
-my_world = World(rows=80, columns=80, fertile_lands=[[[20, 20], [29, 29]], [[50, 20], [59, 29]],
-                                                     [[20, 50], [29, 59]], [[50, 50], [59, 59]]])
+my_world = World(rows=80, columns=80, fertile_lands=[[[10, 10], [69, 69]]])
+# my_world = World(rows=3, columns=3)
+
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
-random.seed(my_world.seed)
 
-my_world.spawn_food(100)
-my_world.spawn_bug(30)
+my_world.spawn_food(200)
+my_world.spawn_bug(50)
 
 
 # Kill switch
@@ -50,7 +50,9 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(food.position, OrganismType.food))
                 if random_direction is not None:
-                    my_world.organism_lists['food']['alive'].append(food.reproduce(random_direction))
+                    new_food = food.reproduce(random_direction)
+                    my_world.food_list.append(new_food)
+                    my_world.grid[tuple(new_food.position)] += OrganismType.food
         food.lifetime += 1
 
     # bug life cycle
@@ -62,35 +64,37 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
         bug.respire()
         if bug.energy <= 0:
             # Bug die
-            my_world.organism_lists['bug']['dead'][-1].append(my_world.organism_lists['bug']['alive'].pop(i))
+            my_world.kill(bug)
         else:
             # Bug won't move if born this turn
             if bug.lifetime > 0 or my_world.time == 0:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
                 if random_direction is not None:
+                    my_world.grid[tuple(bug.position)] -= OrganismType.bug
                     bug.move(random_direction)
+                    my_world.grid[tuple(bug.position)] += OrganismType.bug
 
-            # for i in my_world.grid[bug.position[0]][bug.position[1]]:
-            #     if isinstance(i, Food):
-            #         bug.eat(i)
-
-            # Check if bug can eat food
-            for j, food in enumerate(my_world.organism_lists['food']['alive']):
-                if (bug.position == food.position).all():
-                    if bug.taste - 10 <= food.taste <= bug.taste + 10:
-                        bug.eat(food)
-                        my_world.organism_lists['food']['dead'][-1].append(
-                            my_world.organism_lists['food']['alive'].pop(j))
-                    break
+            # Check if there is food on this square
+            if my_world.grid[tuple(bug.position)] == OrganismType.food_bug:
+                for j, food in enumerate(my_world.food_list):
+                    # Find the food
+                    if (bug.position == food.position).all():
+                        # Check if bug can eat it
+                        if bug.taste - 10 <= food.taste <= bug.taste + 10:
+                            bug.eat(food)
+                            my_world.kill(food)
+                        break
 
             # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
+                # Check if there is an empty square
                 if random_direction is not None:
-                    spawn = bug.reproduce(random_direction)
-                    my_world.organism_lists['bug']['alive'].append(spawn)
+                    new_bug = bug.reproduce(random_direction)
+                    my_world.bug_list.append(new_bug)
+                    my_world.grid[tuple(new_bug.position)] += OrganismType.bug
             bug.lifetime += 1
             i += 1
 
