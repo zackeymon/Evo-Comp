@@ -23,10 +23,14 @@ class World:
         self.rows = rows
         self.seed = seed
         self.food_taste_average = 0.0
+        self.food_taste_average = 0.0
+        random.seed(self.seed)
+
+        # Initiate two dicts to store lists of food and bugs
+        food_lists, bug_lists = ({'alive': [], 'dead': []} for _ in range(2))
+        self.organism_lists = {'food': food_lists, 'bug': bug_lists}
 
         self.grid = np.zeros(shape=(rows, columns))
-        self.food_list, self.bug_list, self.dead_food_list, self.dead_bug_list = ([] for _ in range(4))
-
         self.fertile_squares = []
         if fertile_lands is None:
             # Make the whole world fertile
@@ -91,13 +95,13 @@ class World:
         death_position = organism.position
 
         if organism.__class__ == Food:
-            self.dead_food_list[-1].append(organism)
-            self.food_list.remove(organism)
+            self.organism_lists['food']['dead'][-1].append(organism)
+            self.organism_lists['food']['alive'].remove(organism)
             self.grid[tuple(death_position)] -= OrganismType.food
 
         elif organism.__class__ == Bug:
-            self.dead_bug_list[-1].append(organism)
-            self.bug_list.remove(organism)
+            self.organism_lists['bug']['dead'][-1].append(organism)
+            self.organism_lists['bug']['alive'].remove(organism)
             self.grid[tuple(death_position)] -= OrganismType.bug
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=0.0):
@@ -105,7 +109,8 @@ class World:
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
-                self.food_list.append(Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
+                self.organism_lists['food']['alive'].append(
+                    Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
                 self.grid[tuple(spawn_position)] += OrganismType.food
             except ValueError:
                 break
@@ -119,7 +124,8 @@ class World:
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
-                self.bug_list.append(Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
+                self.organism_lists['bug']['alive'].append(
+                    Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
                 self.grid[tuple(spawn_position)] += OrganismType.bug
             except ValueError:
                 break

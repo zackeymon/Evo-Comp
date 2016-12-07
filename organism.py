@@ -50,4 +50,3 @@ class Organism:
 
         # Create new object
         return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_taste)
-

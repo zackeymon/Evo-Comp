@@ -1,7 +1,6 @@
 import unittest
 from world import World
 from world_viewer import WorldViewer
-import numpy as np
 
 
 class DummyBug():
