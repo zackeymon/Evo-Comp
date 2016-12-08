@@ -1,4 +1,5 @@
 import unittest
+from utility_methods import *
 from world import World
 from world_recorder import WorldRecorder
 
@@ -53,7 +54,7 @@ class OrganismTests(unittest.TestCase):
         self.assertEqual(new_food.energy, 30)
 
 
-class WorldViewerTests(unittest.TestCase):
+class WorldRecorderTests(unittest.TestCase):
     def setUp(self):
         dummy_world = World(rows=10, columns=10, seed='lolz')
         self.dummy_bug_list = [DummyBug(10), DummyBug(20), DummyBug(30)]
@@ -66,10 +67,10 @@ class WorldViewerTests(unittest.TestCase):
         self.assertEqual(self.my_world_recorder.organism_data['bug']['time'], [])
 
     def test_average_lifetime_function(self):
-        average_lifetime = self.my_world_recorder.average_lifetime([self.dummy_bug_list])
-        self.assertEqual(average_lifetime, 20)
+        average_alive_lifetime = average_lifetime([self.dummy_bug_list])
+        self.assertEqual(average_alive_lifetime, 20)
 
-        average_dead_lifetime = self.my_world_recorder.average_lifetime(self.dead_dummy_bug_list[-10:])
+        average_dead_lifetime = average_lifetime(self.dead_dummy_bug_list[-10:])
         self.assertEqual(average_dead_lifetime, 60)
 
 

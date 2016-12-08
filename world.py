@@ -1,6 +1,6 @@
-import numpy as np
 import datetime
 import random
+from utility_methods import *
 from direction import Direction
 from bug import Bug
 from food import Food
@@ -41,25 +41,6 @@ class World:
 
         self.spawnable_squares = list(self.fertile_squares)
 
-    @staticmethod
-    def get_taste_average(taste_list):
-
-        x = []
-        y = []
-        for taste in taste_list:
-            taste_rad = np.radians(taste)
-            x.append(np.cos(taste_rad))
-            y.append(np.sin(taste_rad))
-
-        x_average = np.sum(x) / len(x)
-        y_average = np.sum(y) / len(y)
-
-        average =  np.arctan2(y_average, x_average) * 180/np.pi
-        if average < 0:
-            average += 360
-
-        return average
-
     def get_disallowed_directions(self, current_position, organism_type):
         """Each organism cannot collide with itself (no overlap)."""
         disallowed_directions = []
@@ -88,7 +69,7 @@ class World:
         return False
 
     def available_spaces(self):
-        """Get available spawn spaces and the average of the food taste value."""
+        """Get available spawn spaces and the average of the food taste value for current time."""
         self.spawnable_squares = list(self.fertile_squares)
         food_taste_list = []
 
@@ -103,7 +84,7 @@ class World:
         if len(food_taste_list) == 0:
             food_taste_list.append(180.0)
 
-        self.food_taste_average = float(int(self.get_taste_average(food_taste_list)))
+        self.food_taste_average = float(int(get_taste_average(food_taste_list)))
 
     def kill(self, organism):
         death_position = organism.position
@@ -119,7 +100,7 @@ class World:
             self.grid[tuple(death_position)] -= OrganismType.bug
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180.0):
-        """Spawn food and check spawn square is available."""
+        """Spawn food on fertile land and check spawn square is available."""
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
@@ -130,7 +111,10 @@ class World:
                 break
 
     def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180.0, random_spawn=False):
-        """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
+        """
+        Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
+        random_spawn: set to True to randomly spawn bugs anywhere in the world.
+        """
         spawn_squares = self.spawnable_squares
         if random_spawn:
             spawn_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
