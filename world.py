@@ -23,7 +23,6 @@ class World:
         self.rows = rows
         self.seed = seed
         self.food_taste_average = 0.0
-        self.food_taste_average = 0.0
         random.seed(self.seed)
 
         # Initiate two dicts to store lists of food and bugs
@@ -86,7 +85,7 @@ class World:
             else:
                 food_taste_list.append(food.taste)
 
-            self.food_taste_average = np.average(food_taste_list)
+            self.food_taste_average = float(int(np.average(food_taste_list)))
             # NaN != NaN
             if self.food_taste_average != self.food_taste_average:
                 self.food_taste_average = 0.0

@@ -54,8 +54,8 @@ class WorldViewer:
 
         for bug in world.organism_lists['bug']['alive']:
             bug_size = bug.energy * 0.006
-            if bug_size > 1:
-                bug_size = 1
+            if bug_size > 0.6:
+                bug_size = 0.6
 
             if es.taste:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
@@ -178,8 +178,8 @@ class WorldViewer:
 
                     elif organism[0] == "'bug'":  # draw a bug
                         bug_size = organism[3] * 0.006
-                        if bug_size > 1:
-                            bug_size = 1
+                        if bug_size > 0.6:
+                            bug_size = 0.6
 
                         if settings['taste_evo'] == 'True':  # black outline
                             ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=1, height=1,
@@ -249,7 +249,7 @@ class WorldViewer:
                             rep_thresh.append(organism[4])
                             taste.append(organism[5])
 
-                        x = [i for i in range(52)]
+                        x = [i for i in range(51)]
                         y = [i for i in range(61)]
 
                         rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
