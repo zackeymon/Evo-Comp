@@ -1,5 +1,6 @@
 import os
 from collections import OrderedDict
+from utility_methods import *
 import evolution_switches as es
 
 
@@ -40,26 +41,6 @@ class WorldRecorder:
             seed.write('%r,' % world.columns + '%r,' % world.rows + '%r,' % es.food_reproduction_threshold
                        + '%r,' % es.bug_reproduction_threshold + '%r,' % es.taste + '\n')
 
-    @staticmethod
-    def average_lifetime(organism_list):
-        """organism_list[turn][organism_index]"""
-        total_number = sum([len(i) for i in organism_list])
-        if total_number == 0:
-            return 0
-
-        total_lifetime = sum([sum([i.lifetime for i in turn]) for turn in organism_list])
-
-        return total_lifetime / total_number
-
-    @staticmethod
-    def sum_list_energy(organism_list):
-        energy = 0
-
-        for organism in organism_list:
-            energy += organism.energy
-
-        return energy
-
     def generate_world_stats(self):
         """Add data for the current world iteration to a list."""
 
@@ -68,11 +49,11 @@ class WorldRecorder:
             dead = self.world.organism_lists[organism]['dead']
 
             self.organism_data[organism]['time'].append(self.world.time)
-            self.organism_data[organism]['energy'].append(self.sum_list_energy(alive))
+            self.organism_data[organism]['energy'].append(sum_list_energy(alive))
             self.organism_data[organism]['population'].append(len(alive))
             self.organism_data[organism]['deaths'].append(sum([len(i) for i in dead[-10:]]))
-            self.organism_data[organism]['average_alive_lifetime'].append(self.average_lifetime([alive]))
-            self.organism_data[organism]['average_lifespan'].append(self.average_lifetime(dead[-10:]))
+            self.organism_data[organism]['average_alive_lifetime'].append(average_lifetime([alive]))
+            self.organism_data[organism]['average_lifespan'].append(average_lifetime(dead[-10:]))
 
     def output_world_stats(self):
         """Output data in CSV (comma-separated values) format for analysis."""

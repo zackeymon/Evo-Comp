@@ -1,6 +1,6 @@
 import _thread
-import numpy as np
 import random
+from utility_methods import *
 from direction import Direction
 from organism_type import OrganismType
 from world import World
@@ -9,7 +9,6 @@ from world_viewer import WorldViewer
 
 # #######Initialisation####### #
 my_world = World(rows=80, columns=80, fertile_lands=[[[10, 10], [69, 69]]])
-# my_world = World(rows=3, columns=3)
 
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
@@ -82,7 +81,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                     # Find the food
                     if (bug.position == food.position).all():
                         # Check if bug can eat it
-                        if np.absolute(bug.taste - my_world.get_taste_average([bug.taste, food.taste])) < 10:
+                        if np.absolute(bug.taste - get_taste_average([bug.taste, food.taste])) < 10:
                             bug.eat(food)
                             my_world.kill(food)
                         break

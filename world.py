@@ -1,6 +1,6 @@
-import numpy as np
 import datetime
 import random
+from utility_methods import *
 from direction import Direction
 from bug import Bug
 from food import Food
@@ -40,25 +40,6 @@ class World:
                 self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
 
         self.spawnable_squares = list(self.fertile_squares)
-
-    @staticmethod
-    def get_taste_average(taste_list):
-
-        x = []
-        y = []
-        for taste in taste_list:
-            taste_rad = np.radians(taste)
-            x.append(np.cos(taste_rad))
-            y.append(np.sin(taste_rad))
-
-        x_average = np.sum(x) / len(x)
-        y_average = np.sum(y) / len(y)
-
-        average =  np.arctan2(y_average, x_average) * 180/np.pi
-        if average < 0:
-            average += 360
-
-        return average
 
     def get_disallowed_directions(self, current_position, organism_type):
         """Each organism cannot collide with itself (no overlap)."""
@@ -103,7 +84,7 @@ class World:
         if len(food_taste_list) == 0:
             food_taste_list.append(180.0)
 
-        self.food_taste_average = float(int(self.get_taste_average(food_taste_list)))
+        self.food_taste_average = float(int(get_taste_average(food_taste_list)))
 
     def kill(self, organism):
         death_position = organism.position

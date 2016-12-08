@@ -1,12 +1,12 @@
-import numpy as np
 import os
 import sys
 import csv
 import colorsys
-import evolution_switches as es
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
+from utility_methods import *
+import evolution_switches as es
 
 
 class WorldViewer:
@@ -20,21 +20,6 @@ class WorldViewer:
         :param seed: The seed value for data to output
         """
         self.seed = seed
-
-    @staticmethod
-    def split_list(data):
-        """Split the overall list of data into separate days."""
-        split_data = [[]]
-        for item in data:
-            if "'end_day'" in item:
-                split_data.append([])
-            else:
-                split_data[-1].append(item)
-
-        del split_data[-1]
-        data = split_data
-
-        return data
 
     @staticmethod
     def view_world(world):
@@ -54,8 +39,8 @@ class WorldViewer:
 
         for bug in world.organism_lists['bug']['alive']:
             bug_size = bug.energy * 0.01
-            if bug_size < 0.4:
-                bug_size = 0.4
+            if bug_size < 0.3:
+                bug_size = 0.3
             elif bug_size > 1.0:
                 bug_size = 1.0
 
@@ -153,7 +138,7 @@ class WorldViewer:
             organism_list.append(row)
 
         organism_list = [[[float(organism[i]) if i > 0 else organism[i] for i in range(len(organism))]
-                          for organism in day] for day in self.split_list(organism_list)]
+                          for organism in day] for day in split_list(organism_list)]
 
         for _ in range(start):
             del organism_list[0]
@@ -184,8 +169,8 @@ class WorldViewer:
 
                     elif organism[0] == "'bug'":  # draw a bug
                         bug_size = organism[3] * 0.01
-                        if bug_size < 0.4:
-                            bug_size = 0.4
+                        if bug_size < 0.3:
+                            bug_size = 0.3
                         elif bug_size > 1.0:
                             bug_size = 1.0
 
