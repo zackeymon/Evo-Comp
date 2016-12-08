@@ -255,7 +255,7 @@ class WorldViewer:
                         x = [j for j in range(51)]  # create binned co-ordinate values
                         y = [j for j in range(61)]
 
-                        rep_thresh = [int(j / 2) for j in rep_thresh] # bin values
+                        rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
                         taste = [int(j / 6) for j in taste]
 
                         z = [[0 for _ in range(len(x))] for _ in range(len(y))]

@@ -24,9 +24,9 @@ class Organism:
         self.energy_max = energy_max
 
         if es.taste:
-            self.taste = (taste + randint(-10, 10)) % 360
+            self.taste = float((taste + randint(-10, 10)) % 360)
         else:
-            self.taste = taste
+            self.taste = float(taste)
 
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2

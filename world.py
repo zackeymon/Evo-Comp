@@ -22,7 +22,7 @@ class World:
         self.columns = columns
         self.rows = rows
         self.seed = seed
-        self.food_taste_average = 0.0
+        self.food_taste_average = 180.0
         random.seed(self.seed)
 
         # Initiate two dicts to store lists of food and bugs
@@ -69,7 +69,7 @@ class World:
         return False
 
     def available_spaces(self):
-        """Get available spawn spaces and the average of the food taste value for current time."""
+        """Get available spawn spaces and the average of the food taste value for ."""
         self.spawnable_squares = list(self.fertile_squares)
         food_taste_list = []
 
@@ -81,10 +81,8 @@ class World:
                 pass
             food_taste_list.append(food.taste)
 
-        if len(food_taste_list) == 0:
-            food_taste_list.append(180.0)
-
-        self.food_taste_average = float(int(get_taste_average(food_taste_list)))
+        if len(food_taste_list) > 0:
+            self.food_taste_average = float(int(get_taste_average(food_taste_list)))
 
     def kill(self, organism):
         death_position = organism.position
@@ -99,7 +97,7 @@ class World:
             self.organism_lists['bug']['alive'].remove(organism)
             self.grid[tuple(death_position)] -= OrganismType.bug
 
-    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180.0):
+    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180):
         """Spawn food on fertile land and check spawn square is available."""
         for i in range(number):
             try:
@@ -110,7 +108,7 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180.0, random_spawn=False):
+    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180, random_spawn=False):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
         random_spawn: set to True to randomly spawn bugs anywhere in the world.

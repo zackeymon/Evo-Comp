@@ -5,7 +5,8 @@ from world_recorder import WorldRecorder
 
 
 class DummyBug():
-    def __init__(self, lifetime=10):
+    def __init__(self, energy=5, lifetime=10):
+        self.energy = energy
         self.lifetime = lifetime
 
 
@@ -53,18 +54,32 @@ class OrganismTests(unittest.TestCase):
         self.assertEqual(old_food.energy, 30)
         self.assertEqual(new_food.energy, 30)
 
+    def test_kill(self):
+        self.my_world.spawn_bug(3)
+        self.my_world.organism_lists['bug']['dead'].append([])
+        self.my_world.kill(self.my_world.organism_lists['bug']['alive'][0])
+        self.assertEqual(len(self.my_world.organism_lists['bug']['alive']), 2)
+        self.assertEqual(len(self.my_world.organism_lists['bug']['dead']), 1)
+
 
 class WorldRecorderTests(unittest.TestCase):
     def setUp(self):
         dummy_world = World(rows=10, columns=10, seed='lolz')
-        self.dummy_bug_list = [DummyBug(10), DummyBug(20), DummyBug(30)]
-        self.dead_dummy_bug_list = [[DummyBug(50), DummyBug(70), DummyBug(60)] for _ in range(20)]
+        self.dummy_bug_list = [DummyBug(5, 10), DummyBug(10, 20), DummyBug(15, 30)]
+        self.dead_dummy_bug_list = [[DummyBug(40, 50), DummyBug(60, 70), DummyBug(50, 60)] for _ in range(20)]
         self.my_world_recorder = WorldRecorder(dummy_world)
 
     def test_initialisation(self):
         self.my_world_recorder.organism_data['food']['time'].append(0)
         self.assertEqual(self.my_world_recorder.organism_data['food']['time'], [0])
         self.assertEqual(self.my_world_recorder.organism_data['bug']['time'], [])
+
+    def test_sum_list_energy(self):
+        total_alive_energy = sum_list_energy(self.dummy_bug_list)
+        self.assertEqual(total_alive_energy, 30)
+
+        total_dead_energy = sum_list_energy(self.dead_dummy_bug_list[0])
+        self.assertEqual(total_dead_energy, 150)
 
     def test_average_lifetime_function(self):
         average_alive_lifetime = average_lifetime([self.dummy_bug_list])
