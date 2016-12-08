@@ -41,6 +41,25 @@ class World:
 
         self.spawnable_squares = list(self.fertile_squares)
 
+    @staticmethod
+    def get_taste_average(taste_list):
+
+        x = []
+        y = []
+        for taste in taste_list:
+            taste_rad = np.radians(taste)
+            x.append(np.cos(taste_rad))
+            y.append(np.sin(taste_rad))
+
+        x_average = np.sum(x) / len(x)
+        y_average = np.sum(y) / len(y)
+
+        average =  np.arctan2(y_average, x_average) * 180/np.pi
+        if average < 0:
+            average += 360
+
+        return average
+
     def get_disallowed_directions(self, current_position, organism_type):
         """Each organism cannot collide with itself (no overlap)."""
         disallowed_directions = []
@@ -79,16 +98,12 @@ class World:
                 self.spawnable_squares.remove(food.position.tolist())
             except ValueError:
                 pass
+            food_taste_list.append(food.taste)
 
-            if food.taste >= 180:
-                food_taste_list.append(food.taste - 360)
-            else:
-                food_taste_list.append(food.taste)
+        if len(food_taste_list) == 0:
+            food_taste_list.append(180.0)
 
-            self.food_taste_average = float(int(np.average(food_taste_list)))
-            # NaN != NaN
-            if self.food_taste_average != self.food_taste_average:
-                self.food_taste_average = 0.0
+        self.food_taste_average = float(int(self.get_taste_average(food_taste_list)))
 
     def kill(self, organism):
         death_position = organism.position
@@ -103,7 +118,7 @@ class World:
             self.organism_lists['bug']['alive'].remove(organism)
             self.grid[tuple(death_position)] -= OrganismType.bug
 
-    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=0.0):
+    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180.0):
         """Spawn food and check spawn square is available."""
         for i in range(number):
             try:
@@ -114,7 +129,7 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=0.0, random_spawn=False):
+    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180.0, random_spawn=False):
         """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
         spawn_squares = self.spawnable_squares
         if random_spawn:

@@ -42,13 +42,13 @@ class WorldViewer:
         ax = plt.figure(figsize=(world.columns, world.rows)).add_subplot(1, 1, 1)
 
         for food in world.organism_lists['food']['alive']:
-            food_size = food.energy * 0.006
+            food_size = food.energy * 0.005
 
             if es.taste:
                 hue = food.taste / 360
             else:
                 hue = 0.33
-            color = colorsys.hls_to_rgb(hue, food_size + 0.2, 1)
+            color = colorsys.hls_to_rgb(hue, 1.0 - food_size if food_size > 0.1 else 0.9, 1)
 
             ax.add_patch(Rectangle((food.position[0], food.position[1]), 1, 1, facecolor=color, linewidth=0))
 
@@ -61,11 +61,11 @@ class WorldViewer:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
                                      facecolor='k', linewidth=0))
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=0.7, height=0.7,
-                                     facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
+                                     facecolor=colorsys.hls_to_rgb(bug.taste / 360, bug_size + 0.2, 1), linewidth=0))
 
             else:
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=1, height=1,
-                                     facecolor=colorsys.hls_to_rgb(bug.taste / 360, bug_size + 0.2, 1), linewidth=0))
+                                     facecolor=colorsys.hls_to_rgb(0, bug_size + 0.2, 1), linewidth=0))
 
         ax.set_xticks(np.arange(0, world.columns + 1, 1))
         ax.set_yticks(np.arange(0, world.rows + 1, 1))
@@ -165,13 +165,13 @@ class WorldViewer:
                 for organism in day:
 
                     if organism[0] == "'food'":  # draw a food
-                        food_size = organism[3] * 0.006
+                        food_size = organism[3] * 0.005
 
                         if settings['taste_evo'] == 'True':
                             hue = organism[5] / 360
                         else:
                             hue = 0.33
-                        color = colorsys.hls_to_rgb(hue, food_size + 0.2, 1)
+                        color = colorsys.hls_to_rgb(hue, 1.0 - food_size if food_size > 0.1 else 0.9, 1)
 
                         ax.add_patch(
                             Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))

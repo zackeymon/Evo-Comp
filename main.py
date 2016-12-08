@@ -1,4 +1,5 @@
 import _thread
+import numpy as np
 import random
 from direction import Direction
 from organism_type import OrganismType
@@ -36,7 +37,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 
     # spawn food
     my_world.available_spaces()
-    my_world.spawn_food(1, taste=0.0 + my_world.food_taste_average)
+    my_world.spawn_food(1, taste=my_world.food_taste_average)
 
     random.shuffle(my_world.organism_lists['food']['alive'])
     random.shuffle(my_world.organism_lists['bug']['alive'])
@@ -81,7 +82,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                     # Find the food
                     if (bug.position == food.position).all():
                         # Check if bug can eat it
-                        if bug.taste - 10 <= food.taste <= bug.taste + 10:
+                        if np.absolute(bug.taste - my_world.get_taste_average([bug.taste, food.taste])) < 10:
                             bug.eat(food)
                             my_world.kill(food)
                         break
