@@ -69,7 +69,7 @@ class World:
         return False
 
     def available_spaces(self):
-        """Get available spawn spaces and the average of the food taste value."""
+        """Get available spawn spaces and the average of the food taste value for current time."""
         self.spawnable_squares = list(self.fertile_squares)
         food_taste_list = []
 
@@ -100,7 +100,7 @@ class World:
             self.grid[tuple(death_position)] -= OrganismType.bug
 
     def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180.0):
-        """Spawn food and check spawn square is available."""
+        """Spawn food on fertile land and check spawn square is available."""
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
@@ -111,7 +111,10 @@ class World:
                 break
 
     def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180.0, random_spawn=False):
-        """Spawn bugs and check spawn square is available, bugs only created upon initialisation."""
+        """
+        Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
+        random_spawn: set to True to randomly spawn bugs anywhere in the world.
+        """
         spawn_squares = self.spawnable_squares
         if random_spawn:
             spawn_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]

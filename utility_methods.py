@@ -2,6 +2,7 @@ import numpy as np
 
 
 def get_taste_average(taste_list):
+    """Get average taste of a list of tastes (%360) using polar co-ordinates."""
     x = []
     y = []
     for taste in taste_list:

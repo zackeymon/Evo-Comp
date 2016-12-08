@@ -81,6 +81,7 @@ class WorldRecorder:
                 self.world_data['reproduction_threshold'].append(individual_organism.reproduction_threshold)
                 self.world_data['taste'].append(individual_organism.taste)
 
+        # end day
         self.world_data['organism'].append(self.world.time)
         self.world_data['x'].append('end_day')
         self.world_data['y'].append('end_day')
