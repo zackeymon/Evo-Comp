@@ -33,7 +33,7 @@ class WorldViewer:
                 hue = food.taste / 360
             else:
                 hue = 0.33
-            color = colorsys.hls_to_rgb(hue, 1.0 - food_size if food_size > 0.1 else 0.9, 1)
+            color = colorsys.hls_to_rgb(hue, 1.0 - food_size if food_size > 0.2 else 0.8, 1)
 
             ax.add_patch(Rectangle((food.position[0], food.position[1]), 1, 1, facecolor=color, linewidth=0))
 

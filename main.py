@@ -8,13 +8,13 @@ from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
 # #######Initialisation####### #
-my_world = World(rows=80, columns=80, fertile_lands=[[[10, 10], [69, 69]]])
+my_world = World(seed='rt1_t0-cs_L-001', rows=100, columns=100, fertile_lands=[[[20, 20], [79, 79]]])
 
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
 
-my_world.spawn_food(200)
-my_world.spawn_bug(50)
+my_world.spawn_food(int(len(my_world.fertile_squares) / 20))
+my_world.spawn_bug(int(len(my_world.fertile_squares) / 40))
 
 
 # Kill switch
@@ -87,7 +87,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                         break
 
             # Check if bug can reproduce
-            if bug.energy >= bug.reproduction_threshold:
+            if bug.energy >= bug.reproduction_threshold and bug.lifetime > 0:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
                 # Check if there is an empty square
