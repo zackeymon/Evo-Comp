@@ -160,13 +160,10 @@ class WorldViewer:
                 for organism in day:
 
                     if organism[0] == "'food'":  # draw food
-                        food_size = organism[3] * 0.005
+                        hue = organism[5] / 360 if settings['taste_evo'] == 'True' else 0.33
+                        luminosity = 0.9 - organism[3] * 0.004 if organism[3] > 20 else 0.82
 
-                        if settings['taste_evo'] == 'True':
-                            hue = organism[5] / 360
-                        else:
-                            hue = 0.33
-                        color = colorsys.hls_to_rgb(hue, 1.0 - food_size if food_size > 0.1 else 0.9, 1)
+                        color = colorsys.hls_to_rgb(hue, luminosity, 1)
 
                         ax.add_patch(
                             Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))
