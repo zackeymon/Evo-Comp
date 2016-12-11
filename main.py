@@ -8,7 +8,7 @@ from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
 # #######Initialisation####### #
-my_world = World(seed='rt1_t0-cs_L-001', rows=100, columns=100, fertile_lands=[[[20, 20], [79, 79]]])
+my_world = World(seed='rt1_t1-cs_L-001', rows=100, columns=100, fertile_lands=[[[20, 20], [79, 79]]])
 
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
@@ -27,7 +27,8 @@ _list = []
 _thread.start_new_thread(input_thread, (_list,))
 
 # #######Run####### #
-while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
+# while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
+for _ in range(3000):
 
     # generate data
     world_recorder.generate_world_stats()
@@ -105,4 +106,4 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
-world_viewer.plot_world_data(world=True)
+world_viewer.plot_world_data()

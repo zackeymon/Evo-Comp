@@ -82,7 +82,7 @@ class World:
             food_taste_list.append(food.taste)
 
         if len(food_taste_list) > 0:
-            self.food_taste_average = float(int(get_taste_average(food_taste_list)))
+            self.food_taste_average = int(get_taste_average(food_taste_list))
 
     def kill(self, organism):
         death_position = organism.position

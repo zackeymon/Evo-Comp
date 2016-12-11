@@ -36,7 +36,7 @@ class WorldRecorder:
                 os.makedirs(os.path.join('data', world.seed, path))
 
         # Create seed file with parameters of initialisation
-        with open(os.path.join('data', world.seed, 'data_files', world.seed + '.csv'), 'a') as seed:
+        with open(os.path.join('data', world.seed, 'data_files', world.seed + '.csv'), 'w') as seed:
             seed.write('columns,' + 'rows,' + 'food_rep_thresh_evo,' + 'bug_rep_thresh_evo,' + 'taste_evo,' + '\n')
             seed.write('%r,' % world.columns + '%r,' % world.rows + '%r,' % es.food_reproduction_threshold
                        + '%r,' % es.bug_reproduction_threshold + '%r,' % es.taste + '\n')
@@ -62,7 +62,7 @@ class WorldRecorder:
 
         for organism in ['food', 'bug']:
             with open(os.path.join('data', self.world.seed, 'data_files', str(organism) + '_data.csv'),
-                      'a') as organism_file:
+                      'w') as organism_file:
                 for time, energy, population, dead_population, average_alive_lifetime, average_lifespan in zip(
                         *self.organism_data[organism].values()):
                     organism_file.write(
@@ -94,7 +94,7 @@ class WorldRecorder:
 
         print('outputting world data...')
 
-        with open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv'), 'a') as world_file:
+        with open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv'), 'w') as world_file:
             for organism, x, y, energy, reproduction_threshold, taste in zip(*self.world_data.values()):
                 world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
                                  + '%r,' % reproduction_threshold + '%r,' % taste + '\n')
