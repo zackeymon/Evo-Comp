@@ -23,7 +23,7 @@ class Bug(Organism):
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, taste)
 
     def respire(self):
-        self.energy -= 1
+        self.energy -= 2
 
     def eat(self, food):
         # if (self.energy + food.energy) > self.energy_max:

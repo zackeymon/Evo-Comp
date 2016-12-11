@@ -21,11 +21,11 @@ class Food(Organism):
         else:
             new_rep_thresh = 30 + randint(-5, 5)
 
-        if new_rep_thresh < 16:
-            new_rep_thresh = 16
+        if new_rep_thresh < 10:
+            new_rep_thresh = 10
 
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, taste)
 
     def grow(self):
         if self.energy < self.energy_max:
-            self.energy += 1
+            self.energy += 2
