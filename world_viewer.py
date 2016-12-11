@@ -27,13 +27,10 @@ class WorldViewer:
         ax = plt.figure(figsize=(world.columns, world.rows)).add_subplot(1, 1, 1)
 
         for food in world.organism_lists['food']['alive']:  # draw food
-            food_size = food.energy * 0.005
+            hue = food.taste / 360 if es.taste else 0.33
+            luminosity = 0.9 - food.energy * 0.004 if food.energy > 20 else 0.82
 
-            if es.taste:
-                hue = food.taste / 360
-            else:
-                hue = 0.33
-            color = colorsys.hls_to_rgb(hue, 1.0 - food_size if food_size > 0.2 else 0.8, 1)
+            color = colorsys.hls_to_rgb(hue, luminosity, 1)
 
             ax.add_patch(Rectangle((food.position[0], food.position[1]), 1, 1, facecolor=color, linewidth=0))
 
@@ -149,7 +146,7 @@ class WorldViewer:
         for _ in range(start):
             del organism_list[0]
 
-        for i, day in enumerate(organism_list):     # loop through each day
+        for i, day in enumerate(organism_list):  # loop through each day
 
             sys.stdout.write(
                 '\r' + 'plotting world data, time: %r' % (i + start) + '/%r' % (len(organism_list) + start - 1) + '...')
@@ -216,7 +213,7 @@ class WorldViewer:
                                 {'data': bug_list, 'path': 'bug_gene_data', 'colour': 'r',
                                  'colour_maps': 'Reds', 'path2': 'bug_gene_space'}]
 
-                for organism_data in data_to_plot:      # for each food and bug
+                for organism_data in data_to_plot:  # for each food and bug
 
                     # 1D Plot (bar chart)
                     if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] == 'True':
