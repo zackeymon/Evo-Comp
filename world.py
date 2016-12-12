@@ -1,5 +1,6 @@
 import datetime
 import random
+import csv
 from utility_methods import *
 from direction import Direction
 from bug import Bug
@@ -12,22 +13,22 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, rows, columns, fertile_lands=None, seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+    def __init__(self, rows, columns, time=0, fertile_lands=None,
+                 seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), food_list=[], bug_list=[]):
         """
         World Initialisation
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
         """
-        self.time = 0
         self.columns = columns
         self.rows = rows
+        self.time = time
         self.seed = seed
         self.food_taste_average = 180.0
         random.seed(self.seed)
 
-        # Initiate two dicts to store lists of food and bugs
-        food_lists, bug_lists = ({'alive': [], 'dead': []} for _ in range(2))
-        self.organism_lists = {'food': food_lists, 'bug': bug_lists}
+        # Initiate a dict to store lists of food and bugs
+        self.organism_lists = {'food': {'alive': food_list, 'dead': []}, 'bug': {'alive': bug_list, 'dead': []}}
 
         self.grid = np.zeros(shape=(rows, columns))
         self.fertile_squares = []
@@ -40,6 +41,20 @@ class World:
                 self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
 
         self.spawnable_squares = list(self.fertile_squares)
+
+    @classmethod
+    def fromfile(cls, rows, columns, time, fertile_lands, file_path,
+                 seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+        food_list, bug_list = [], []
+        with open(file_path, 'r') as f:
+            reader = csv.reader(f)
+            for i in reader:
+                if i[0] == "'food'":
+                    food_list.append(Food([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
+                elif i[0] == "'bug'":
+                    bug_list.append(Bug([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
+
+        return cls(rows, columns, time, fertile_lands, seed, food_list, bug_list)
 
     def get_disallowed_directions(self, current_position, organism_type):
         """Each organism cannot collide with itself (no overlap)."""
@@ -114,7 +129,8 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180, random_spawn=False, spawn_position=None):
+    def spawn_bug(self, number, energy=15, reproduction_threshold=70, energy_max=100, taste=180, random_spawn=False,
+                  spawn_position=None):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
         random_spawn: set to True to randomly spawn bugs anywhere in the world.
