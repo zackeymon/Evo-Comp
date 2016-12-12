@@ -31,6 +31,11 @@ class World:
         self.organism_lists = {'food': {'alive': food_list, 'dead': []}, 'bug': {'alive': bug_list, 'dead': []}}
 
         self.grid = np.zeros(shape=(rows, columns))
+        for i in food_list:
+            self.grid[tuple(i.position)] += OrganismType.food
+        for i in bug_list:
+            self.grid[tuple(i.position)] += OrganismType.bug
+
         self.fertile_squares = []
         if fertile_lands is None:
             # Make the whole world fertile
