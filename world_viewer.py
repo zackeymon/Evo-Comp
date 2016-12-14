@@ -134,11 +134,11 @@ class WorldViewer:
 
         else:
             if settings['food_rep_thresh_evo'] == 'True':
-                if not os.path.exists(os.path.join('data', self.seed, 'food_gene_data')):
-                    os.makedirs(os.path.join('data', self.seed, 'food_gene_data'))
+                if not os.path.exists(os.path.join('data', self.seed, 'food_rep_thresh_evo')):
+                    os.makedirs(os.path.join('data', self.seed, 'food_rep_thresh_evo'))
             if settings['bug_rep_thresh_evo'] == 'True':
-                if not os.path.exists(os.path.join('data', self.seed, 'bug_gene_data')):
-                    os.makedirs(os.path.join('data', self.seed, 'bug_gene_data'))
+                if not os.path.exists(os.path.join('data', self.seed, 'bug_rep_thresh_evo')):
+                    os.makedirs(os.path.join('data', self.seed, 'bug_rep_thresh_evo'))
 
         # create the list of organisms for each day
         world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
