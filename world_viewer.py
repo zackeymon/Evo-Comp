@@ -83,7 +83,7 @@ class WorldViewer:
                              'filename': 'bug_population.png'})
 
         data3 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
-                 (food_data['average_alive_lifetime'], 'Average Lifespan (last 10 cycles)')]
+                 (food_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
         data_to_plot.append({'data': data3, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Food Lifetimes',
                              'filename': 'food_lifetime.png'})
 
