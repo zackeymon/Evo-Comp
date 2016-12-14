@@ -274,12 +274,12 @@ class WorldViewer:
 
                         # 1D Plot (bar chart)
                         if settings[organism_data['path']] == 'True':
-                            max_rep_thresh = max([organism[4] for organism in organism_data])
+                            max_rep_thresh = max([organism[4] for organism in organism_data['data']])
 
                             if max_rep_thresh <= 100:
                                 rep_dict = {j: 0 for j in range(101)}
                             else:
-                                rep_dict = {j: 0 for j in range(max([organism[4] for organism in organism_data]) + 1)}
+                                rep_dict = {j: 0 for j in range(max_rep_thresh + 1)}
 
                             for organism in organism_data['data']:
                                 # count number of occurrences of each reproduction threshold
