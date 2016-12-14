@@ -236,7 +236,10 @@ class WorldViewer:
                             taste.append(organism[5])
 
                         # create and set co-ordinate values in gene space
-                        x = [j for j in range(51)]  # create binned co-ordinate values
+                        if max(rep_thresh) <= 100:
+                            x = [j for j in range(51)]
+                        else:
+                            x = [j for j in range((max(rep_thresh) / 2) + 1)]  # create binned co-ordinate values
                         y = [j for j in range(61)]
 
                         rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
@@ -256,7 +259,10 @@ class WorldViewer:
 
                         plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
                         plt.colorbar()
-                        plt.xlim(0, 101)
+                        if max(rep_thresh) <= 100:
+                            plt.xlim(0, 101)
+                        else:
+                            plt.xlim(0, (max(rep_thresh) / 2) + 1)
                         plt.ylim(0, 359)
                         plt.xlabel('Reproduction Threshold')
                         plt.ylabel('Taste')
@@ -268,8 +274,12 @@ class WorldViewer:
 
                         # 1D Plot (bar chart)
                         if settings[organism_data['path']] == 'True':
+                            max_rep_thresh = max([organism[4] for organism in organism_data['data']])
 
-                            rep_dict = {j: 0 for j in range(101)}
+                            if max_rep_thresh <= 100:
+                                rep_dict = {j: 0 for j in range(101)}
+                            else:
+                                rep_dict = {j: 0 for j in range(max_rep_thresh + 1)}
 
                             for organism in organism_data['data']:
                                 # count number of occurrences of each reproduction threshold
