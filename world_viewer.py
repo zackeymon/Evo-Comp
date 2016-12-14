@@ -239,7 +239,7 @@ class WorldViewer:
                         if max(rep_thresh) <= 100:
                             x = [j for j in range(51)]
                         else:
-                            x = [j for j in range((max(rep_thresh) / 2) + 1)]  # create binned co-ordinate values
+                            x = [j for j in range((int(max(rep_thresh) / 2) + 1))]  # create binned co-ordinate values
                         y = [j for j in range(61)]
 
                         rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
@@ -274,7 +274,7 @@ class WorldViewer:
 
                         # 1D Plot (bar chart)
                         if settings[organism_data['path']] == 'True':
-                            max_rep_thresh = max([organism[4] for organism in organism_data['data']])
+                            max_rep_thresh = int(max([organism[4] for organism in organism_data['data']]))
 
                             if max_rep_thresh <= 100:
                                 rep_dict = {j: 0 for j in range(101)}
