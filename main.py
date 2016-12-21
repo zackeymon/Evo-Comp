@@ -1,5 +1,6 @@
 import _thread
 import random
+import config as cfg
 from utility_methods import *
 from direction import Direction
 from organism_type import OrganismType
@@ -8,13 +9,13 @@ from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
 # #######Initialisation####### #
-my_world = World(seed='rt1_t1-cs_L-002', rows=100, columns=100, fertile_lands=[[[20, 20], [79, 79]]])
+my_world = World(**cfg.world['settings'])
 
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
 
-my_world.spawn_food(int(len(my_world.fertile_squares) / 20))
-my_world.spawn_bug(int(len(my_world.fertile_squares) / 40))
+my_world.spawn_food(int(len(my_world.fertile_squares) / 20), **cfg.world['spawn_values']['food'])
+my_world.spawn_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['spawn_values']['bug'])
 
 
 # Kill switch
@@ -36,7 +37,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 
     # spawn food
     my_world.available_spaces()
-    my_world.spawn_food(1, taste=my_world.food_taste_average)
+    my_world.spawn_food(1, **cfg.world['spawn_values']['food'], taste=my_world.food_taste_average)
 
     random.shuffle(my_world.organism_lists['food']['alive'])
     random.shuffle(my_world.organism_lists['bug']['alive'])

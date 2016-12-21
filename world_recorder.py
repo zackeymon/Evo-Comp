@@ -1,7 +1,7 @@
 import os
 from collections import OrderedDict
 from utility_methods import *
-import evolution_switches as es
+import config as cfg
 
 
 class WorldRecorder:
@@ -38,8 +38,8 @@ class WorldRecorder:
         # Create seed file with parameters of initialisation
         with open(os.path.join('data', world.seed, 'data_files', world.seed + '.csv'), 'w') as seed:
             seed.write('columns,' + 'rows,' + 'food_rep_thresh_evo,' + 'bug_rep_thresh_evo,' + 'taste_evo,' + '\n')
-            seed.write('%r,' % world.columns + '%r,' % world.rows + '%r,' % es.food_reproduction_threshold
-                       + '%r,' % es.bug_reproduction_threshold + '%r,' % es.taste + '\n')
+            seed.write('%r,' % world.columns + '%r,' % world.rows + '%r,' % cfg.food_reproduction_threshold
+                       + '%r,' % cfg.bug_reproduction_threshold + '%r,' % cfg.taste + '\n')
 
     def generate_world_stats(self):
         """Add data for the current world iteration to a list."""

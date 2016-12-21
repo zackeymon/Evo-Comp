@@ -1,5 +1,5 @@
 import numpy as np
-import evolution_switches as es
+import config as cfg
 from random import randint
 
 
@@ -23,7 +23,7 @@ class Organism:
         self.reproduction_threshold = reproduction_threshold
         self.energy_max = energy_max
 
-        if es.taste:
+        if cfg.taste:
             self.taste =(taste + randint(-10, 10)) % 360
         else:
             self.taste = taste

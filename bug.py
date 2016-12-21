@@ -1,5 +1,5 @@
 from random import randint
-import evolution_switches as es
+import config as cfg
 from organism import Organism
 
 
@@ -16,7 +16,7 @@ class Bug(Organism):
         :param energy_max: The maximum energy the bug can store
         :param taste: The gene parameter of the bug
         """
-        if es.bug_reproduction_threshold:
+        if cfg.bug_reproduction_threshold:
             new_rep_thresh = reproduction_threshold + randint(-5, 5)
         else:
             new_rep_thresh = reproduction_threshold

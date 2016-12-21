@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
 from utility_methods import *
-import evolution_switches as es
+import config as cfg
 
 
 class WorldViewer:
@@ -27,7 +27,7 @@ class WorldViewer:
         ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
 
         for food in world.organism_lists['food']['alive']:  # draw food
-            hue = float(food.taste) / 360 if es.taste else 0.33
+            hue = float(food.taste) / 360 if cfg.taste else 0.33
             luminosity = 0.9 - food.energy * 0.004 if food.energy > 20 else 0.82
 
             color = colorsys.hls_to_rgb(hue, luminosity, 1)
@@ -41,7 +41,7 @@ class WorldViewer:
             elif bug_size > 1.0:
                 bug_size = 1.0
 
-            if es.taste:  # black outline
+            if cfg.taste:  # black outline
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size, height=bug_size,
                                      facecolor='k', linewidth=0))
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size / 1.5,
