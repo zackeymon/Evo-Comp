@@ -23,21 +23,23 @@ world = dict(
 food = dict(
     growth_rate=2,
 
-    evolution_switches=dict(
-        reproduction_threshold=True,
-        taste=True
-    )
+    # Evolution switches
+    evolve_reproduction_threshold=True,
+    reproduction_threshold_mutation_limit=5,
+
+    evolve_taste=True,
+    taste_mutation_limit=10
 )
 
 bug = dict(
     respiration_rate=2,
 
-    evolution_switches=dict(
-        reproduction_threshold=True,
-        taste=True
-    )
+    # Evolution switches
+    evolve_reproduction_threshold=True,
+    reproduction_threshold_mutation_limit=5,
+
+    evolve_taste=True,
+    taste_mutation_limit=10
 )
 
-food_reproduction_threshold = True
-bug_reproduction_threshold = True
 taste = True

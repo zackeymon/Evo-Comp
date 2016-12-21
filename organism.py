@@ -37,6 +37,10 @@ class Organism:
             self.__class__.__name__, self.position[0], self.position[1], self.lifetime, self.energy,
             self.reproduction_threshold, self.energy_max, self.taste)
 
+    @staticmethod
+    def mutate(current_val, max_mutation_rate):
+        return current_val + randint(-max_mutation_rate, max_mutation_rate)
+
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
         # Half of the energy goes to the offspring

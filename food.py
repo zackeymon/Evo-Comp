@@ -16,16 +16,16 @@ class Food(Organism):
         :param energy_max: The maximum energy the food can hold
         :param taste: The gene parameter of the food
         """
-        if cfg.food_reproduction_threshold:
-            new_rep_thresh = reproduction_threshold + randint(-5, 5)
-        else:
-            new_rep_thresh = 30 + randint(-5, 5)
+        new_rep_thresh = self.mutate(reproduction_threshold, cfg.food['reproduction_threshold_mutation_limit']) \
+            if cfg.food['evolve_reproduction_threshold'] else 30 + randint(-5, 5)
+
+        new_taste = self.mutate(taste, cfg.food['taste_mutation_limit']) if cfg.food['evolve_taste'] else taste
 
         if new_rep_thresh < 10:
             new_rep_thresh = 10
 
-        Organism.__init__(self, position, energy, new_rep_thresh, energy_max, taste)
+        Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def grow(self):
         if self.energy < self.energy_max:
-            self.energy += 2
+            self.energy += cfg.food['growth_rate']
