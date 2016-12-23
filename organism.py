@@ -1,5 +1,4 @@
 import numpy as np
-import config as cfg
 from random import randint
 
 
@@ -26,7 +25,6 @@ class Organism:
 
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2
-
 
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d E_max:%d g:%d)' % (

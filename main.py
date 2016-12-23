@@ -3,7 +3,7 @@ import random
 import config as cfg
 from utility_methods import *
 from direction import Direction
-from organism_type import OrganismType
+from constants import *
 from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
@@ -14,8 +14,8 @@ my_world = World(**cfg.world['settings'])
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
 
-my_world.spawn_food(int(len(my_world.fertile_squares) / 20), **cfg.world['spawn_values']['food'])
-my_world.spawn_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['spawn_values']['bug'])
+my_world.spawn_food(int(len(my_world.fertile_squares) / 20), **cfg.world['food_spawn_vals'])
+my_world.spawn_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['bug_spawn_vals'])
 
 
 # Kill switch
@@ -28,7 +28,7 @@ _list = []
 _thread.start_new_thread(input_thread, (_list,))
 
 # #######Run####### #
-while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
+while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
 
     # generate data
     world_recorder.generate_world_stats()
@@ -37,13 +37,13 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 
     # spawn food
     my_world.available_spaces()
-    my_world.spawn_food(1, **cfg.world['spawn_values']['food'], taste=my_world.food_taste_average)
+    my_world.spawn_food(1, **cfg.world['food_spawn_vals'], taste=my_world.food_taste_average)
 
-    random.shuffle(my_world.organism_lists['food']['alive'])
-    random.shuffle(my_world.organism_lists['bug']['alive'])
+    random.shuffle(my_world.organism_lists[FOOD_NAME]['alive'])
+    random.shuffle(my_world.organism_lists[BUG_NAME]['alive'])
 
     # food life cycle
-    for food in my_world.organism_lists['food']['alive']:
+    for food in my_world.organism_lists[FOOD_NAME]['alive']:
         if food.lifetime > 0 or my_world.time == 0:
             food.grow()
             if food.energy >= food.reproduction_threshold:
@@ -52,16 +52,16 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                     my_world.get_disallowed_directions(food.position, OrganismType.food))
                 if random_direction is not None:
                     new_food = food.reproduce(random_direction)
-                    my_world.organism_lists['food']['alive'].append(new_food)
+                    my_world.organism_lists[FOOD_NAME]['alive'].append(new_food)
                     my_world.grid[tuple(new_food.position)] += OrganismType.food
         food.lifetime += 1
 
     # bug life cycle
     i = 0
-    my_world.organism_lists['food']['dead'].append([])
-    my_world.organism_lists['bug']['dead'].append([])
-    while i < len(my_world.organism_lists['bug']['alive']):
-        bug = my_world.organism_lists['bug']['alive'][i]
+    my_world.organism_lists[FOOD_NAME]['dead'].append([])
+    my_world.organism_lists[BUG_NAME]['dead'].append([])
+    while i < len(my_world.organism_lists[BUG_NAME]['alive']):
+        bug = my_world.organism_lists[BUG_NAME]['alive'][i]
         bug.respire()
         if bug.energy <= 0:
             # bug die
@@ -78,7 +78,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
 
             # check if there is food on this square
             if my_world.grid[tuple(bug.position)] == OrganismType.food_bug:
-                for j, food in enumerate(my_world.organism_lists['food']['alive']):
+                for j, food in enumerate(my_world.organism_lists[FOOD_NAME]['alive']):
                     # find the food
                     if (bug.position == food.position).all():
                         # check if bug can eat it
@@ -94,7 +94,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                 # check if there is an empty square
                 if random_direction is not None:
                     new_bug = bug.reproduce(random_direction)
-                    my_world.organism_lists['bug']['alive'].append(new_bug)
+                    my_world.organism_lists[BUG_NAME]['alive'].append(new_bug)
                     my_world.grid[tuple(new_bug.position)] += OrganismType.bug
             bug.lifetime += 1
             i += 1

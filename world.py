@@ -5,7 +5,7 @@ from utility_methods import *
 from direction import Direction
 from bug import Bug
 from food import Food
-from organism_type import OrganismType
+from constants import *
 
 
 class World:
@@ -13,7 +13,7 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, seed, rows, columns, fertile_lands, time=0, food_list=[], bug_list=[]):
+    def __init__(self, seed, rows, columns, fertile_lands, time=0):
         """
         World Initialisation
         :param rows: Number of rows in the world
@@ -27,13 +27,8 @@ class World:
         random.seed(self.seed)
 
         # Initiate a dict to store lists of food and bugs
-        self.organism_lists = {'food': {'alive': food_list, 'dead': []}, 'bug': {'alive': bug_list, 'dead': []}}
-
+        self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
         self.grid = np.zeros(shape=(rows, columns))
-        for i in food_list:
-            self.grid[tuple(i.position)] += OrganismType.food
-        for i in bug_list:
-            self.grid[tuple(i.position)] += OrganismType.bug
 
         self.fertile_squares = []
         if fertile_lands is None:
@@ -46,19 +41,19 @@ class World:
 
         self.spawnable_squares = list(self.fertile_squares)
 
-    @classmethod
-    def fromfile(cls, rows, columns, time, fertile_lands, file_path,
-                 seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
-        food_list, bug_list = [], []
-        with open(file_path, 'r') as f:
-            reader = csv.reader(f)
-            for i in reader:
-                if i[0] == "'food'":
-                    food_list.append(Food([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
-                elif i[0] == "'bug'":
-                    bug_list.append(Bug([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
-
-        return cls(rows, columns, time, fertile_lands, seed, food_list, bug_list)
+    #
+    # def fromfile(cls, rows, columns, time, fertile_lands, file_path,
+    #              seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
+    #     food_list, bug_list = [], []
+    #     with open(file_path, 'r') as f:
+    #         reader = csv.reader(f)
+    #         for i in reader:
+    #             if i[0] == "'food'":
+    #                 food_list.append(Food([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
+    #             elif i[0] == "'bug'":
+    #                 bug_list.append(Bug([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
+    #
+    #     return cls(rows, columns, time, fertile_lands, seed, food_list, bug_list)
 
     def get_disallowed_directions(self, current_position, organism_type):
         """Each organism cannot collide with itself (no overlap)."""
@@ -92,7 +87,7 @@ class World:
         self.spawnable_squares = list(self.fertile_squares)
         food_taste_list = []
 
-        for food in self.organism_lists['food']['alive']:
+        for food in self.organism_lists[FOOD_NAME]['alive']:
 
             try:
                 self.spawnable_squares.remove(food.position.tolist())
@@ -107,19 +102,19 @@ class World:
         death_position = organism.position
 
         if organism.__class__ == Food:
-            self.organism_lists['food']['dead'][-1].append(organism)
-            self.organism_lists['food']['alive'].remove(organism)
+            self.organism_lists[FOOD_NAME]['dead'][-1].append(organism)
+            self.organism_lists[FOOD_NAME]['alive'].remove(organism)
             self.grid[tuple(death_position)] -= OrganismType.food
 
         elif organism.__class__ == Bug:
-            self.organism_lists['bug']['dead'][-1].append(organism)
-            self.organism_lists['bug']['alive'].remove(organism)
+            self.organism_lists[BUG_NAME]['dead'][-1].append(organism)
+            self.organism_lists[BUG_NAME]['alive'].remove(organism)
             self.grid[tuple(death_position)] -= OrganismType.bug
 
     def spawn_food(self, number, energy, reproduction_threshold, energy_max, taste=180, spawn_position=None):
         """Spawn food on fertile land and check spawn square is available."""
         if spawn_position is not None:
-            self.organism_lists['food']['alive'].append(
+            self.organism_lists[FOOD_NAME]['alive'].append(
                 Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
             self.grid[tuple(spawn_position)] += OrganismType.food
             return
@@ -127,7 +122,7 @@ class World:
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
-                self.organism_lists['food']['alive'].append(
+                self.organism_lists[FOOD_NAME]['alive'].append(
                     Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
                 self.grid[tuple(spawn_position)] += OrganismType.food
             except ValueError:
@@ -144,7 +139,7 @@ class World:
             spawn_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
 
         if spawn_position is not None:
-            self.organism_lists['bug']['alive'].append(
+            self.organism_lists[BUG_NAME]['alive'].append(
                 Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
             self.grid[tuple(spawn_position)] += OrganismType.bug
             return
@@ -152,7 +147,7 @@ class World:
         for i in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(spawn_squares) - 1))
-                self.organism_lists['bug']['alive'].append(
+                self.organism_lists[BUG_NAME]['alive'].append(
                     Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
                 self.grid[tuple(spawn_position)] += OrganismType.bug
             except ValueError:

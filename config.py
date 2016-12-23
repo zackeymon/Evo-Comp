@@ -9,18 +9,16 @@ world = dict(
         columns=100,
         fertile_lands=None
     ),
-    spawn_values=dict(
-        food=dict(
-            energy=20,
-            reproduction_threshold=30,
-            energy_max=100
-            # TODO: food & bug taste
-        ),
-        bug=dict(
-            energy=15,
-            reproduction_threshold=70,
-            energy_max=100
-        )
+    food_spawn_vals=dict(
+        energy=20,
+        reproduction_threshold=30,
+        energy_max=100
+        # TODO: food & bug taste
+    ),
+    bug_spawn_vals=dict(
+        energy=15,
+        reproduction_threshold=70,
+        energy_max=100
     )
 )
 
