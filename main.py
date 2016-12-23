@@ -14,8 +14,8 @@ my_world = World(**cfg.world['settings'])
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
 
-my_world.spawn_food(int(len(my_world.fertile_squares) / 20), **cfg.world['food_spawn_vals'])
-my_world.spawn_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['bug_spawn_vals'])
+my_world.drop_food(int(len(my_world.fertile_squares) / 20), **cfg.world['food_spawn_vals'])
+my_world.drop_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['bug_spawn_vals'])
 
 
 # Kill switch
@@ -37,7 +37,7 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
 
     # spawn food
     my_world.available_spaces()
-    my_world.spawn_food(1, **cfg.world['food_spawn_vals'], taste=my_world.food_taste_average)
+    my_world.drop_food(1, **cfg.world['food_spawn_vals'], taste=my_world.food_taste_average)
 
     random.shuffle(my_world.organism_lists[FOOD_NAME]['alive'])
     random.shuffle(my_world.organism_lists[BUG_NAME]['alive'])

@@ -103,44 +103,30 @@ class World:
         self.organism_lists[organism.organism_name]['dead'][-1].append(organism)
         self.organism_lists[organism.organism_name]['alive'].remove(organism)
 
-    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180, spawn_position=None):
-        """Spawn food on fertile land and check spawn square is available."""
-        if spawn_position is not None:
-            self.organism_lists[FOOD_NAME]['alive'].append(
-                Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
-            self.grid[tuple(spawn_position)] += FOOD_VAL
-            return
+    def spawn(self, organism):
+        self.grid[tuple(organism.position)] += organism.organism_val
+        self.organism_lists[organism.organism_name]['alive'].append(organism)
 
-        for i in range(number):
+    def drop_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180):
+        """Spawn food on fertile land and check spawn square is available."""
+        for _ in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
-                self.organism_lists[FOOD_NAME]['alive'].append(
-                    Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
-                self.grid[tuple(spawn_position)] += FOOD_VAL
+                self.spawn(Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy=30, reproduction_threshold=70, energy_max=100, taste=180, random_spawn=False,
-                  spawn_position=None):
+    def drop_bug(self, number, energy=30, reproduction_threshold=70, energy_max=100, taste=180):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
         random_spawn: set to True to randomly spawn bugs anywhere in the world.
         """
-        spawn_squares = self.spawnable_squares
-        if random_spawn:
-            spawn_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
 
-        if spawn_position is not None:
-            self.organism_lists[BUG_NAME]['alive'].append(
-                Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
-            self.grid[tuple(spawn_position)] += BUG_VAL
-            return
+        # TODO: spawn outside fertile lands
 
-        for i in range(number):
+        for _ in range(number):
             try:
-                spawn_position = self.spawnable_squares.pop(random.randint(0, len(spawn_squares) - 1))
-                self.organism_lists[BUG_NAME]['alive'].append(
-                    Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
-                self.grid[tuple(spawn_position)] += BUG_VAL
+                spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
+                self.spawn(Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
             except ValueError:
                 break
