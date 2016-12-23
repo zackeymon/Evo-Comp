@@ -49,11 +49,11 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
             if food.energy >= food.reproduction_threshold:
                 # find an empty square
                 random_direction = Direction.random(
-                    my_world.get_disallowed_directions(food.position, OrganismType.food))
+                    my_world.get_disallowed_directions(food.position, FOOD_VAL))
                 if random_direction is not None:
                     new_food = food.reproduce(random_direction)
                     my_world.organism_lists[FOOD_NAME]['alive'].append(new_food)
-                    my_world.grid[tuple(new_food.position)] += OrganismType.food
+                    my_world.grid[tuple(new_food.position)] += FOOD_VAL
         food.lifetime += 1
 
     # bug life cycle
@@ -70,14 +70,14 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
             # bug won't move if born this turn
             if bug.lifetime > 0 or my_world.time == 0:
                 random_direction = Direction.random(
-                    my_world.get_disallowed_directions(bug.position, OrganismType.bug))
+                    my_world.get_disallowed_directions(bug.position, BUG_VAL))
                 if random_direction is not None:
-                    my_world.grid[tuple(bug.position)] -= OrganismType.bug
+                    my_world.grid[tuple(bug.position)] -= BUG_VAL
                     bug.move(random_direction)
-                    my_world.grid[tuple(bug.position)] += OrganismType.bug
+                    my_world.grid[tuple(bug.position)] += BUG_VAL
 
             # check if there is food on this square
-            if my_world.grid[tuple(bug.position)] == OrganismType.food_bug:
+            if my_world.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
                 for j, food in enumerate(my_world.organism_lists[FOOD_NAME]['alive']):
                     # find the food
                     if (bug.position == food.position).all():
@@ -90,12 +90,12 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
             # check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold and bug.lifetime > 0:
                 random_direction = Direction.random(
-                    my_world.get_disallowed_directions(bug.position, OrganismType.bug))
+                    my_world.get_disallowed_directions(bug.position, BUG_VAL))
                 # check if there is an empty square
                 if random_direction is not None:
                     new_bug = bug.reproduce(random_direction)
                     my_world.organism_lists[BUG_NAME]['alive'].append(new_bug)
-                    my_world.grid[tuple(new_bug.position)] += OrganismType.bug
+                    my_world.grid[tuple(new_bug.position)] += BUG_VAL
             bug.lifetime += 1
             i += 1
 

@@ -77,7 +77,7 @@ class World:
             return True
 
         # collide with organism of the same type
-        if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == OrganismType.food_bug:
+        if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == FOOD_VAL + BUG_VAL:
             return True
 
         return False
@@ -104,19 +104,19 @@ class World:
         if organism.__class__ == Food:
             self.organism_lists[FOOD_NAME]['dead'][-1].append(organism)
             self.organism_lists[FOOD_NAME]['alive'].remove(organism)
-            self.grid[tuple(death_position)] -= OrganismType.food
+            self.grid[tuple(death_position)] -= FOOD_VAL
 
         elif organism.__class__ == Bug:
             self.organism_lists[BUG_NAME]['dead'][-1].append(organism)
             self.organism_lists[BUG_NAME]['alive'].remove(organism)
-            self.grid[tuple(death_position)] -= OrganismType.bug
+            self.grid[tuple(death_position)] -= BUG_VAL
 
     def spawn_food(self, number, energy, reproduction_threshold, energy_max, taste=180, spawn_position=None):
         """Spawn food on fertile land and check spawn square is available."""
         if spawn_position is not None:
             self.organism_lists[FOOD_NAME]['alive'].append(
                 Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
-            self.grid[tuple(spawn_position)] += OrganismType.food
+            self.grid[tuple(spawn_position)] += FOOD_VAL
             return
 
         for i in range(number):
@@ -124,7 +124,7 @@ class World:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))
                 self.organism_lists[FOOD_NAME]['alive'].append(
                     Food(spawn_position, energy, reproduction_threshold, energy_max, taste))
-                self.grid[tuple(spawn_position)] += OrganismType.food
+                self.grid[tuple(spawn_position)] += FOOD_VAL
             except ValueError:
                 break
 
@@ -141,7 +141,7 @@ class World:
         if spawn_position is not None:
             self.organism_lists[BUG_NAME]['alive'].append(
                 Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
-            self.grid[tuple(spawn_position)] += OrganismType.bug
+            self.grid[tuple(spawn_position)] += BUG_VAL
             return
 
         for i in range(number):
@@ -149,6 +149,6 @@ class World:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(spawn_squares) - 1))
                 self.organism_lists[BUG_NAME]['alive'].append(
                     Bug(spawn_position, energy, reproduction_threshold, energy_max, taste))
-                self.grid[tuple(spawn_position)] += OrganismType.bug
+                self.grid[tuple(spawn_position)] += BUG_VAL
             except ValueError:
                 break
