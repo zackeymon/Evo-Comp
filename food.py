@@ -1,5 +1,5 @@
-from random import randint
 import config as cfg
+from constants import FOOD_VAL, FOOD_NAME
 from organism import Organism
 
 
@@ -7,6 +7,9 @@ class Food(Organism):
     """
     A class for a food organism that simply grows and sustains life.
     """
+    organism_val = FOOD_VAL
+    organism_name = FOOD_NAME
+
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
         Food Initialisation
@@ -17,7 +20,7 @@ class Food(Organism):
         :param taste: The gene parameter of the food
         """
         new_rep_thresh = self.mutate(reproduction_threshold, cfg.food['reproduction_threshold_mutation_limit']) \
-            if cfg.food['evolve_reproduction_threshold'] else 30 + randint(-5, 5)
+            if cfg.food['evolve_reproduction_threshold'] else self.mutate(30, 5)
 
         new_taste = self.mutate(taste, cfg.food['taste_mutation_limit']) if cfg.food['evolve_taste'] else taste
 
