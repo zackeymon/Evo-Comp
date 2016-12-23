@@ -8,17 +8,9 @@ from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
+
 # #######Initialisation####### #
-my_world = World(**cfg.world['settings'])
-
-world_recorder = WorldRecorder(my_world)
-world_viewer = WorldViewer(my_world.seed)
-
-my_world.drop_food(int(len(my_world.fertile_squares) / 20), **cfg.world['food_spawn_vals'])
-my_world.drop_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['bug_spawn_vals'])
-
-
-# Kill switch
+# Make a kill switch
 def input_thread(list_):
     input()
     list_.append(None)
@@ -27,20 +19,23 @@ def input_thread(list_):
 _list = []
 _thread.start_new_thread(input_thread, (_list,))
 
+my_world = World(**cfg.world['settings'])
+
+world_recorder = WorldRecorder(my_world)
+world_viewer = WorldViewer(my_world.seed)
+
+# Populate the world
+my_world.drop_food(int(len(my_world.fertile_squares) / 20), **cfg.world['food_spawn_vals'])
+my_world.drop_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['bug_spawn_vals'])
+
 # #######Run####### #
 while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
-
-    # generate data
+    # generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
     world_viewer.view_world(my_world)
 
-    # spawn food
-    my_world.available_spaces()
-    my_world.drop_food(1, **cfg.world['food_spawn_vals'], taste=my_world.food_taste_average)
-
-    random.shuffle(my_world.organism_lists[FOOD_NAME]['alive'])
-    random.shuffle(my_world.organism_lists[BUG_NAME]['alive'])
+    my_world.prepare_today()
 
     # food life cycle
     for food in my_world.organism_lists[FOOD_NAME]['alive']:
@@ -58,8 +53,6 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
 
     # bug life cycle
     i = 0
-    my_world.organism_lists[FOOD_NAME]['dead'].append([])
-    my_world.organism_lists[BUG_NAME]['dead'].append([])
     while i < len(my_world.organism_lists[BUG_NAME]['alive']):
         bug = my_world.organism_lists[BUG_NAME]['alive'][i]
         bug.respire()
@@ -98,9 +91,6 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
                     my_world.grid[tuple(new_bug.position)] += BUG_VAL
             bug.lifetime += 1
             i += 1
-
-    print("time: %i" % my_world.time)
-    my_world.time += 1
 
 # #######Plot####### #
 world_recorder.output_world_stats()

@@ -17,7 +17,7 @@ def get_taste_average(taste_list):
     if average < 0:
         average += 360
 
-    return average
+    return int(average)
 
 
 def sum_list_energy(organism_list):

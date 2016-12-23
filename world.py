@@ -1,6 +1,7 @@
 import datetime
 import random
 import csv
+import config as cfg
 from utility_methods import *
 from direction import Direction
 from bug import Bug
@@ -23,12 +24,12 @@ class World:
         self.rows = rows
         self.time = time
         self.seed = seed if seed is not None else datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        self.food_taste_average = 180.0
-        random.seed(self.seed)
+        self.food_taste_average = 180
 
         # Initiate a dict to store lists of food and bugs
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
-        self.grid = np.zeros(shape=(rows, columns))
+        # TODO: change dead to only record the number of death
+        self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
 
         if fertile_lands is None:
             # make the whole world fertile
@@ -40,8 +41,8 @@ class World:
                 self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
 
         self.spawnable_squares = list(self.fertile_squares)
+        random.seed(self.seed)
 
-    #
     # def fromfile(cls, rows, columns, time, fertile_lands, file_path,
     #              seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
     #     food_list, bug_list = [], []
@@ -88,7 +89,6 @@ class World:
         food_taste_list = []
 
         for food in self.organism_lists[FOOD_NAME]['alive']:
-
             try:
                 self.spawnable_squares.remove(food.position.tolist())
             except ValueError:
@@ -96,7 +96,26 @@ class World:
             food_taste_list.append(food.taste)
 
         if len(food_taste_list) > 0:
-            self.food_taste_average = int(get_taste_average(food_taste_list))
+            self.food_taste_average = get_taste_average(food_taste_list)
+
+    def prepare_today(self):
+        # Output yesterday's data
+        print("time: {}, plants: {}, bugs: {}".format(self.time, len(self.organism_lists[FOOD_NAME]['alive']),
+                                                      len(self.organism_lists[BUG_NAME]['alive'])))
+        # It's a new day!
+        self.time += 1
+
+        # Update the available squares for spawn, then drop some food
+        self.available_spaces()
+        self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
+
+        # Shuffle the alive food & bug lists
+        random.shuffle(self.organism_lists[FOOD_NAME]['alive'])
+        random.shuffle(self.organism_lists[BUG_NAME]['alive'])
+
+        # Initialise today's dead list
+        self.organism_lists[FOOD_NAME]['dead'].append([])
+        self.organism_lists[BUG_NAME]['dead'].append([])
 
     def kill(self, organism):
         self.grid[tuple(organism.position)] -= organism.organism_val
