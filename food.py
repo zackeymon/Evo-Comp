@@ -32,5 +32,6 @@ class Food(Organism):
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def grow(self):
+        self.lifetime += 1
         if self.energy < self.energy_max:
             self.energy += cfg.food['growth_rate']

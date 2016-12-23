@@ -33,4 +33,5 @@ class Bug(Organism):
         self.energy += food.energy
 
     def move(self, del_pos):
+        self.lifetime += 1
         self.position += del_pos

@@ -39,22 +39,20 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
 
     # food life cycle
     for food in my_world.organism_lists[FOOD_NAME]['alive']:
-        if food.lifetime > 0 or my_world.time == 0:
-            food.grow()
-            if food.energy >= food.reproduction_threshold:
-                # find an empty square
-                random_direction = Direction.random(
-                    my_world.get_disallowed_directions(food.position, FOOD_VAL))
-                if random_direction is not None:
-                    new_food = food.reproduce(random_direction)
-                    my_world.organism_lists[FOOD_NAME]['alive'].append(new_food)
-                    my_world.grid[tuple(new_food.position)] += FOOD_VAL
-        food.lifetime += 1
+        food.grow()
+        if food.energy >= food.reproduction_threshold:
+            # find an empty square
+            random_direction = Direction.random(
+                my_world.get_disallowed_directions(food.position, FOOD_VAL))
+            if random_direction is not None:
+                new_food = food.reproduce(random_direction)
+                my_world.organism_lists[FOOD_NAME]['alive'].append(new_food)
+                my_world.grid[tuple(new_food.position)] += FOOD_VAL
 
     # bug life cycle
-    i = 0
-    while i < len(my_world.organism_lists[BUG_NAME]['alive']):
-        bug = my_world.organism_lists[BUG_NAME]['alive'][i]
+    bug_index = 0
+    while bug_index < len(my_world.organism_lists[BUG_NAME]['alive']):
+        bug = my_world.organism_lists[BUG_NAME]['alive'][bug_index]
         bug.respire()
         if bug.energy <= 0:
             # bug die
@@ -89,8 +87,7 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
                     new_bug = bug.reproduce(random_direction)
                     my_world.organism_lists[BUG_NAME]['alive'].append(new_bug)
                     my_world.grid[tuple(new_bug.position)] += BUG_VAL
-            bug.lifetime += 1
-            i += 1
+            bug_index += 1
 
 # #######Plot####### #
 world_recorder.output_world_stats()
