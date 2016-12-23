@@ -13,7 +13,7 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, seed, rows, columns, fertile_lands, time=0):
+    def __init__(self, rows, columns, seed=None, fertile_lands=None, time=0):
         """
         World Initialisation
         :param rows: Number of rows in the world
@@ -30,11 +30,11 @@ class World:
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
         self.grid = np.zeros(shape=(rows, columns))
 
-        self.fertile_squares = []
         if fertile_lands is None:
             # make the whole world fertile
             self.fertile_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         else:
+            self.fertile_squares = []
             for i in fertile_lands:
                 min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
                 self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
@@ -99,19 +99,11 @@ class World:
             self.food_taste_average = int(get_taste_average(food_taste_list))
 
     def kill(self, organism):
-        death_position = organism.position
+        self.grid[tuple(organism.position)] -= organism.organism_val
+        self.organism_lists[organism.organism_name]['dead'][-1].append(organism)
+        self.organism_lists[organism.organism_name]['alive'].remove(organism)
 
-        if organism.__class__ == Food:
-            self.organism_lists[FOOD_NAME]['dead'][-1].append(organism)
-            self.organism_lists[FOOD_NAME]['alive'].remove(organism)
-            self.grid[tuple(death_position)] -= FOOD_VAL
-
-        elif organism.__class__ == Bug:
-            self.organism_lists[BUG_NAME]['dead'][-1].append(organism)
-            self.organism_lists[BUG_NAME]['alive'].remove(organism)
-            self.grid[tuple(death_position)] -= BUG_VAL
-
-    def spawn_food(self, number, energy, reproduction_threshold, energy_max, taste=180, spawn_position=None):
+    def spawn_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180, spawn_position=None):
         """Spawn food on fertile land and check spawn square is available."""
         if spawn_position is not None:
             self.organism_lists[FOOD_NAME]['alive'].append(
@@ -128,7 +120,7 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy, reproduction_threshold, energy_max, taste=180, random_spawn=False,
+    def spawn_bug(self, number, energy=30, reproduction_threshold=70, energy_max=100, taste=180, random_spawn=False,
                   spawn_position=None):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
