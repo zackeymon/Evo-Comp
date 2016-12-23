@@ -133,7 +133,7 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy, reproduction_threshold, energy_max, taste, random_spawn=False,
+    def spawn_bug(self, number, energy, reproduction_threshold, energy_max, taste=180, random_spawn=False,
                   spawn_position=None):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.

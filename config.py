@@ -13,13 +13,13 @@ world = dict(
         food=dict(
             energy=20,
             reproduction_threshold=30,
-            energy_max=100,  # can't add taste because of taking average for further spawns, set at 180
+            energy_max=100
+            # TODO: food & bug taste
         ),
         bug=dict(
             energy=15,
             reproduction_threshold=70,
-            energy_max=100,
-            taste=180,  # can vary bug spawn taste
+            energy_max=100
         )
     )
 )
