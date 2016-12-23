@@ -22,11 +22,7 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold
         self.energy_max = energy_max
-
-        if cfg.taste:
-            self.taste =(taste + randint(-10, 10)) % 360
-        else:
-            self.taste = taste
+        self.taste = taste
 
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2

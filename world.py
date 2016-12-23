@@ -37,7 +37,7 @@ class World:
 
         self.fertile_squares = []
         if fertile_lands is None:
-            # Make the whole world fertile
+            # make the whole world fertile
             self.fertile_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         else:
             for i in fertile_lands:
@@ -77,11 +77,11 @@ class World:
 
     def check_collision(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
-        # Collide with wall
+        # collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
 
-        # Collide with organism of the same type
+        # collide with organism of the same type
         if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == OrganismType.food_bug:
             return True
 
@@ -133,7 +133,7 @@ class World:
             except ValueError:
                 break
 
-    def spawn_bug(self, number, energy, reproduction_threshold, energy_max, taste=180, random_spawn=False,
+    def spawn_bug(self, number, energy, reproduction_threshold, energy_max, taste, random_spawn=False,
                   spawn_position=None):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.

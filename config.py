@@ -1,3 +1,7 @@
+"""
+Initialisation Settings
+"""
+
 world = dict(
     settings=dict(
         seed=None,
@@ -9,13 +13,13 @@ world = dict(
         food=dict(
             energy=20,
             reproduction_threshold=30,
-            energy_max=100,
-            # TODO: taste value
+            energy_max=100,  # can't add taste because of taking average for further spawns, set at 180
         ),
         bug=dict(
             energy=15,
             reproduction_threshold=70,
             energy_max=100,
+            taste=180,  # can vary bug spawn taste
         )
     )
 )
@@ -23,7 +27,7 @@ world = dict(
 food = dict(
     growth_rate=2,
 
-    # Evolution switches
+    # evolution switches
     evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
@@ -34,12 +38,10 @@ food = dict(
 bug = dict(
     respiration_rate=2,
 
-    # Evolution switches
+    # evolution switches
     evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
     evolve_taste=True,
     taste_mutation_limit=10
 )
-
-taste = True

@@ -24,6 +24,8 @@ class Food(Organism):
         if new_rep_thresh < 10:
             new_rep_thresh = 10
 
+        # ToDo: Food Die
+
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def grow(self):

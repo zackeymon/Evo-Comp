@@ -3,7 +3,6 @@ from collections import OrderedDict
 from shutil import move
 from tempfile import mkstemp
 from utility_methods import *
-import config as cfg
 
 
 class WorldRecorder:
@@ -20,7 +19,7 @@ class WorldRecorder:
         self.world_data = OrderedDict([('organism', []), ('x', []), ('y', []), ('energy', []),
                                        ('reproduction_threshold', []), ('taste', [])])
 
-        # Initialise two dicts to store food and bug data
+        # Initialise two dictionaries to store food and bug data
         food_dict, bug_dict = (OrderedDict
                                ([('time', []),
                                  ('energy', []),
@@ -32,7 +31,7 @@ class WorldRecorder:
 
         self.organism_data = {'food': food_dict, 'bug': bug_dict}
 
-        # Create directories if they don't exist
+        # Create output directories if they don't exist
         for path in ['world', 'data_files']:
             if not os.path.exists(os.path.join('data', world.seed, path)):
                 os.makedirs(os.path.join('data', world.seed, path))

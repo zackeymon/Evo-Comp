@@ -47,7 +47,7 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
         if food.lifetime > 0 or my_world.time == 0:
             food.grow()
             if food.energy >= food.reproduction_threshold:
-                # Find an empty square
+                # find an empty square
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(food.position, OrganismType.food))
                 if random_direction is not None:
@@ -64,10 +64,10 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
         bug = my_world.organism_lists['bug']['alive'][i]
         bug.respire()
         if bug.energy <= 0:
-            # Bug die
+            # bug die
             my_world.kill(bug)
         else:
-            # Bug won't move if born this turn
+            # bug won't move if born this turn
             if bug.lifetime > 0 or my_world.time == 0:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
@@ -76,22 +76,22 @@ while len(my_world.organism_lists['bug']['alive']) > 0 and not _list:
                     bug.move(random_direction)
                     my_world.grid[tuple(bug.position)] += OrganismType.bug
 
-            # Check if there is food on this square
+            # check if there is food on this square
             if my_world.grid[tuple(bug.position)] == OrganismType.food_bug:
                 for j, food in enumerate(my_world.organism_lists['food']['alive']):
-                    # Find the food
+                    # find the food
                     if (bug.position == food.position).all():
-                        # Check if bug can eat it
+                        # check if bug can eat it
                         if np.absolute(bug.taste - get_taste_average([bug.taste, food.taste])) < 10:
                             bug.eat(food)
                             my_world.kill(food)
                         break
 
-            # Check if bug can reproduce
+            # check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold and bug.lifetime > 0:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, OrganismType.bug))
-                # Check if there is an empty square
+                # check if there is an empty square
                 if random_direction is not None:
                     new_bug = bug.reproduce(random_direction)
                     my_world.organism_lists['bug']['alive'].append(new_bug)
