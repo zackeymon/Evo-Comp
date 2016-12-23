@@ -1,5 +1,5 @@
 from random import randint
-import evolution_switches as es
+import config as cfg
 from organism import Organism
 
 
@@ -7,6 +7,7 @@ class Bug(Organism):
     """
     A class for a simple bug organism that moves, eats, and reproduces.
     """
+
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
         Bug Initialisation
@@ -16,19 +17,17 @@ class Bug(Organism):
         :param energy_max: The maximum energy the bug can store
         :param taste: The gene parameter of the bug
         """
-        if es.bug_reproduction_threshold:
-            new_rep_thresh = reproduction_threshold + randint(-5, 5)
-        else:
-            new_rep_thresh = reproduction_threshold
-        Organism.__init__(self, position, energy, new_rep_thresh, energy_max, taste)
+        new_rep_thresh = self.mutate(reproduction_threshold, cfg.bug['reproduction_threshold_mutation_limit']) \
+            if cfg.bug['evolve_reproduction_threshold'] else reproduction_threshold
+
+        new_taste = self.mutate(taste, cfg.bug['taste_mutation_limit']) if cfg.bug['evolve_taste'] else taste
+
+        Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def respire(self):
-        self.energy -= 2
+        self.energy -= cfg.bug['respiration_rate']
 
     def eat(self, food):
-        # if (self.energy + food.energy) > self.energy_max:
-        #     self.energy = self.energy_max
-        # else:
         self.energy += food.energy
 
     def move(self, del_pos):

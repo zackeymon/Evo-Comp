@@ -1,7 +1,8 @@
 import os
 from collections import OrderedDict
+from shutil import move
+from tempfile import mkstemp
 from utility_methods import *
-import evolution_switches as es
 
 
 class WorldRecorder:
@@ -18,7 +19,7 @@ class WorldRecorder:
         self.world_data = OrderedDict([('organism', []), ('x', []), ('y', []), ('energy', []),
                                        ('reproduction_threshold', []), ('taste', [])])
 
-        # Initiate two dicts to store food and bug data
+        # Initialise two dictionaries to store food and bug data
         food_dict, bug_dict = (OrderedDict
                                ([('time', []),
                                  ('energy', []),
@@ -30,16 +31,19 @@ class WorldRecorder:
 
         self.organism_data = {'food': food_dict, 'bug': bug_dict}
 
-        # Create directories if they don't exist
+        # Create output directories if they don't exist
         for path in ['world', 'data_files']:
             if not os.path.exists(os.path.join('data', world.seed, path)):
                 os.makedirs(os.path.join('data', world.seed, path))
 
-        # Create seed file with parameters of initialisation
-        with open(os.path.join('data', world.seed, 'data_files', world.seed + '.csv'), 'w') as seed:
-            seed.write('columns,' + 'rows,' + 'food_rep_thresh_evo,' + 'bug_rep_thresh_evo,' + 'taste_evo,' + '\n')
-            seed.write('%r,' % world.columns + '%r,' % world.rows + '%r,' % es.food_reproduction_threshold
-                       + '%r,' % es.bug_reproduction_threshold + '%r,' % es.taste + '\n')
+        # Create a copy of the config file with parameters of initialisation
+        fd, new_path = mkstemp()
+        with open(new_path, 'w') as new_file:
+            with open('config.py') as old_file:
+                for line in old_file:
+                    new_file.write(line.replace('seed=None', 'seed=%r' % world.seed))
+        os.close(fd)  # prevent file descriptor leakage
+        move(new_path, os.path.join('data', world.seed, 'config.py'))  # move new file
 
     def generate_world_stats(self):
         """Add data for the current world iteration to a list."""

@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Ellipse
 from utility_methods import *
-import evolution_switches as es
+import config as cfg
 
 
 class WorldViewer:
@@ -27,7 +27,7 @@ class WorldViewer:
         ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
 
         for food in world.organism_lists['food']['alive']:  # draw food
-            hue = float(food.taste) / 360 if es.taste else 0.33
+            hue = float(food.taste) / 360 if cfg.food['evolve_taste'] else 0.33
             luminosity = 0.9 - food.energy * 0.004 if food.energy > 20 else 0.82
 
             color = colorsys.hls_to_rgb(hue, luminosity, 1)
@@ -41,7 +41,7 @@ class WorldViewer:
             elif bug_size > 1.0:
                 bug_size = 1.0
 
-            if es.taste:  # black outline
+            if cfg.bug['evolve_taste']:  # black outline
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size, height=bug_size,
                                      facecolor='k', linewidth=0))
                 ax.add_patch(Ellipse(xy=(bug.position[0] + 0.5, bug.position[1] + 0.5), width=bug_size / 1.5,
@@ -53,7 +53,7 @@ class WorldViewer:
 
         ax.set_xticks(np.arange(0, world.columns + 1, 1))
         ax.set_yticks(np.arange(0, world.rows + 1, 1))
-        # Turn off tick labels
+        # turn off tick labels
         ax.set_yticklabels([])
         ax.set_xticklabels([])
 
@@ -65,6 +65,9 @@ class WorldViewer:
         """Read the CSV (comma-separated values) output and plot trends."""
 
         print('plotting world statistics...')
+
+        if not os.path.exists(os.path.join('data', self.seed, 'world_statistics')):
+            os.makedirs(os.path.join('data', self.seed, 'world_statistics'))
 
         data = [(np.genfromtxt(os.path.join('data', self.seed, 'data_files', path + '.csv'), delimiter=',',
                                names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
@@ -110,7 +113,7 @@ class WorldViewer:
             plt.ylabel(data_dict['y_label'])
             plt.legend()
             plt.title(data_dict['title'])
-            plt.savefig(os.path.join('data', self.seed, data_dict['filename']))
+            plt.savefig(os.path.join('data', self.seed, 'world_statistics', data_dict['filename']))
             plt.close()
 
     def plot_world_data(self, world=False, start=0):
@@ -120,25 +123,14 @@ class WorldViewer:
         start: set a time to start plotting from, starts from 0 by default.
         """
 
-        # settings for the world plot
-        settings_file = csv.DictReader(open(os.path.join('data', self.seed, 'data_files', self.seed + '.csv')))
-        for row in settings_file:
-            row.pop('', None)
-            row['columns'], row['rows'] = float(row['columns']), float(row['rows'])
-            settings = row
-
-        if settings['taste_evo'] == 'True':
-            for path in ['food_gene_space', 'bug_gene_space']:
-                if not os.path.exists(os.path.join('data', self.seed, path)):
-                    os.makedirs(os.path.join('data', self.seed, path))
-
-        else:
-            if settings['food_rep_thresh_evo'] == 'True':
-                if not os.path.exists(os.path.join('data', self.seed, 'food_rep_thresh_evo')):
-                    os.makedirs(os.path.join('data', self.seed, 'food_rep_thresh_evo'))
-            if settings['bug_rep_thresh_evo'] == 'True':
-                if not os.path.exists(os.path.join('data', self.seed, 'bug_rep_thresh_evo')):
-                    os.makedirs(os.path.join('data', self.seed, 'bug_rep_thresh_evo'))
+        # create output directories
+        for switch in ['evolve_reproduction_threshold', 'evolve_taste']:
+            if cfg.food[switch]:
+                if not os.path.exists(os.path.join('data', self.seed, 'food_%r' % switch.replace("'", ""))):
+                    os.makedirs(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", ""))))
+            if cfg.bug[switch]:
+                if not os.path.exists(os.path.join('data', self.seed, 'bug_%r' % switch.replace("'", ""))):
+                    os.makedirs(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", ""))))
 
         # create the list of organisms for each day
         world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
@@ -168,7 +160,7 @@ class WorldViewer:
                 for organism in day:
 
                     if organism[0] == "'food'":  # draw food
-                        hue = organism[5] / 360 if settings['taste_evo'] == 'True' else 0.33
+                        hue = organism[5] / 360 if cfg.food['evolve_taste'] else 0.33
                         luminosity = 0.9 - organism[3] * 0.004 if organism[3] > 20 else 0.82
 
                         color = colorsys.hls_to_rgb(hue, luminosity, 1)
@@ -176,14 +168,14 @@ class WorldViewer:
                         ax.add_patch(
                             Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))
 
-                    elif organism[0] == "'bug'":  # draw bugs
+                    elif organism[0] == 'bug':  # draw bugs
                         bug_size = organism[3] * 0.01
                         if bug_size < 0.3:
                             bug_size = 0.3
                         elif bug_size > 1.0:
                             bug_size = 1.0
 
-                        if settings['taste_evo'] == 'True':  # black outline
+                        if cfg.bug['evolve_taste']:  # black outline
                             ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=bug_size,
                                                  height=bug_size, facecolor='k', linewidth=0))
                             ax.add_patch(
@@ -194,9 +186,9 @@ class WorldViewer:
                             ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=bug_size,
                                                  height=bug_size, facecolor='r', linewidth=0))
 
-                ax.set_xticks(np.arange(0, settings['columns'] + 1, 1))
-                ax.set_yticks(np.arange(0, settings['rows'] + 1, 1))
-                # Turn off tick labels
+                ax.set_xticks(np.arange(0, cfg.world['columns'] + 1, 1))
+                ax.set_yticks(np.arange(0, cfg.world['rows'] + 1, 1))
+                # turn off tick labels
                 ax.set_yticklabels([])
                 ax.set_xticklabels([])
 
@@ -205,7 +197,8 @@ class WorldViewer:
                 plt.close()
 
             # plot genes
-            if settings['food_rep_thresh_evo'] or settings['bug_rep_thresh_evo'] or settings['taste_evo'] == 'True':
+            if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
+                    'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
 
                 # create lists of food and bug gene data for plotting
                 food_list = []
@@ -217,15 +210,43 @@ class WorldViewer:
                     elif organism[0] == "'bug'":
                         bug_list.append(organism)
 
-                data_to_plot = [{'data': food_list, 'path': 'food_rep_thresh_evo', 'colour': 'g',
-                                 'colour_maps': 'Greens', 'path2': 'food_gene_space'},
-                                {'data': bug_list, 'path': 'bug_rep_thresh_evo', 'colour': 'r',
-                                 'colour_maps': 'Reds', 'path2': 'bug_gene_space'}]
+                data_to_plot = [
+                    {'data': food_list, 'switch': cfg.food, 'path': 'food_evolve_reproduction_threshold', 'colour': 'g',
+                     'path2': 'food_evolve_taste', 'colour_maps': 'Greens'},
+                    {'data': bug_list, 'switch': cfg.bug, 'path': 'bug_evolve_reproduction_threshold', 'colour': 'r',
+                     'path2': 'bug_evolve_taste', 'colour_maps': 'Reds'}]
 
                 for organism_data in data_to_plot:  # for each food and bug
 
-                    # 2D Plot (heat map)
-                    if settings['taste_evo'] == 'True':
+                    # 1D plot (bar chart)
+                    if organism_data['switch']['evolve_reproduction_threshold']:
+
+                        max_rep_thresh = int(max([organism[4] for organism in organism_data['data']]))
+
+                        if max_rep_thresh <= 100:
+                            rep_dict = {j: 0 for j in range(101)}
+                        else:
+                            rep_dict = {j: 0 for j in range(max_rep_thresh + 1)}
+
+                        for organism in organism_data['data']:
+                            # count number of occurrences of each reproduction threshold
+                            rep_dict[organism[4]] += 1
+
+                        y_pos = np.arange(len(rep_dict.keys()))  # set centre values for bars
+                        total = sum(rep_dict.values())
+                        if total > 0:
+                            for key, value in rep_dict.items():
+                                rep_dict[key] = value / total  # normalisation
+
+                        plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
+                        plt.xlabel('Reproduction Threshold')
+                        plt.ylabel('Population')
+                        plt.title('time=%s' % (i + start))
+                        plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % (i + start)))
+                        plt.close()
+
+                    # 2D plot (heat map)
+                    if organism_data['switch']['evolve_taste']:
 
                         # create lists of gene data
                         rep_thresh = []
@@ -239,7 +260,8 @@ class WorldViewer:
                         if max(rep_thresh) <= 100:
                             x = [j for j in range(51)]
                         else:
-                            x = [j for j in range((int(max(rep_thresh) / 2) + 1))]  # create binned co-ordinate values
+                            x = [j for j in
+                                 range((int(max(rep_thresh) / 2) + 1))]  # create binned co-ordinate values
                         y = [j for j in range(61)]
 
                         rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
@@ -269,31 +291,3 @@ class WorldViewer:
                         plt.title('time=%s' % (i + start))
                         plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % (i + start)))
                         plt.close()
-
-                    else:
-
-                        # 1D Plot (bar chart)
-                        if settings[organism_data['path']] == 'True':
-                            max_rep_thresh = int(max([organism[4] for organism in organism_data['data']]))
-
-                            if max_rep_thresh <= 100:
-                                rep_dict = {j: 0 for j in range(101)}
-                            else:
-                                rep_dict = {j: 0 for j in range(max_rep_thresh + 1)}
-
-                            for organism in organism_data['data']:
-                                # count number of occurrences of each reproduction threshold
-                                rep_dict[organism[4]] += 1
-
-                            y_pos = np.arange(len(rep_dict.keys()))  # set centre values for bars
-                            total = sum(rep_dict.values())
-                            if total > 0:
-                                for key, value in rep_dict.items():
-                                    rep_dict[key] = value / total  # normalisation
-
-                            plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
-                            plt.xlabel('Reproduction Threshold')
-                            plt.ylabel('Population')
-                            plt.title('time=%s' % (i + start))
-                            plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % (i + start)))
-                            plt.close()

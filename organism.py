@@ -1,5 +1,5 @@
 import numpy as np
-import evolution_switches as es
+import config as cfg
 from random import randint
 
 
@@ -22,11 +22,7 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold
         self.energy_max = energy_max
-
-        if es.taste:
-            self.taste =(taste + randint(-10, 10)) % 360
-        else:
-            self.taste = taste
+        self.taste = taste
 
         if self.reproduction_threshold < 2:
             self.reproduction_threshold = 2
@@ -36,6 +32,10 @@ class Organism:
         return '%s(P:[%d, %d] L:%d E:%d RT:%d E_max:%d g:%d)' % (
             self.__class__.__name__, self.position[0], self.position[1], self.lifetime, self.energy,
             self.reproduction_threshold, self.energy_max, self.taste)
+
+    @staticmethod
+    def mutate(current_val, max_mutation_rate):
+        return current_val + randint(-max_mutation_rate, max_mutation_rate)
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
