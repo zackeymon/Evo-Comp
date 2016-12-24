@@ -86,17 +86,12 @@ class World:
     def available_spaces(self):
         """Get available spawn spaces and the average of the food taste value for ."""
         self.spawnable_squares = list(self.fertile_squares)
-        food_taste_list = []
 
         for food in self.organism_lists[FOOD_NAME]['alive']:
             try:
                 self.spawnable_squares.remove(food.position.tolist())
             except ValueError:
                 pass
-            food_taste_list.append(food.taste)
-
-        if len(food_taste_list) > 0:
-            self.food_taste_average = get_taste_average(food_taste_list)
 
     def prepare_today(self):
         # Output yesterday's data
@@ -105,8 +100,14 @@ class World:
         # It's a new day!
         self.time += 1
 
-        # Update the available squares for spawn, then drop some food
+        # Update the available squares for spawn
         self.available_spaces()
+
+        # If there is still food, find their taste average, else don't update my average
+        if self.organism_lists[FOOD_NAME]['alive']:
+            self.food_taste_average = get_taste_average([i.taste for i in self.organism_lists[FOOD_NAME]['alive']])
+
+        # Drop some food on them
         self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
 
         # Shuffle the alive food & bug lists
