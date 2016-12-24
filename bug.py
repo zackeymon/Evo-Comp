@@ -1,5 +1,5 @@
-from random import randint
 import config as cfg
+from constants import BUG_VAL, BUG_NAME
 from organism import Organism
 
 
@@ -7,6 +7,8 @@ class Bug(Organism):
     """
     A class for a simple bug organism that moves, eats, and reproduces.
     """
+    value = BUG_VAL
+    name = BUG_NAME
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
@@ -25,6 +27,7 @@ class Bug(Organism):
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def respire(self):
+        self.lifetime += 1
         self.energy -= cfg.bug['respiration_rate']
 
     def eat(self, food):

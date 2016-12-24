@@ -1,10 +1,12 @@
 import unittest
+import config as cfg
 from utility_methods import *
+from constants import *
 from world import World
 from world_recorder import WorldRecorder
 
 
-class DummyBug():
+class DummyBug:
     def __init__(self, energy=5, lifetime=10):
         self.energy = energy
         self.lifetime = lifetime
@@ -12,21 +14,21 @@ class DummyBug():
 
 class WorldTests(unittest.TestCase):
     def test_grid_variable(self):
-        my_world = World(rows=1, columns=1)
-        my_world.available_spaces()
-        self.assertEqual(my_world.spawnable_squares, [[0, 0]])
+        world0 = World(rows=1, columns=1)
+        world0.available_spaces()
+        self.assertEqual(world0.spawnable_squares, [[0, 0]])
 
-        my_world.spawn_food(number=1)
-        self.assertEqual(len(my_world.organism_lists['food']['alive']), 1)
-        self.assertEqual(my_world.spawnable_squares, [])
+        world0.drop_food(1)
+        self.assertEqual(len(world0.organism_lists[FOOD_NAME]['alive']), 1)
+        self.assertEqual(world0.spawnable_squares, [])
 
     def test_fertile_lands(self):
-        world2 = World(3, 3, fertile_lands=[[[1, 1], [1, 1]]])
+        world2 = World(rows=3, columns=3, fertile_lands=[[[1, 1], [1, 1]]])
         self.assertEqual(world2.fertile_squares, [[1, 1]])
-        world2.spawn_food(1)
-        world2.spawn_bug(1)
-        self.assertEquals(len(world2.organism_lists['food']['alive']), 1)
-        self.assertEquals(len(world2.organism_lists['bug']['alive']), 0)
+        world2.drop_food(1)
+        world2.drop_bug(1)
+        self.assertEqual(len(world2.organism_lists[FOOD_NAME]['alive']), 1)
+        self.assertEqual(len(world2.organism_lists[BUG_NAME]['alive']), 0)
 
 
 class OrganismTests(unittest.TestCase):
@@ -35,31 +37,36 @@ class OrganismTests(unittest.TestCase):
         self.tiny_world = World(rows=1, columns=1)
 
     def test_simple_spawn(self):
-        self.my_world.spawn_bug(1, energy=30)
-        self.my_world.spawn_food(2, reproduction_threshold=80)
+        self.my_world.drop_bug(1, energy=30)
+        self.my_world.drop_food(2, reproduction_threshold=80)
 
-        self.assertEqual(len(self.my_world.organism_lists['bug']['alive']), 1)
-        self.assertEqual(self.my_world.organism_lists['bug']['alive'][0].energy, 30)
-        self.assertEqual(len(self.my_world.organism_lists['food']['alive']), 2)
+        self.assertEqual(len(self.my_world.organism_lists[BUG_NAME]['alive']), 1)
+        self.assertEqual(self.my_world.organism_lists[BUG_NAME]['alive'][0].energy, 30)
+        self.assertEqual(len(self.my_world.organism_lists[FOOD_NAME]['alive']), 2)
 
-        self.my_world.spawn_bug(2, energy_max=150)
-        self.assertEqual(len(self.my_world.organism_lists['bug']['alive']), 3)
-        self.assertEqual(self.my_world.organism_lists['bug']['alive'][1].energy_max, 150)
+        self.my_world.drop_bug(2, energy_max=150)
+        self.assertEqual(len(self.my_world.organism_lists[BUG_NAME]['alive']), 3)
+        self.assertEqual(self.my_world.organism_lists[BUG_NAME]['alive'][1].energy_max, 150)
 
     def test_simple_reproduction(self):
-        self.my_world.spawn_food(1, energy=61)
-        old_food = self.my_world.organism_lists['food']['alive'][0]
+        self.my_world.drop_food(1, energy=61)
+        old_food = self.my_world.organism_lists[FOOD_NAME]['alive'][0]
         new_food = old_food.reproduce([1, 0])
 
         self.assertEqual(old_food.energy, 30)
         self.assertEqual(new_food.energy, 30)
 
     def test_kill(self):
-        self.my_world.spawn_bug(3)
-        self.my_world.organism_lists['bug']['dead'].append([])
-        self.my_world.kill(self.my_world.organism_lists['bug']['alive'][0])
-        self.assertEqual(len(self.my_world.organism_lists['bug']['alive']), 2)
-        self.assertEqual(len(self.my_world.organism_lists['bug']['dead']), 1)
+        self.my_world.drop_bug(3)
+        self.my_world.organism_lists[BUG_NAME]['dead'].append([])
+        self.my_world.kill(self.my_world.organism_lists[BUG_NAME]['alive'][0])
+        self.assertEqual(len(self.my_world.organism_lists[BUG_NAME]['alive']), 2)
+        self.assertEqual(len(self.my_world.organism_lists[BUG_NAME]['dead']), 1)
+
+    def test_kwargs_override(self):
+        self.tiny_world.drop_bug(1, **cfg.world['bug_spawn_vals'])
+        self.assertEqual(self.tiny_world.organism_lists[BUG_NAME]['alive'][0].energy_max,
+                         cfg.world['bug_spawn_vals']['energy_max'])
 
 
 class WorldRecorderTests(unittest.TestCase):
