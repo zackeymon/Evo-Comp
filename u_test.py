@@ -7,9 +7,6 @@ from world_recorder import WorldRecorder
 
 
 class DummyBug:
-    organism_val = BUG_VAL
-    organism_name = BUG_NAME
-
     def __init__(self, energy=5, lifetime=10):
         self.energy = energy
         self.lifetime = lifetime

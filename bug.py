@@ -7,8 +7,8 @@ class Bug(Organism):
     """
     A class for a simple bug organism that moves, eats, and reproduces.
     """
-    organism_val = BUG_VAL
-    organism_name = BUG_NAME
+    value = BUG_VAL
+    name = BUG_NAME
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """

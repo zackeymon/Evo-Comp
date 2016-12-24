@@ -7,8 +7,8 @@ class Food(Organism):
     """
     A class for a food organism that simply grows and sustains life.
     """
-    organism_val = FOOD_VAL
-    organism_name = FOOD_NAME
+    value = FOOD_VAL
+    name = FOOD_NAME
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """

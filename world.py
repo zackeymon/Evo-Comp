@@ -56,22 +56,8 @@ class World:
     #
     #     return cls(rows, columns, time, fertile_lands, seed, food_list, bug_list)
 
-    def get_disallowed_directions(self, current_position, organism_type):
-        """Each organism cannot collide with itself (no overlap)."""
-        disallowed_directions = []
 
-        if self.check_collision(current_position + np.array([0, 1]), organism_type):
-            disallowed_directions.append(Direction.up)
-        if self.check_collision(current_position + np.array([0, -1]), organism_type):
-            disallowed_directions.append(Direction.down)
-        if self.check_collision(current_position + np.array([-1, 0]), organism_type):
-            disallowed_directions.append(Direction.left)
-        if self.check_collision(current_position + np.array([1, 0]), organism_type):
-            disallowed_directions.append(Direction.right)
-
-        return disallowed_directions
-
-    def check_collision(self, position, organism_type):
+    def _collide(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
         # collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
@@ -82,6 +68,18 @@ class World:
             return True
 
         return False
+
+    def get_allowed_directions(self, current_position, organism_type):
+        """Each organism cannot collide with itself (no overlap)."""
+        allowed_directions = []
+
+        for direction, val in enumerate(([0, 1], [0, -1], [-1, 0], [1, 0])):
+            if not self._collide(current_position + np.array(val), organism_type):
+                allowed_directions.append(direction)
+        return allowed_directions
+
+    def get_random_available_direction(self, organism):
+        return Direction.random(self.get_allowed_directions(organism.position, organism.value))
 
     def available_spaces(self):
         """Get available spawn spaces and the average of the food taste value for ."""
@@ -119,13 +117,13 @@ class World:
         self.organism_lists[BUG_NAME]['dead'].append([])
 
     def kill(self, organism):
-        self.grid[tuple(organism.position)] -= organism.organism_val
-        self.organism_lists[organism.organism_name]['dead'][-1].append(organism)
-        self.organism_lists[organism.organism_name]['alive'].remove(organism)
+        self.grid[tuple(organism.position)] -= organism.value
+        self.organism_lists[organism.name]['dead'][-1].append(organism)
+        self.organism_lists[organism.name]['alive'].remove(organism)
 
     def spawn(self, organism):
-        self.grid[tuple(organism.position)] += organism.organism_val
-        self.organism_lists[organism.organism_name]['alive'].append(organism)
+        self.grid[tuple(organism.position)] += organism.value
+        self.organism_lists[organism.name]['alive'].append(organism)
 
     def drop_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180):
         """Spawn food on fertile land and check spawn square is available."""

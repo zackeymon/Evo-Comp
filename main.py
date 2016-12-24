@@ -1,15 +1,15 @@
 import _thread
-import random
 import config as cfg
-from utility_methods import *
-from direction import Direction
 from constants import *
+from utility_methods import *
 from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
 
-# #######Initialisation####### #
+##################################
+# --------Initialisation-------- #
+##################################
 # Make a kill switch
 def input_thread(list_):
     input()
@@ -25,10 +25,12 @@ world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
 
 # Populate the world
-my_world.drop_food(int(len(my_world.fertile_squares) / 20), **cfg.world['food_spawn_vals'])
-my_world.drop_bug(int(len(my_world.fertile_squares) / 40), **cfg.world['bug_spawn_vals'])
+my_world.drop_food(int(len(my_world.fertile_squares) / 10), **cfg.world['food_spawn_vals'])
+my_world.drop_bug(int(len(my_world.fertile_squares) / 80), **cfg.world['bug_spawn_vals'])
 
-# #######Run####### #
+#######################
+# --------Run-------- #
+#######################
 while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
     # generate yesterday data
     world_recorder.generate_world_stats()
@@ -42,12 +44,9 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
         food.grow()
         if food.energy >= food.reproduction_threshold:
             # find an empty square
-            random_direction = Direction.random(
-                my_world.get_disallowed_directions(food.position, FOOD_VAL))
+            random_direction = my_world.get_random_available_direction(food)
             if random_direction is not None:
-                new_food = food.reproduce(random_direction)
-                my_world.organism_lists[FOOD_NAME]['alive'].append(new_food)
-                my_world.grid[tuple(new_food.position)] += FOOD_VAL
+                my_world.spawn(food.reproduce(random_direction))
 
     # bug life cycle
     bug_index = 0
@@ -60,8 +59,7 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
         else:
             # bug won't move if born this turn
             if bug.lifetime > 1 or my_world.time == 1:
-                random_direction = Direction.random(
-                    my_world.get_disallowed_directions(bug.position, BUG_VAL))
+                random_direction = my_world.get_random_available_direction(bug)
                 if random_direction is not None:
                     my_world.grid[tuple(bug.position)] -= BUG_VAL
                     bug.move(random_direction)
@@ -79,17 +77,17 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
                         break
 
             # check if bug can reproduce
-            if bug.energy >= bug.reproduction_threshold and bug.lifetime > 0:
-                random_direction = Direction.random(
-                    my_world.get_disallowed_directions(bug.position, BUG_VAL))
+            if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
+                random_direction = my_world.get_random_available_direction(bug)
                 # check if there is an empty square
                 if random_direction is not None:
-                    new_bug = bug.reproduce(random_direction)
-                    my_world.organism_lists[BUG_NAME]['alive'].append(new_bug)
-                    my_world.grid[tuple(new_bug.position)] += BUG_VAL
+                    my_world.spawn(bug.reproduce(random_direction))
+
             bug_index += 1
 
-# #######Plot####### #
+########################
+# --------Plot-------- #
+########################
 world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
