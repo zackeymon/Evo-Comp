@@ -27,11 +27,11 @@ class Bug(Organism):
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def respire(self):
+        self.lifetime += 1
         self.energy -= cfg.bug['respiration_rate']
 
     def eat(self, food):
         self.energy += food.energy
 
     def move(self, del_pos):
-        self.lifetime += 1
         self.position += del_pos

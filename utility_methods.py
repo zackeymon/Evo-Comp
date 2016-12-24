@@ -3,30 +3,17 @@ import numpy as np
 
 def get_taste_average(taste_list):
     """Get average taste of a list of tastes (%360) using polar co-ordinates."""
-    x = []
-    y = []
-    for taste in taste_list:
-        taste_rad = np.radians(taste)
-        x.append(np.cos(taste_rad))
-        y.append(np.sin(taste_rad))
-
-    x_average = np.sum(x) / len(x)
-    y_average = np.sum(y) / len(y)
+    rad_taste_list = np.radians(taste_list)
+    x_average = np.average(np.cos(rad_taste_list))
+    y_average = np.average(np.sin(rad_taste_list))
 
     average = np.arctan2(y_average, x_average) * 180 / np.pi
-    if average < 0:
-        average += 360
 
-    return int(average)
+    return int(average % 360)
 
 
 def sum_list_energy(organism_list):
-    energy = 0
-
-    for organism in organism_list:
-        energy += organism.energy
-
-    return energy
+    return sum(organism.energy for organism in organism_list)
 
 
 def average_lifetime(organism_list):

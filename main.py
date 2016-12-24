@@ -59,7 +59,7 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
             my_world.kill(bug)
         else:
             # bug won't move if born this turn
-            if bug.lifetime > 0 or my_world.time == 0:
+            if bug.lifetime > 1 or my_world.time == 1:
                 random_direction = Direction.random(
                     my_world.get_disallowed_directions(bug.position, BUG_VAL))
                 if random_direction is not None:
@@ -73,7 +73,7 @@ while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
                     # find the food
                     if (bug.position == food.position).all():
                         # check if bug can eat it
-                        if np.absolute(bug.taste - get_taste_average([bug.taste, food.taste])) < 10:
+                        if np.absolute(bug.taste - get_taste_average([bug.taste, food.taste])) <= 10:
                             bug.eat(food)
                             my_world.kill(food)
                         break
