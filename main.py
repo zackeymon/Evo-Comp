@@ -1,7 +1,7 @@
-import _thread
 import config as cfg
 from constants import *
 from utility_methods import *
+from kill_switch import KillSwitch
 from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
@@ -10,17 +10,13 @@ from world_viewer import WorldViewer
 ##################################
 # --------Initialisation-------- #
 ##################################
-# Make a kill switch
-def input_thread(list_):
-    input()
-    list_.append(None)
-
-
-_list = []
-_thread.start_new_thread(input_thread, (_list,))
-
+# Create a new world
 my_world = World(**cfg.world['settings'])
 
+# Make a kill switch
+KillSwitch.setup()
+
+# Set up analysis classes
 world_recorder = WorldRecorder(my_world)
 world_viewer = WorldViewer(my_world.seed)
 
@@ -31,7 +27,7 @@ my_world.drop_bug(int(len(my_world.fertile_squares) / 80), **cfg.world['bug_spaw
 #######################
 # --------Run-------- #
 #######################
-while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and not _list:
+while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and KillSwitch.is_off():
     # generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
