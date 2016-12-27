@@ -1,6 +1,5 @@
 import datetime
 import random
-import csv
 import config as cfg
 from utility_methods import *
 from direction import Direction
@@ -43,20 +42,6 @@ class World:
         self.spawnable_squares = list(self.fertile_squares)
         random.seed(self.seed)
 
-    # def fromfile(cls, rows, columns, time, fertile_lands, file_path,
-    #              seed=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')):
-    #     food_list, bug_list = [], []
-    #     with open(file_path, 'r') as f:
-    #         reader = csv.reader(f)
-    #         for i in reader:
-    #             if i[0] == "'food'":
-    #                 food_list.append(Food([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
-    #             elif i[0] == "'bug'":
-    #                 bug_list.append(Bug([int(i[1]), int(i[2])], int(i[3]), int(i[4]), 100, float(i[5])))
-    #
-    #     return cls(rows, columns, time, fertile_lands, seed, food_list, bug_list)
-
-
     def _collide(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
         # collide with wall
@@ -73,7 +58,7 @@ class World:
         """Each organism cannot collide with itself (no overlap)."""
         allowed_directions = []
 
-        for direction, val in enumerate(([0, 1], [0, -1], [-1, 0], [1, 0])):
+        for direction, val in enumerate(Direction.all_directions):
             if not self._collide(current_position + np.array(val), organism_type):
                 allowed_directions.append(direction)
         return allowed_directions
