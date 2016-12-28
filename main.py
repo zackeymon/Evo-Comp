@@ -55,6 +55,9 @@ while KillSwitch.is_off():
             plant_index += 1
     t.take_time(msg='food cycle')
 
+    # Construct a dictionary of alive_plant_position: food_object
+    plant_position_dict = {tuple(plant.position):plant for plant in alive_plants}
+
     # bug life cycle
     bug_index = 0
     while bug_index < len(alive_bugs):
@@ -64,7 +67,7 @@ while KillSwitch.is_off():
             # bug die
             w.kill(bug)
         else:
-            # bug won't move if born this turn
+            # Bug won't move if born this turn
             if bug.lifetime > 1 or w.time == 1:
                 random_direction = w.get_random_available_direction(bug)
                 if random_direction is not None:
@@ -72,16 +75,13 @@ while KillSwitch.is_off():
                     bug.move(random_direction)
                     w.grid[tuple(bug.position)] += BUG_VAL
 
-            # check if there is food on this square
+            # Check if there is food on this square
             if w.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
-                for j, plant in enumerate(w.organism_lists[FOOD_NAME]['alive']):
-                    # find the food
-                    if (bug.position == plant.position).all():
-                        # check if bug can eat it
-                        if np.absolute(bug.taste - get_taste_average([bug.taste, plant.taste])) <= 10:
-                            bug.eat(plant)
-                            w.kill(plant)
-                        break
+                plant_beneath = plant_position_dict[tuple(bug.position)]
+                if np.absolute(bug.taste - get_taste_average([bug.taste, plant_beneath.taste])) <= 10:
+                    bug.eat(plant_beneath)
+                    w.kill(plant_beneath)
+                    del plant_position_dict[tuple(plant_beneath.position)]
 
             # check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
