@@ -1,0 +1,397 @@
+gen data: 0.001003
+plotting: 1.337938
+prepare today: 0.079185
+food cycle: 0.001003
+bug cycle: 0.005038
+----------------END DAY----------------
+gen data: 0.001004
+plotting: 1.354604
+prepare today: 0.067152
+food cycle: 0.001030
+bug cycle: 0.017042
+----------------END DAY----------------
+gen data: 0.001008
+plotting: 1.437382
+prepare today: 0.069181
+food cycle: 0.007018
+bug cycle: 0.006016
+----------------END DAY----------------
+gen data: 0.001004
+plotting: 1.553228
+prepare today: 0.087231
+food cycle: 0.006044
+bug cycle: 0.008022
+----------------END DAY----------------
+gen data: 0.000974
+plotting: 1.738107
+prepare today: 0.107288
+food cycle: 0.009029
+bug cycle: 0.011023
+----------------END DAY----------------
+gen data: 0.005020
+plotting: 1.966310
+prepare today: 0.101282
+food cycle: 0.006001
+bug cycle: 0.009049
+----------------END DAY----------------
+gen data: 0.001002
+plotting: 1.863394
+prepare today: 0.133330
+food cycle: 0.011054
+bug cycle: 0.005015
+----------------END DAY----------------
+gen data: 0.002979
+plotting: 2.214246
+prepare today: 0.138367
+food cycle: 0.006518
+bug cycle: 0.003509
+----------------END DAY----------------
+gen data: 0.002005
+plotting: 2.350218
+prepare today: 0.143414
+food cycle: 0.008033
+bug cycle: 0.002991
+----------------END DAY----------------
+gen data: 0.003994
+plotting: 2.097469
+prepare today: 0.144387
+food cycle: 0.007023
+bug cycle: 0.006014
+----------------END DAY----------------
+gen data: 0.002000
+plotting: 2.244943
+prepare today: 0.158420
+food cycle: 0.010054
+bug cycle: 0.004014
+----------------END DAY----------------
+gen data: 0.002008
+plotting: 2.415417
+prepare today: 0.178478
+food cycle: 0.009021
+bug cycle: 0.003983
+----------------END DAY----------------
+gen data: 0.003041
+plotting: 2.872095
+prepare today: 0.214569
+food cycle: 0.013006
+bug cycle: 0.008052
+----------------END DAY----------------
+gen data: 0.003003
+plotting: 3.253273
+prepare today: 0.227631
+food cycle: 0.018049
+bug cycle: 0.013007
+----------------END DAY----------------
+gen data: 0.003036
+plotting: 3.188069
+prepare today: 0.251671
+food cycle: 0.014031
+bug cycle: 0.002010
+----------------END DAY----------------
+gen data: 0.003984
+plotting: 3.541413
+prepare today: 0.263731
+food cycle: 0.018050
+bug cycle: 0.011029
+----------------END DAY----------------
+gen data: 0.004982
+plotting: 3.781081
+prepare today: 0.299794
+food cycle: 0.018056
+bug cycle: 0.015037
+----------------END DAY----------------
+gen data: 0.004015
+plotting: 4.285388
+prepare today: 0.373715
+food cycle: 0.022086
+bug cycle: 0.031081
+----------------END DAY----------------
+gen data: 0.004985
+plotting: 5.245046
+prepare today: 0.370999
+food cycle: 0.022072
+bug cycle: 0.046097
+----------------END DAY----------------
+gen data: 0.006047
+plotting: 4.816296
+prepare today: 0.377006
+food cycle: 0.027067
+bug cycle: 0.037099
+----------------END DAY----------------
+gen data: 0.007996
+plotting: 5.745780
+prepare today: 0.575514
+food cycle: 0.030077
+bug cycle: 0.035095
+----------------END DAY----------------
+gen data: 0.006030
+plotting: 6.416457
+prepare today: 0.484098
+food cycle: 0.036095
+bug cycle: 0.038069
+----------------END DAY----------------
+gen data: 0.007048
+plotting: 6.288692
+prepare today: 0.471282
+food cycle: 0.038103
+bug cycle: 0.086233
+----------------END DAY----------------
+gen data: 0.008017
+plotting: 7.258668
+prepare today: 0.628759
+food cycle: 0.058685
+bug cycle: 0.114336
+----------------END DAY----------------
+gen data: 0.009051
+plotting: 8.776653
+prepare today: 0.535419
+food cycle: 0.062137
+bug cycle: 0.205576
+----------------END DAY----------------
+gen data: 0.010025
+plotting: 8.444252
+prepare today: 0.605596
+food cycle: 0.065188
+bug cycle: 0.254677
+----------------END DAY----------------
+gen data: 0.011000
+plotting: 8.880644
+prepare today: 0.625636
+food cycle: 0.077200
+bug cycle: 0.332886
+----------------END DAY----------------
+gen data: 0.013063
+plotting: 9.599455
+prepare today: 0.678778
+food cycle: 0.088261
+bug cycle: 0.503341
+----------------END DAY----------------
+gen data: 0.013038
+plotting: 11.014912
+prepare today: 0.783883
+food cycle: 0.095250
+bug cycle: 0.380015
+----------------END DAY----------------
+gen data: 0.016039
+plotting: 10.567396
+prepare today: 0.657756
+food cycle: 0.111288
+bug cycle: 0.510332
+----------------END DAY----------------
+gen data: 0.012057
+plotting: 11.045338
+prepare today: 0.683848
+food cycle: 0.125334
+bug cycle: 0.742971
+----------------END DAY----------------
+gen data: 0.017048
+plotting: 11.330123
+prepare today: 0.682816
+food cycle: 0.141352
+bug cycle: 0.764026
+----------------END DAY----------------
+gen data: 0.016043
+plotting: 11.796451
+prepare today: 0.694848
+food cycle: 0.156414
+bug cycle: 0.842240
+----------------END DAY----------------
+gen data: 0.015038
+plotting: 12.198471
+prepare today: 0.713902
+food cycle: 0.172426
+bug cycle: 0.973614
+----------------END DAY----------------
+gen data: 0.021061
+plotting: 12.482613
+prepare today: 0.718915
+food cycle: 0.194487
+bug cycle: 1.301485
+----------------END DAY----------------
+gen data: 0.018052
+plotting: 12.737316
+prepare today: 0.726933
+food cycle: 0.206575
+bug cycle: 1.629330
+----------------END DAY----------------
+gen data: 0.022066
+plotting: 12.924358
+prepare today: 0.731948
+food cycle: 0.211566
+bug cycle: 1.874979
+----------------END DAY----------------
+gen data: 0.020053
+plotting: 13.463799
+prepare today: 0.732922
+food cycle: 0.228608
+bug cycle: 2.218899
+----------------END DAY----------------
+gen data: 0.017075
+plotting: 13.717443
+prepare today: 0.729972
+food cycle: 0.236625
+bug cycle: 3.090214
+----------------END DAY----------------
+gen data: 0.022057
+plotting: 13.923020
+prepare today: 0.738969
+food cycle: 0.251666
+bug cycle: 4.059791
+----------------END DAY----------------
+gen data: 0.019054
+plotting: 14.191732
+prepare today: 0.735956
+food cycle: 0.257685
+bug cycle: 5.202806
+----------------END DAY----------------
+gen data: 0.019080
+plotting: 14.324440
+prepare today: 0.721919
+food cycle: 0.260721
+bug cycle: 6.766990
+----------------END DAY----------------
+gen data: 0.024048
+plotting: 14.505584
+prepare today: 0.717907
+food cycle: 0.254681
+bug cycle: 8.125604
+----------------END DAY----------------
+gen data: 0.019035
+plotting: 14.623952
+prepare today: 0.733947
+food cycle: 0.264699
+bug cycle: 10.110860
+----------------END DAY----------------
+gen data: 0.026069
+plotting: 15.317727
+prepare today: 0.729975
+food cycle: 0.277729
+bug cycle: 11.753223
+----------------END DAY----------------
+gen data: 0.027072
+plotting: 15.801012
+prepare today: 0.722924
+food cycle: 0.271752
+bug cycle: 13.154944
+----------------END DAY----------------
+gen data: 0.022058
+plotting: 16.046667
+prepare today: 0.716910
+food cycle: 0.261693
+bug cycle: 14.827423
+----------------END DAY----------------
+gen data: 0.026069
+plotting: 16.149966
+prepare today: 0.709889
+food cycle: 0.263672
+bug cycle: 17.271922
+----------------END DAY----------------
+gen data: 0.022060
+plotting: 16.242190
+prepare today: 0.708905
+food cycle: 0.278739
+bug cycle: 18.792942
+----------------END DAY----------------
+gen data: 0.029077
+plotting: 17.166642
+prepare today: 0.691865
+food cycle: 0.247632
+bug cycle: 20.560699
+----------------END DAY----------------
+gen data: 0.024068
+plotting: 17.724089
+prepare today: 0.686828
+food cycle: 0.246654
+bug cycle: 23.200718
+----------------END DAY----------------
+gen data: 0.027065
+plotting: 18.336756
+prepare today: 0.661733
+food cycle: 0.238633
+bug cycle: 24.818022
+----------------END DAY----------------
+gen data: 0.025056
+plotting: 18.951364
+prepare today: 0.631677
+food cycle: 0.221615
+bug cycle: 25.601068
+----------------END DAY----------------
+gen data: 0.033093
+plotting: 19.495809
+prepare today: 0.614629
+food cycle: 0.210562
+bug cycle: 25.677296
+----------------END DAY----------------
+gen data: 0.024075
+plotting: 19.806056
+prepare today: 0.613780
+food cycle: 0.206549
+bug cycle: 27.213856
+----------------END DAY----------------
+gen data: 0.038102
+plotting: 20.319025
+prepare today: 0.598591
+food cycle: 0.204544
+bug cycle: 30.644478
+----------------END DAY----------------
+gen data: 0.035094
+plotting: 21.087091
+prepare today: 0.616618
+food cycle: 0.191504
+bug cycle: 31.564625
+----------------END DAY----------------
+gen data: 0.025067
+plotting: 21.658404
+prepare today: 0.597192
+food cycle: 0.199016
+bug cycle: 34.096068
+----------------END DAY----------------
+gen data: 0.027079
+plotting: 22.408131
+prepare today: 0.596617
+food cycle: 0.180449
+bug cycle: 36.093918
+----------------END DAY----------------
+gen data: 0.036093
+plotting: 22.675493
+prepare today: 0.590605
+food cycle: 0.183486
+bug cycle: 38.801338
+----------------END DAY----------------
+gen data: 0.027084
+plotting: 23.619344
+prepare today: 0.606638
+food cycle: 0.203517
+bug cycle: 41.434068
+----------------END DAY----------------
+gen data: 0.028074
+plotting: 24.062001
+prepare today: 0.627644
+food cycle: 0.179477
+bug cycle: 44.491161
+----------------END DAY----------------
+gen data: 0.029079
+plotting: 24.700782
+prepare today: 0.607617
+food cycle: 0.185498
+bug cycle: 47.358189
+----------------END DAY----------------
+gen data: 0.037099
+plotting: 25.141323
+prepare today: 0.654738
+food cycle: 0.185527
+bug cycle: 50.617061
+----------------END DAY----------------
+gen data: 0.029103
+plotting: 25.952010
+prepare today: 0.639698
+food cycle: 0.187466
+bug cycle: 51.494789
+----------------END DAY----------------
+gen data: 0.030088
+plotting: 26.518015
+prepare today: 0.639701
+food cycle: 0.191509
+bug cycle: 59.678331
+----------------END DAY----------------
+finish: 79.570492
