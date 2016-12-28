@@ -7,7 +7,6 @@ from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
-
 ##################################
 # --------Initialisation-------- #
 ##################################
@@ -28,23 +27,24 @@ t = Timer(w.seed)
 # --------Run-------- #
 #######################
 while KillSwitch.is_off():
-    # generate yesterday data
+    # Generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
     t.take_time(msg='gen data')
     world_viewer.view_world(w)
     t.take_time(msg='plotting')
 
+    # Prepare today's work
     alive_plants, alive_bugs = w.prepare_today()
     t.take_time(msg='prepare today')
 
-    # food life cycle
+    # Food life cycle
     plant_index = 0
     while plant_index < len(alive_plants):
         plant = alive_plants[plant_index]
         plant.grow()
         if plant.energy <= cfg.food['growth_rate']:
-            # plant die
+            # Plant die
             w.kill(plant)
         else:
             if plant.energy >= plant.reproduction_threshold:
@@ -56,9 +56,9 @@ while KillSwitch.is_off():
     t.take_time(msg='food cycle')
 
     # Construct a dictionary of alive_plant_position: food_object
-    plant_position_dict = {tuple(plant.position):plant for plant in alive_plants}
+    plant_position_dict = {tuple(plant.position): plant for plant in alive_plants}
 
-    # bug life cycle
+    # Bug life cycle
     bug_index = 0
     while bug_index < len(alive_bugs):
         bug = alive_bugs[bug_index]
@@ -70,6 +70,7 @@ while KillSwitch.is_off():
             # Bug won't move if born this turn
             if bug.lifetime > 1 or w.time == 1:
                 random_direction = w.get_random_available_direction(bug)
+                # Check if bug can move
                 if random_direction is not None:
                     w.grid[tuple(bug.position)] -= BUG_VAL
                     bug.move(random_direction)

@@ -5,5 +5,4 @@ __pycache__/
 
 data/
 log/
-config.py
 test.py
