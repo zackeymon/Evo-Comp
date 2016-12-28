@@ -13,7 +13,7 @@ class World:
     A class to create in the environment in which our organisms live.
     """
 
-    def __init__(self, rows, columns, seed=None, fertile_lands=None, time=0):
+    def __init__(self, rows, columns, seed=None, fertile_lands=None, time=0, init_food=0, init_bugs=0):
         """
         World Initialisation
         :param rows: Number of rows in the world
@@ -29,18 +29,24 @@ class World:
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
         # TODO: change dead to only record the number of death
         self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
-
-        if fertile_lands is None:
-            # make the whole world fertile
-            self.fertile_squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
-        else:
-            self.fertile_squares = []
-            for i in fertile_lands:
-                min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
-                self.fertile_squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
-
+        self.fertile_squares = self.get_fertile_squares(fertile_lands)
         self.spawnable_squares = list(self.fertile_squares)
         random.seed(self.seed)
+
+        # Populate the world
+        self.drop_food(init_food, **cfg.world['food_spawn_vals'])
+        self.drop_bug(init_bugs, **cfg.world['bug_spawn_vals'])
+
+    def get_fertile_squares(self, fertile_lands):
+        if fertile_lands is None:
+            # make the whole world fertile
+            squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
+        else:
+            squares = []
+            for i in fertile_lands:
+                min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
+                squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
+        return squares
 
     def _collide(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
@@ -94,12 +100,16 @@ class World:
         self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
 
         # Shuffle the alive food & bug lists
-        random.shuffle(self.organism_lists[FOOD_NAME]['alive'])
-        random.shuffle(self.organism_lists[BUG_NAME]['alive'])
+        alive_plants = self.organism_lists[FOOD_NAME]['alive']
+        alive_bugs = self.organism_lists[BUG_NAME]['alive']
+        random.shuffle(alive_plants)
+        random.shuffle(alive_bugs)
 
         # Initialise today's dead list
         self.organism_lists[FOOD_NAME]['dead'].append([])
         self.organism_lists[BUG_NAME]['dead'].append([])
+
+        return alive_plants, alive_bugs
 
     def kill(self, organism):
         self.grid[tuple(organism.position)] -= organism.value

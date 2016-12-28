@@ -7,7 +7,9 @@ world = dict(
         seed=None,
         rows=100,
         columns=100,
-        fertile_lands=None
+        fertile_lands=None,
+        init_food=500,
+        init_bugs=50
     ),
     food_spawn_vals=dict(
         energy=20,

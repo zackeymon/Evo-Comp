@@ -11,73 +11,76 @@ from world_viewer import WorldViewer
 # --------Initialisation-------- #
 ##################################
 # Create a new world
-my_world = World(**cfg.world['settings'])
+w = World(**cfg.world['settings'])
 
 # Make a kill switch
 KillSwitch.setup()
 
 # Set up analysis classes
-world_recorder = WorldRecorder(my_world)
-world_viewer = WorldViewer(my_world.seed)
-
-# Populate the world
-my_world.drop_food(int(len(my_world.fertile_squares) / 10), **cfg.world['food_spawn_vals'])
-my_world.drop_bug(int(len(my_world.fertile_squares) / 80), **cfg.world['bug_spawn_vals'])
+world_recorder = WorldRecorder(w)
+world_viewer = WorldViewer(w.seed)
 
 #######################
 # --------Run-------- #
 #######################
-while len(my_world.organism_lists[BUG_NAME]['alive']) > 0 and KillSwitch.is_off():
+while KillSwitch.is_off():
     # generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
-    world_viewer.view_world(my_world)
+    world_viewer.view_world(w)
 
-    my_world.prepare_today()
+    alive_plants, alive_bugs = w.prepare_today()
 
     # food life cycle
-    for food in my_world.organism_lists[FOOD_NAME]['alive']:
-        food.grow()
-        if food.energy >= food.reproduction_threshold:
-            # find an empty square
-            random_direction = my_world.get_random_available_direction(food)
-            if random_direction is not None:
-                my_world.spawn(food.reproduce(random_direction))
+    plant_index = 0
+    while plant_index < len(alive_plants):
+        plant = alive_plants[plant_index]
+        plant.grow()
+        if plant.energy <= cfg.food['growth_rate']:
+            # plant die
+            w.kill(plant)
+        else:
+            if plant.energy >= plant.reproduction_threshold:
+                # find an empty square
+                random_direction = w.get_random_available_direction(plant)
+                if random_direction is not None:
+                    w.spawn(plant.reproduce(random_direction))
+            plant_index += 1
 
     # bug life cycle
     bug_index = 0
-    while bug_index < len(my_world.organism_lists[BUG_NAME]['alive']):
-        bug = my_world.organism_lists[BUG_NAME]['alive'][bug_index]
+    while bug_index < len(alive_bugs):
+        bug = alive_bugs[bug_index]
         bug.respire()
         if bug.energy <= 0:
             # bug die
-            my_world.kill(bug)
+            w.kill(bug)
         else:
             # bug won't move if born this turn
-            if bug.lifetime > 1 or my_world.time == 1:
-                random_direction = my_world.get_random_available_direction(bug)
+            if bug.lifetime > 1 or w.time == 1:
+                random_direction = w.get_random_available_direction(bug)
                 if random_direction is not None:
-                    my_world.grid[tuple(bug.position)] -= BUG_VAL
+                    w.grid[tuple(bug.position)] -= BUG_VAL
                     bug.move(random_direction)
-                    my_world.grid[tuple(bug.position)] += BUG_VAL
+                    w.grid[tuple(bug.position)] += BUG_VAL
 
             # check if there is food on this square
-            if my_world.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
-                for j, food in enumerate(my_world.organism_lists[FOOD_NAME]['alive']):
+            if w.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
+                for j, plant in enumerate(w.organism_lists[FOOD_NAME]['alive']):
                     # find the food
-                    if (bug.position == food.position).all():
+                    if (bug.position == plant.position).all():
                         # check if bug can eat it
-                        if np.absolute(bug.taste - get_taste_average([bug.taste, food.taste])) <= 10:
-                            bug.eat(food)
-                            my_world.kill(food)
+                        if np.absolute(bug.taste - get_taste_average([bug.taste, plant.taste])) <= 10:
+                            bug.eat(plant)
+                            w.kill(plant)
                         break
 
             # check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
-                random_direction = my_world.get_random_available_direction(bug)
+                random_direction = w.get_random_available_direction(bug)
                 # check if there is an empty square
                 if random_direction is not None:
-                    my_world.spawn(bug.reproduce(random_direction))
+                    w.spawn(bug.reproduce(random_direction))
 
             bug_index += 1
 
