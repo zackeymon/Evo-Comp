@@ -22,26 +22,35 @@ class WorldViewer:
         """
         self.seed = seed
 
-    @staticmethod
-    def view_world(world):
+        # World plotting axis initialisation
+        self.ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
+        self.ax.set_xlim(0, cfg.world['settings']['columns'] + 1)
+        self.ax.set_ylim(0, cfg.world['settings']['rows'] + 1)
+        # Turn off axis labels
+        self.ax.xaxis.set_visible(False)
+        self.ax.yaxis.set_visible(False)
+
+    def view_world(self, world):
         """"Plot the world: rectangles=food, circles=bugs"""
+        food_x_offsets = []
+        food_y_offsets = []
+        food_facecolors = []
+
         bug_widths = []
         bug_heights = []
-        bug_linewidths = []
         bug_facecolors = []
         bug_x_offsets = []
         bug_y_offsets = []
-        ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
 
-        for food in world.organism_lists['food']['alive']:  # draw food
+        for food in world.organism_lists['food']['alive']:  # food parameters for plotting
             hue = float(food.taste) / 360 if cfg.food['evolve_taste'] else 0.33
             luminosity = 0.9 - food.energy * 0.004 if food.energy > 20 else 0.82
 
-            color = colorsys.hls_to_rgb(hue, luminosity, 1)
+            food_x_offsets.append(food.position[0] + 0.5)
+            food_y_offsets.append(food.position[1] + 0.5)
+            food_facecolors.append(colorsys.hls_to_rgb(hue, luminosity, 1))
 
-            ax.add_patch(Rectangle((food.position[0], food.position[1]), 1, 1, facecolor=color, linewidth=0))
-
-        for bug in world.organism_lists['bug']['alive']:  # draw bugs
+        for bug in world.organism_lists['bug']['alive']:  # bug parameters for plotting
 
             bug_size = bug.energy * 0.01
             if bug_size < 0.3:
@@ -52,40 +61,43 @@ class WorldViewer:
             if cfg.bug['evolve_taste']:  # black outline
                 bug_widths.append(bug_size)
                 bug_heights.append(bug_size)
-                bug_linewidths.append(0)
-                bug_facecolors.append('k')
                 bug_x_offsets.append(bug.position[0] + 0.5)
                 bug_y_offsets.append(bug.position[1] + 0.5)
+                bug_facecolors.append('k')
 
                 bug_widths.append(bug_size / 1.5)
                 bug_heights.append(bug_size / 1.5)
-                bug_linewidths.append(0)
-                bug_facecolors.append(colorsys.hls_to_rgb(float(bug.taste) / 360, 0.5, 1))
                 bug_x_offsets.append(bug.position[0] + 0.5)
                 bug_y_offsets.append(bug.position[1] + 0.5)
+                bug_facecolors.append(colorsys.hls_to_rgb(float(bug.taste) / 360, 0.5, 1))
 
             else:  # no outline
                 bug_widths.append(bug_size)
                 bug_heights.append(bug_size)
-                bug_linewidths.append(0)
-                bug_facecolors.append('r')
                 bug_x_offsets.append(bug.position[0] + 0.5)
                 bug_y_offsets.append(bug.position[1] + 0.5)
+                bug_facecolors.append('r')
 
+        # Create shape collections for plotting
+        food_sizes = np.full(len(food_x_offsets), 200, dtype=np.int)
+        food_linewidths = np.zeros(len(food_x_offsets))
+        food_collection = col.RegularPolyCollection(4, rotation=np.pi / 4, sizes=food_sizes,
+                                                    offsets=list(zip(food_x_offsets, food_y_offsets)),
+                                                    transOffset=self.ax.transData, facecolors=food_facecolors,
+                                                    linewidths=food_linewidths)
         bug_angles = np.zeros(len(bug_widths))
+        bug_linewidths = np.zeros(len(bug_widths))
         bug_collection = col.EllipseCollection(bug_widths, bug_heights, bug_angles, units='xy',
-                                               offsets=list(zip(bug_x_offsets, bug_y_offsets)), transOffset=ax.transData,
+                                               offsets=list(zip(bug_x_offsets, bug_y_offsets)),
+                                               transOffset=self.ax.transData,
                                                facecolors=bug_facecolors, linewidths=bug_linewidths)
-        ax.set_xticks(np.arange(0, world.columns + 1, 1))
-        ax.set_yticks(np.arange(0, world.rows + 1, 1))
-        # Turn off tick labels
-        ax.set_yticklabels([])
-        ax.set_xticklabels([])
-        ax.add_collection(bug_collection)
 
+        # Add shape collections to world and save figure
+        self.ax.add_collection(food_collection)
+        self.ax.add_collection(bug_collection)
         plt.title('time=%s' % world.time, fontsize=30)
         plt.savefig(os.path.join('data', world.seed, 'world', '%s.png' % world.time))
-        plt.close()
+        plt.cla()
 
     def plot_world_stats(self):
         """Read the CSV (comma-separated values) output and plot trends."""
@@ -152,10 +164,10 @@ class WorldViewer:
         # Create output directories
         for switch in ['evolve_reproduction_threshold', 'evolve_taste']:
             if cfg.food[switch]:
-                if not os.path.exists(os.path.join('data', self.seed, 'food_%r' % switch.replace("'", ""))):
+                if not os.path.exists(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", "")))):
                     os.makedirs(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", ""))))
             if cfg.bug[switch]:
-                if not os.path.exists(os.path.join('data', self.seed, 'bug_%r' % switch.replace("'", ""))):
+                if not os.path.exists(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", "")))):
                     os.makedirs(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", ""))))
 
         # Create the list of organisms for each day
