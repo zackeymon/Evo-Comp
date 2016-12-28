@@ -2,6 +2,7 @@ import config as cfg
 from constants import *
 from utility_methods import *
 from kill_switch import KillSwitch
+from timer import Timer
 from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
@@ -20,6 +21,9 @@ KillSwitch.setup()
 world_recorder = WorldRecorder(w)
 world_viewer = WorldViewer(w.seed)
 
+# Start timer
+t = Timer(w.seed)
+
 #######################
 # --------Run-------- #
 #######################
@@ -27,9 +31,12 @@ while KillSwitch.is_off():
     # generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
+    t.take_time(msg='gen data')
     world_viewer.view_world(w)
+    t.take_time(msg='plotting')
 
     alive_plants, alive_bugs = w.prepare_today()
+    t.take_time(msg='prepare today')
 
     # food life cycle
     plant_index = 0
@@ -46,6 +53,7 @@ while KillSwitch.is_off():
                 if random_direction is not None:
                     w.spawn(plant.reproduce(random_direction))
             plant_index += 1
+    t.take_time(msg='food cycle')
 
     # bug life cycle
     bug_index = 0
@@ -84,6 +92,8 @@ while KillSwitch.is_off():
 
             bug_index += 1
 
+    t.take_time(msg='bug cycle', end_day=True)
+
 ########################
 # --------Plot-------- #
 ########################
@@ -91,3 +101,5 @@ world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
 world_viewer.plot_world_data()
+
+t.take_time(msg='finish')
