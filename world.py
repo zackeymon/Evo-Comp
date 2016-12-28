@@ -39,7 +39,7 @@ class World:
 
     def get_fertile_squares(self, fertile_lands):
         if fertile_lands is None:
-            # make the whole world fertile
+            # Make the whole world fertile
             squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         else:
             squares = []
@@ -50,11 +50,11 @@ class World:
 
     def _collide(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
-        # collide with wall
+        # Collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
 
-        # collide with organism of the same type
+        # Collide with organism of the same type
         if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == FOOD_VAL + BUG_VAL:
             return True
 

@@ -84,7 +84,7 @@ while KillSwitch.is_off():
                     w.kill(plant_beneath)
                     del plant_position_dict[tuple(plant_beneath.position)]
 
-            # check if bug can reproduce
+            # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
                 random_direction = w.get_random_available_direction(bug)
                 # check if there is an empty square

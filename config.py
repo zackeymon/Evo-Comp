@@ -27,7 +27,7 @@ world = dict(
 food = dict(
     growth_rate=2,
 
-    # evolution switches
+    # Evolution switches
     evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
@@ -38,7 +38,7 @@ food = dict(
 bug = dict(
     respiration_rate=2,
 
-    # evolution switches
+    # Evolution switches
     evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 

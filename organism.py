@@ -23,9 +23,6 @@ class Organism:
         self.energy_max = energy_max
         self.taste = taste
 
-        if self.reproduction_threshold < 2:
-            self.reproduction_threshold = 2
-
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d E_max:%d g:%d)' % (
             self.__class__.__name__, self.position[0], self.position[1], self.lifetime, self.energy,
