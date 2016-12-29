@@ -93,7 +93,7 @@ while KillSwitch.is_off():
 
             bug_index += 1
 
-    t.take_time(msg='bug cycle', end_day=True)
+    t.take_time('bug cycle', w.time, plant_index, bug_index)
 
 ########################
 # --------Plot-------- #

@@ -17,10 +17,10 @@ class Timer:
         self.logger.addHandler(handler)
         self.previous_time = time()
 
-    def take_time(self, msg='', end_day=False):
+    def take_time(self, msg='', *args):
         current_time = time()
         self.logger.info('%s: %f', msg, current_time - self.previous_time)
         self.previous_time = current_time
 
-        if end_day:
-            self.logger.info('----------------END DAY----------------')
+        if args:
+            self.logger.info('----------------%s----------------' % ', '.join(map(str, args)))
