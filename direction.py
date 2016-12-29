@@ -6,7 +6,7 @@ class Direction:
     """
     Define a direction for movement and reproduction.
     """
-    all_directions = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [0, -1], [1, -1]]
+    all_directions = ((0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (0, -1), (-1, 1))
 
     @classmethod
     def random(cls, allowed_directions):
