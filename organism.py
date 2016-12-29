@@ -19,7 +19,7 @@ class Organism:
         self.position = np.array(position)
         self.lifetime = 0
         self.energy = energy
-        self.reproduction_threshold = reproduction_threshold
+        self.reproduction_threshold = reproduction_threshold if reproduction_threshold >= 0 else 0
         self.energy_max = energy_max
         self.taste = taste
 

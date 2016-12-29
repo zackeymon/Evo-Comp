@@ -43,7 +43,7 @@ while KillSwitch.is_off():
     while plant_index < len(alive_plants):
         plant = alive_plants[plant_index]
         plant.grow()
-        if plant.energy <= cfg.food['growth_rate']:
+        if plant.energy <= cfg.food['growth_rate'] * 5:
             # Plant die
             w.kill(plant)
         else:
