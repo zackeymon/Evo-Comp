@@ -4,8 +4,6 @@ import csv
 import colorsys
 from matplotlib import pyplot as plt
 from matplotlib import collections as col
-from matplotlib.patches import Rectangle
-from matplotlib.patches import Ellipse
 from utility_methods import *
 import config as cfg
 
@@ -24,23 +22,17 @@ class WorldViewer:
 
         # World plotting axis initialisation
         self.ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
-        self.ax.set_xlim(0, cfg.world['settings']['columns'] + 1)
-        self.ax.set_ylim(0, cfg.world['settings']['rows'] + 1)
+        self.ax.set_xlim(0, cfg.world['settings']['columns'])
+        self.ax.set_ylim(0, cfg.world['settings']['rows'])
         # Turn off axis labels
         self.ax.xaxis.set_visible(False)
         self.ax.yaxis.set_visible(False)
 
     def view_world(self, world):
         """"Plot the world: rectangles=food, circles=bugs"""
-        food_x_offsets = []
-        food_y_offsets = []
-        food_facecolors = []
 
-        bug_widths = []
-        bug_heights = []
-        bug_facecolors = []
-        bug_x_offsets = []
-        bug_y_offsets = []
+        food_x_offsets, food_y_offsets, food_facecolors = ([] for _ in range(3))
+        bug_widths, bug_heights, bug_x_offsets, bug_y_offsets, bug_facecolors = ([] for _ in range(5))
 
         for food in world.organism_lists['food']['alive']:  # food parameters for plotting
             hue = float(food.taste) / 360 if cfg.food['evolve_taste'] else 0.33
@@ -58,11 +50,12 @@ class WorldViewer:
             elif bug_size > 1.0:
                 bug_size = 1.0
 
-            if cfg.bug['evolve_taste']:  # black outline
-                bug_widths.append(bug_size)
-                bug_heights.append(bug_size)
-                bug_x_offsets.append(bug.position[0] + 0.5)
-                bug_y_offsets.append(bug.position[1] + 0.5)
+            bug_widths.append(bug_size)
+            bug_heights.append(bug_size)
+            bug_x_offsets.append(bug.position[0] + 0.5)
+            bug_y_offsets.append(bug.position[1] + 0.5)
+
+            if cfg.bug['evolve_taste']:  # black outline with coloured dot in centre
                 bug_facecolors.append('k')
 
                 bug_widths.append(bug_size / 1.5)
@@ -72,10 +65,6 @@ class WorldViewer:
                 bug_facecolors.append(colorsys.hls_to_rgb(float(bug.taste) / 360, 0.5, 1))
 
             else:  # no outline
-                bug_widths.append(bug_size)
-                bug_heights.append(bug_size)
-                bug_x_offsets.append(bug.position[0] + 0.5)
-                bug_y_offsets.append(bug.position[1] + 0.5)
                 bug_facecolors.append('r')
 
         # Create shape collections for plotting
@@ -193,54 +182,71 @@ class WorldViewer:
             # Plot the world
             if world:
 
-                ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
+                food_x_offsets, food_y_offsets, food_facecolors = ([] for _ in range(3))
+                bug_widths, bug_heights, bug_x_offsets, bug_y_offsets, bug_facecolors = ([] for _ in range(5))
 
                 for organism in day:
 
-                    if organism[0] == "'food'":  # draw food
-                        hue = organism[5] / 360 if cfg.food['evolve_taste'] else 0.33
+                    if organism[0] == "'food'":  # food parameters for plotting
+                        hue = float(organism[5]) / 360 if cfg.food['evolve_taste'] else 0.33
                         luminosity = 0.9 - organism[3] * 0.004 if organism[3] > 20 else 0.82
 
-                        color = colorsys.hls_to_rgb(hue, luminosity, 1)
+                        food_x_offsets.append(organism[1] + 0.5)
+                        food_y_offsets.append(organism[2] + 0.5)
+                        food_facecolors.append(colorsys.hls_to_rgb(hue, luminosity, 1))
 
-                        ax.add_patch(
-                            Rectangle((organism[1], organism[2]), 1, 1, facecolor=color, linewidth=0))
+                    elif organism[0] == "'bug'": # bug parameters for plotting
 
-                    elif organism[0] == "'bug'":  # draw bugs
                         bug_size = organism[3] * 0.01
                         if bug_size < 0.3:
                             bug_size = 0.3
                         elif bug_size > 1.0:
                             bug_size = 1.0
 
-                        if cfg.bug['evolve_taste']:  # black outline
-                            ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=bug_size,
-                                                 height=bug_size, facecolor='k', linewidth=0))
-                            ax.add_patch(
-                                Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=bug_size / 1.5,
-                                        height=bug_size / 1.5, facecolor=colorsys.hls_to_rgb(organism[5] / 360, 0.5, 1),
-                                        linewidth=0))
+                        bug_widths.append(bug_size)
+                        bug_heights.append(bug_size)
+                        bug_x_offsets.append(organism[1] + 0.5)
+                        bug_y_offsets.append(organism[2] + 0.5)
+
+                        if cfg.bug['evolve_taste']:  # black outline with coloured dot in centre
+                            bug_facecolors.append('k')
+
+                            bug_widths.append(bug_size / 1.5)
+                            bug_heights.append(bug_size / 1.5)
+                            bug_x_offsets.append(organism[1] + 0.5)
+                            bug_y_offsets.append(organism[2] + 0.5)
+                            bug_facecolors.append(colorsys.hls_to_rgb(float(organism[5]) / 360, 0.5, 1))
+
                         else:  # no outline
-                            ax.add_patch(Ellipse(xy=(organism[1] + 0.5, organism[2] + 0.5), width=bug_size,
-                                                 height=bug_size, facecolor='r', linewidth=0))
+                            bug_facecolors.append('r')
 
-                ax.set_xticks(np.arange(0, cfg.world['settings']['columns'] + 1, 1))
-                ax.set_yticks(np.arange(0, cfg.world['settings']['rows'] + 1, 1))
-                # Turn off tick labels
-                ax.set_yticklabels([])
-                ax.set_xticklabels([])
+                # Create shape collections for plotting
+                food_sizes = np.full(len(food_x_offsets), 200, dtype=np.int)
+                food_linewidths = np.zeros(len(food_x_offsets))
+                food_collection = col.RegularPolyCollection(4, rotation=np.pi / 4, sizes=food_sizes,
+                                                            offsets=list(zip(food_x_offsets, food_y_offsets)),
+                                                            transOffset=self.ax.transData, facecolors=food_facecolors,
+                                                            linewidths=food_linewidths)
+                bug_angles = np.zeros(len(bug_widths))
+                bug_linewidths = np.zeros(len(bug_widths))
+                bug_collection = col.EllipseCollection(bug_widths, bug_heights, bug_angles, units='xy',
+                                                       offsets=list(zip(bug_x_offsets, bug_y_offsets)),
+                                                       transOffset=self.ax.transData,
+                                                       facecolors=bug_facecolors, linewidths=bug_linewidths)
 
+                # Add shape collections to world and save figure
+                self.ax.add_collection(food_collection)
+                self.ax.add_collection(bug_collection)
                 plt.title('time=%s' % (i + start), fontsize=30)
-                plt.savefig(os.path.join('data', self.seed, 'world', 'a%s.png' % (i + start)))
-                plt.close()
+                plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % (i + start)))
+                plt.cla()
 
             # Plot genes
             if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
                 'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
 
                 # Create lists of food and bug gene data for plotting
-                food_list = []
-                bug_list = []
+                food_list, bug_list = [], []
 
                 for organism in day:
                     if organism[0] == "'food'":
@@ -254,12 +260,13 @@ class WorldViewer:
                     {'data': bug_list, 'switch': cfg.bug, 'path': 'bug_evolve_reproduction_threshold', 'colour': 'r',
                      'path2': 'bug_evolve_taste', 'colour_maps': 'Reds'}]
 
-                for organism_data in data_to_plot:  # for each food and bug
+                for organism_data in data_to_plot:  # for food and bugs
+
+                    rep_thresh = [organism[4] for organism in organism_data['data']]
+                    max_rep_thresh = int(max(rep_thresh))
 
                     # 1D Plot (bar chart)
                     if organism_data['switch']['evolve_reproduction_threshold']:
-
-                        max_rep_thresh = int(max([organism[4] for organism in organism_data['data']]))
 
                         if max_rep_thresh <= 100:
                             rep_dict = {j: 0 for j in range(101)}
@@ -276,6 +283,7 @@ class WorldViewer:
                             for key, value in rep_dict.items():
                                 rep_dict[key] = value / total  # normalisation
 
+                        plt.figure()
                         plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
                         plt.xlabel('Reproduction Threshold')
                         plt.ylabel('Population')
@@ -287,19 +295,14 @@ class WorldViewer:
                     if organism_data['switch']['evolve_taste']:
 
                         # create lists of gene data
-                        rep_thresh = []
-                        taste = []
-
-                        for organism in organism_data['data']:
-                            rep_thresh.append(organism[4])
-                            taste.append(organism[5])
+                        taste = [organism[5] for organism in organism_data['data']]
 
                         # create and set co-ordinate values in gene space
-                        if max(rep_thresh) <= 100:
+                        if max_rep_thresh <= 100:
                             x = [j for j in range(51)]
                         else:
                             x = [j for j in
-                                 range((int(max(rep_thresh) / 2) + 1))]  # create binned co-ordinate values
+                                 range((int(max_rep_thresh / 2) + 1))]  # create binned co-ordinate values
                         y = [j for j in range(61)]
 
                         rep_thresh = [int(j / 2) for j in rep_thresh]  # bin values
@@ -317,13 +320,14 @@ class WorldViewer:
                         xi, yi = np.meshgrid(x, y)
                         zi = np.array(z)
 
+                        plt.figure()
                         plt.pcolormesh(xi, yi, zi, cmap=organism_data['colour_maps'])
                         plt.colorbar()
                         if max(rep_thresh) <= 100:
                             plt.xlim(0, 101)
                         else:
-                            plt.xlim(0, (max(rep_thresh) / 2) + 1)
-                        plt.ylim(0, 359)
+                            plt.xlim(0, max_rep_thresh + 1)
+                        plt.ylim(0, 360)
                         plt.xlabel('Reproduction Threshold')
                         plt.ylabel('Taste')
                         plt.title('time=%s' % (i + start))

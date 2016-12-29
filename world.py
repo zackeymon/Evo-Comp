@@ -27,7 +27,7 @@ class World:
 
         # Initiate a dict to store lists of food and bugs
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
-        # TODO: change dead to only record the number of death
+        # TODO: change dead to only record the number of death and lifetime/lifespan
         self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
         self.fertile_squares = self.get_fertile_squares(fertile_lands)
         self.spawnable_squares = list(self.fertile_squares)
@@ -73,7 +73,7 @@ class World:
         return Direction.random(self.get_allowed_directions(organism.position, organism.value))
 
     def available_spaces(self):
-        """Get available spawn spaces and the average of the food taste value for ."""
+        """Get available spawn spaces and the average of the food taste value for."""
         self.spawnable_squares = list(self.fertile_squares)
 
         for food in self.organism_lists[FOOD_NAME]['alive']:
