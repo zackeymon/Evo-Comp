@@ -27,7 +27,7 @@ class World:
 
         # Initiate a dict to store lists of food and bugs
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
-        # TODO: change dead to only record the number of death
+        # TODO: change dead to only record the number of death and lifetime/lifespan
         self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
         self.fertile_squares = self.get_fertile_squares(fertile_lands)
         self.spawnable_squares = list(self.fertile_squares)
@@ -39,7 +39,7 @@ class World:
 
     def get_fertile_squares(self, fertile_lands):
         if fertile_lands is None:
-            # make the whole world fertile
+            # Make the whole world fertile
             squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
         else:
             squares = []
@@ -50,11 +50,11 @@ class World:
 
     def _collide(self, position, organism_type):
         """Check if position is out of bounds and for disallowed collisions."""
-        # collide with wall
+        # Collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
 
-        # collide with organism of the same type
+        # Collide with organism of the same type
         if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == FOOD_VAL + BUG_VAL:
             return True
 
@@ -73,7 +73,7 @@ class World:
         return Direction.random(self.get_allowed_directions(organism.position, organism.value))
 
     def available_spaces(self):
-        """Get available spawn spaces and the average of the food taste value for ."""
+        """Get available spawn spaces and the average of the food taste value for."""
         self.spawnable_squares = list(self.fertile_squares)
 
         for food in self.organism_lists[FOOD_NAME]['alive']:

@@ -24,11 +24,6 @@ class Food(Organism):
 
         new_taste = self.mutate(taste, cfg.food['taste_mutation_limit']) if cfg.food['evolve_taste'] else taste
 
-        if new_rep_thresh < 10:
-            new_rep_thresh = 10
-
-        # TODO: Food Die
-
         Organism.__init__(self, position, energy, new_rep_thresh, energy_max, new_taste)
 
     def grow(self):
