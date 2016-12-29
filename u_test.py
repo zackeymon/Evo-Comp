@@ -15,7 +15,7 @@ class DummyBug:
 class WorldTests(unittest.TestCase):
     def test_grid_variable(self):
         world0 = World(rows=1, columns=1)
-        world0.available_spaces()
+        world0.update_available_spaces()
         self.assertEqual(world0.spawnable_squares, [[0, 0]])
 
         world0.drop_food(1)

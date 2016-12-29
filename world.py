@@ -72,7 +72,7 @@ class World:
     def get_random_available_direction(self, organism):
         return Direction.random(self.get_allowed_directions(organism.position, organism.value))
 
-    def available_spaces(self):
+    def update_available_spaces(self):
         """Get available spawn spaces and the average of the food taste value for."""
         self.spawnable_squares = list(self.fertile_squares)
 
@@ -84,7 +84,6 @@ class World:
                 continue
             i += 1
 
-
     def prepare_today(self):
         # Output yesterday's data
         print("time: {}, plants: {}, bugs: {}".format(self.time, len(self.organism_lists[FOOD_NAME]['alive']),
@@ -93,7 +92,7 @@ class World:
         self.time += 1
 
         # Update the available squares for spawn
-        self.available_spaces()
+        self.update_available_spaces()
 
         # If there is still food, find their taste average, else don't update my average
         if self.organism_lists[FOOD_NAME]['alive']:
