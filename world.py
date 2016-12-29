@@ -76,11 +76,14 @@ class World:
         """Get available spawn spaces and the average of the food taste value for."""
         self.spawnable_squares = list(self.fertile_squares)
 
-        for food in self.organism_lists[FOOD_NAME]['alive']:
-            try:
-                self.spawnable_squares.remove(food.position.tolist())
-            except ValueError:
-                pass
+        i = 0
+        while i < len(self.spawnable_squares):
+            current_square = tuple(self.spawnable_squares[i])
+            if self.grid[current_square] == FOOD_VAL or self.grid[current_square] == BUG_VAL:
+                del self.spawnable_squares[i]
+                continue
+            i += 1
+
 
     def prepare_today(self):
         # Output yesterday's data
@@ -96,12 +99,16 @@ class World:
         if self.organism_lists[FOOD_NAME]['alive']:
             self.food_taste_average = get_taste_average([i.taste for i in self.organism_lists[FOOD_NAME]['alive']])
 
-        # Drop some food on them
-        self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
-
-        # Shuffle the alive food & bug lists
         alive_plants = self.organism_lists[FOOD_NAME]['alive']
         alive_bugs = self.organism_lists[BUG_NAME]['alive']
+
+        # Drop balls on them (if endangered)
+        if len(alive_plants) < cfg.food_endangered_threshold:
+            self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
+        if len(alive_bugs) < cfg.bug_endangered_threshold:
+            self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
+
+        # Shuffle the alive food & bug lists
         random.shuffle(alive_plants)
         random.shuffle(alive_bugs)
 

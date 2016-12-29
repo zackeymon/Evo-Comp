@@ -16,12 +16,14 @@ w = World(**cfg.world['settings'])
 # Make a kill switch
 KillSwitch.setup()
 
+# Start timer
+t = Timer(w.seed)
+
 # Set up analysis classes
 world_recorder = WorldRecorder(w)
 world_viewer = WorldViewer(w.seed)
 
-# Start timer
-t = Timer(w.seed)
+t.take_time('overhead')
 
 #######################
 # --------Run-------- #

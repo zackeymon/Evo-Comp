@@ -13,16 +13,19 @@ world = dict(
     ),
     food_spawn_vals=dict(
         energy=20,
-        reproduction_threshold=30,
+        reproduction_threshold=25,
         energy_max=100
         # TODO: food & bug taste
     ),
     bug_spawn_vals=dict(
-        energy=15,
-        reproduction_threshold=70,
+        energy=20,
+        reproduction_threshold=60,
         energy_max=100
     )
 )
+
+food_endangered_threshold = 100
+bug_endangered_threshold = 50
 
 food = dict(
     growth_rate=2,
@@ -31,17 +34,17 @@ food = dict(
     evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=True,
+    evolve_taste=False,
     taste_mutation_limit=10
 )
 
 bug = dict(
-    respiration_rate=2,
+    respiration_rate=4,
 
     # Evolution switches
     evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=True,
+    evolve_taste=False,
     taste_mutation_limit=10
 )
