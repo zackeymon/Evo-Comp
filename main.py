@@ -7,6 +7,7 @@ from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
+
 ##################################
 # --------Initialisation-------- #
 ##################################
@@ -50,7 +51,7 @@ while KillSwitch.is_off():
             w.kill(plant)
         else:
             if plant.energy >= plant.reproduction_threshold:
-                # find an empty square
+                # Find an empty square
                 random_direction = w.get_random_available_direction(plant)
                 if random_direction is not None:
                     w.spawn(plant.reproduce(random_direction))
@@ -66,7 +67,7 @@ while KillSwitch.is_off():
         bug = alive_bugs[bug_index]
         bug.respire()
         if bug.energy <= 0:
-            # bug die
+            # Bug die
             w.kill(bug)
         else:
             # Bug won't move if born this turn

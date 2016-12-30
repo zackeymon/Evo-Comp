@@ -1,11 +1,11 @@
 import datetime
 import random
 import config as cfg
+from constants import *
 from utility_methods import *
 from direction import Direction
 from bug import Bug
 from food import Food
-from constants import *
 
 
 class World:
