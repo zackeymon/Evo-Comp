@@ -1,15 +1,16 @@
 """
 Initialisation Settings
 """
+save_world_view = False
 
 world = dict(
     settings=dict(
-        seed='rt0_t0-rs_L-001',
-        rows=100,
-        columns=100,
-        fertile_lands=None,
-        init_food=500,
-        init_bugs=100
+        seed='rt0_t0-rs_XXL-001',
+        rows=500,
+        columns=500,
+        fertile_lands=[[[100, 100], [400, 400]]],
+        init_food=20000,
+        init_bugs=1000
     ),
     food_spawn_vals=dict(
         energy=20,

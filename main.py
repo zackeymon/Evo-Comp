@@ -27,7 +27,8 @@ while KillSwitch.is_off():
     # Generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
-    world_viewer.view_world(w)
+    if cfg.save_world_view:
+        world_viewer.view_world(w)
 
     # Prepare today's work
     alive_plants, alive_bugs = w.prepare_today()
