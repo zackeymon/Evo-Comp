@@ -102,9 +102,9 @@ class World:
         alive_bugs = self.organism_lists[BUG_NAME]['alive']
 
         # Drop balls on them (if endangered)
-        if len(alive_plants) < cfg.food_endangered_threshold:
+        if cfg.food_endangered_threshold is None or len(alive_plants) < cfg.food_endangered_threshold:
             self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
-        if len(alive_bugs) < cfg.bug_endangered_threshold:
+        if cfg.bug_endangered_threshold is None or len(alive_bugs) < cfg.bug_endangered_threshold:
             self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
 
         # Shuffle the alive food & bug lists

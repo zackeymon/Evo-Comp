@@ -157,37 +157,42 @@ class WorldViewer:
         start: set a time to start plotting from, starts from 0 by default.
         """
 
-        # Create output directories
-        for switch in ['evolve_reproduction_threshold', 'evolve_taste']:
-            if cfg.food[switch]:
-                if not os.path.exists(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", "")))):
-                    os.makedirs(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", ""))))
-            if cfg.bug[switch]:
-                if not os.path.exists(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", "")))):
-                    os.makedirs(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", ""))))
+        if world or cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
+                             'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
 
-        # Create the list of organisms for each day
-        world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
+            print('reading world data...')
 
-        organism_list = []
-        for row in world_file:
-            row.remove(row[-1])  # remove the '\n' for CSV files
-            organism_list.append(row)
+            # Create output directories
+            for switch in ['evolve_reproduction_threshold', 'evolve_taste']:
+                if cfg.food[switch]:
+                    if not os.path.exists(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", "")))):
+                        os.makedirs(os.path.join('data', self.seed, 'food_' + str(switch.replace("'", ""))))
+                if cfg.bug[switch]:
+                    if not os.path.exists(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", "")))):
+                        os.makedirs(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", ""))))
 
-        organism_list = [[[float(organism[i]) if i > 0 else organism[i] for i in range(len(organism))]
-                          for organism in day] for day in split_list(organism_list)]
+            # Create the list of organisms for each day
+            world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
 
-        for _ in range(start):
-            del organism_list[0]
+            organism_list = []
+            for row in world_file:
+                row.remove(row[-1])  # remove the '\n' for CSV files
+                organism_list.append(row)
 
-        for i, day in enumerate(organism_list):  # loop through each day
+            organism_list = [[[float(organism[i]) if i > 0 else organism[i] for i in range(len(organism))]
+                              for organism in day] for day in split_list(organism_list)]
 
-            sys.stdout.write(
-                '\r' + 'plotting world data, time: %r' % (i + start) + '/%r' % (len(organism_list) + start - 1) + '...')
-            sys.stdout.flush()
+            for _ in range(start):
+                del organism_list[0]
 
-            # Plot the world
-            if world:
+        # Plot the world
+        if world:
+            for i, day in enumerate(organism_list):  # loop through each day
+
+                sys.stdout.write(
+                    '\r' + 'plotting world data (world), time: %r' % (i + start) + '/%r' % (
+                        len(organism_list) + start - 1) + '...')
+                sys.stdout.flush()
 
                 food_x_offsets, food_y_offsets, food_facecolors = ([] for _ in range(3))
                 bug_widths, bug_heights, bug_x_offsets, bug_y_offsets, bug_facecolors = ([] for _ in range(5))
@@ -254,9 +259,17 @@ class WorldViewer:
                 plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % (i + start)))
                 plt.cla()
 
-            # Plot genes
-            if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
+            sys.stdout.write('\n')  # write gene data outputs on a new line
+
+        # Plot genes
+        if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
                     'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
+            for i, day in enumerate(organism_list):  # loop through each day
+
+                sys.stdout.write(
+                    '\r' + 'plotting world data (genes), time: %r' % (i + start) + '/%r' % (
+                        len(organism_list) + start - 1) + '...')
+                sys.stdout.flush()
 
                 # Create lists of food and bug gene data for plotting
                 food_list, bug_list = [], []
