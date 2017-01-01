@@ -20,7 +20,8 @@ class Food(Organism):
         :param taste: The gene parameter of the food
         """
         new_rep_thresh = self.mutate(reproduction_threshold, cfg.food['reproduction_threshold_mutation_limit']) \
-            if cfg.food['evolve_reproduction_threshold'] else self.mutate(30, 5)
+            if cfg.food['evolve_reproduction_threshold'] \
+            else self.mutate(cfg.world['food_spawn_vals']['reproduction_threshold'], 5)
 
         new_taste = self.mutate(taste, cfg.food['taste_mutation_limit']) if cfg.food['evolve_taste'] else taste
 

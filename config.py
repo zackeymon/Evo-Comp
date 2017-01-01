@@ -24,7 +24,7 @@ world = dict(
     )
 )
 
-food_endangered_threshold = None
+food_endangered_threshold = 999999999
 bug_endangered_threshold = 0
 
 food = dict(

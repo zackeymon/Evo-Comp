@@ -2,7 +2,6 @@ import config as cfg
 from constants import *
 from utility_methods import *
 from kill_switch import KillSwitch
-from timer import Timer
 from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
@@ -17,14 +16,9 @@ w = World(**cfg.world['settings'])
 # Make a kill switch
 KillSwitch.setup()
 
-# Start timer
-t = Timer(w.seed)
-
 # Set up analysis classes
 world_recorder = WorldRecorder(w)
 world_viewer = WorldViewer(w.seed)
-
-t.take_time('overhead')
 
 #######################
 # --------Run-------- #
@@ -33,13 +27,10 @@ while KillSwitch.is_off():
     # Generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
-    t.take_time(msg='gen data')
     world_viewer.view_world(w)
-    t.take_time(msg='plotting')
 
     # Prepare today's work
     alive_plants, alive_bugs = w.prepare_today()
-    t.take_time(msg='prepare today')
 
     # Food life cycle
     plant_index = 0
@@ -56,7 +47,6 @@ while KillSwitch.is_off():
                 if random_direction is not None:
                     w.spawn(plant.reproduce(random_direction))
             plant_index += 1
-    t.take_time(msg='food cycle')
 
     # Construct a dictionary of alive_plant_position: food_object
     plant_position_dict = {tuple(plant.position): plant for plant in alive_plants}
@@ -96,8 +86,6 @@ while KillSwitch.is_off():
 
             bug_index += 1
 
-    t.take_time('bug cycle', w.time, plant_index, bug_index)
-
 ########################
 # --------Plot-------- #
 ########################
@@ -106,4 +94,3 @@ world_recorder.output_world_data()
 world_viewer.plot_world_stats()
 world_viewer.plot_world_data()
 
-t.take_time(msg='finish')
