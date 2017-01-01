@@ -115,6 +115,11 @@ class World:
         self.organism_lists[FOOD_NAME]['dead'].append([])
         self.organism_lists[BUG_NAME]['dead'].append([])
 
+        # Only keep last 10 days' death
+        if len(self.organism_lists[FOOD_NAME]['dead']) > 10:
+            del self.organism_lists[FOOD_NAME]['dead'][0]
+            del self.organism_lists[BUG_NAME]['dead'][0]
+
         return alive_plants, alive_bugs
 
     def kill(self, organism):
