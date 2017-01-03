@@ -28,14 +28,53 @@ class World:
 
         # Initiate a dict to store lists of food and bugs
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
-        # TODO: change dead to only record the number of death and lifetime/lifespan
+        self.plant_position_dict = None
         self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
         self.fertile_squares = self.get_fertile_squares(fertile_lands)
         self.spawnable_squares = list(self.fertile_squares)
 
+        self.plant_position_dict = {}
+
         # Populate the world
         self.drop_food(init_food, **cfg.world['food_spawn_vals'])
         self.drop_bug(init_bugs, **cfg.world['bug_spawn_vals'])
+
+    def prepare_today(self):
+        """Returns lists of alive plant and bug objects"""
+        alive_plants = self.organism_lists[FOOD_NAME]['alive']
+        alive_bugs = self.organism_lists[BUG_NAME]['alive']
+
+        # Display yesterday's data
+        print("time: {}, plants: {}, bugs: {}".format(self.time, len(alive_plants), len(alive_bugs)))
+
+        # It's a new day!
+        self.time += 1
+        self.update_available_spawn_squares()
+
+        # If there is still food, find their taste average, else don't update my average
+        if alive_plants:
+            self.food_taste_average = get_taste_average([i.taste for i in alive_plants])
+
+        # Drop balls on them (if endangered)
+        if len(alive_plants) < cfg.food_endangered_threshold:
+            self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
+        if len(alive_bugs) < cfg.bug_endangered_threshold:
+            self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
+
+        # Shuffle the order alive food & bug lists
+        random.shuffle(alive_plants)
+        random.shuffle(alive_bugs)
+
+        # Initialise today's dead list
+        self.organism_lists[FOOD_NAME]['dead'].append([])
+        self.organism_lists[BUG_NAME]['dead'].append([])
+
+        # Only keep death records for 10 days
+        if len(self.organism_lists[FOOD_NAME]['dead']) > 10:
+            del self.organism_lists[FOOD_NAME]['dead'][0]
+            del self.organism_lists[BUG_NAME]['dead'][0]
+
+        return alive_plants, alive_bugs
 
     def get_fertile_squares(self, fertile_lands):
         if fertile_lands is None:
@@ -60,17 +99,25 @@ class World:
 
         return False
 
-    def get_allowed_directions(self, current_position, organism_type):
+    def get_allowed_directions(self, organism, overshadow):
         """Each organism cannot collide with itself (no overlap)."""
         allowed_directions = []
 
         for direction, val in enumerate(Direction.all_directions):
-            if not self._collide(current_position + np.array(val), organism_type):
+            current_position = organism.position + np.array(val)
+            if not self._collide(current_position, organism.value):
                 allowed_directions.append(direction)
+            elif overshadow:
+                # Check this is not a wall
+                if tuple(current_position) in self.plant_position_dict:
+                    original_plant = self.plant_position_dict[tuple(current_position)]
+                    if original_plant.energy < int(organism.energy * cfg.food_over_shadow_ratio):
+                        allowed_directions.append(direction)
+
         return allowed_directions
 
-    def get_random_available_direction(self, organism):
-        return Direction.random(self.get_allowed_directions(organism.position, organism.value))
+    def get_random_available_direction(self, organism, overshadow=False):
+        return Direction.random(self.get_allowed_directions(organism, overshadow))
 
     def update_available_spawn_squares(self):
         """Get available spawn spaces and the average of the food taste value for."""
@@ -84,52 +131,18 @@ class World:
                 continue
             i += 1
 
-    def prepare_today(self):
-        """Returns lists of alive plant and bug objects"""
-        # Display yesterday's data
-        print("time: {}, plants: {}, bugs: {}".format(self.time, len(self.organism_lists[FOOD_NAME]['alive']),
-                                                      len(self.organism_lists[BUG_NAME]['alive'])))
-        # It's a new day!
-        self.time += 1
-
-        self.update_available_spawn_squares()
-
-        # If there is still food, find their taste average, else don't update my average
-        if self.organism_lists[FOOD_NAME]['alive']:
-            self.food_taste_average = get_taste_average([i.taste for i in self.organism_lists[FOOD_NAME]['alive']])
-
-        alive_plants = self.organism_lists[FOOD_NAME]['alive']
-        alive_bugs = self.organism_lists[BUG_NAME]['alive']
-
-        # Drop balls on them (if endangered)
-        if len(alive_plants) < cfg.food_endangered_threshold:
-            self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
-        if len(alive_bugs) < cfg.bug_endangered_threshold:
-            self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
-
-        # Shuffle the order alive food & bug lists
-        random.shuffle(alive_plants)
-        random.shuffle(alive_bugs)
-
-        # Initialise today's dead list
-        self.organism_lists[FOOD_NAME]['dead'].append([])
-        self.organism_lists[BUG_NAME]['dead'].append([])
-
-        # Only keep last 10 days' death
-        if len(self.organism_lists[FOOD_NAME]['dead']) > 10:
-            del self.organism_lists[FOOD_NAME]['dead'][0]
-            del self.organism_lists[BUG_NAME]['dead'][0]
-
-        return alive_plants, alive_bugs
-
     def kill(self, organism):
         self.grid[tuple(organism.position)] -= organism.value
         self.organism_lists[organism.name]['dead'][-1].append(organism)
         self.organism_lists[organism.name]['alive'].remove(organism)
+        if organism.name == FOOD_NAME:
+            del self.plant_position_dict[tuple(organism.position)]
 
     def spawn(self, organism):
         self.grid[tuple(organism.position)] += organism.value
         self.organism_lists[organism.name]['alive'].append(organism)
+        if organism.name == FOOD_NAME:
+            self.plant_position_dict[tuple(organism.position)] = organism
 
     def drop_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180):
         """Spawn food on fertile land and check spawn square is available."""
