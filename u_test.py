@@ -7,9 +7,20 @@ from world_recorder import WorldRecorder
 
 
 class DummyBug:
+    value = BUG_VAL
+    name = BUG_NAME
+
     def __init__(self, energy=5, lifetime=10):
         self.energy = energy
         self.lifetime = lifetime
+
+
+class DummyFood:
+    value = FOOD_VAL
+    name = FOOD_NAME
+
+    def __init__(self, position=[0, 0]):
+        self.position = position
 
 
 class WorldTests(unittest.TestCase):
@@ -94,6 +105,27 @@ class WorldRecorderTests(unittest.TestCase):
 
         average_dead_lifetime = average_lifetime(self.dead_dummy_bug_list[-10:])
         self.assertEqual(average_dead_lifetime, 60)
+
+
+class OvershadowTest(unittest.TestCase):
+    def setUp(self):
+        self.tiny_world = World(rows=1, columns=2)
+        self.tiny_world.organism_lists[FOOD_NAME]['dead'].append([])
+
+    def test_simple_dictionary(self):
+        food1 = DummyFood([0, 0])
+        food2 = DummyFood([0, 1])
+
+        self.tiny_world.spawn(food1)
+        self.tiny_world.spawn(food2)
+
+        self.assertEqual(self.tiny_world.plant_position_dict, {(0, 0): food1, (0, 1): food2})
+
+        self.tiny_world.kill(food1)
+        self.assertEqual(self.tiny_world.plant_position_dict, {(0, 1): food2})
+
+        self.tiny_world.kill(food2)
+        self.assertFalse(self.tiny_world.plant_position_dict)
 
 
 if __name__ == '__main__':

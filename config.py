@@ -7,6 +7,8 @@ save_world_view = True
 fig_size = 20  # pixel size is fig_size x dpi
 check_newly_spawned = True
 
+save_world_view = True
+
 world = dict(
     settings=dict(
         seed='rt0_t0-cs_L-001',
@@ -18,22 +20,25 @@ world = dict(
     ),
     food_spawn_vals=dict(
         energy=20,
-        reproduction_threshold=24,
+        reproduction_threshold=25,
         energy_max=100
         # TODO: food & bug taste
     ),
     bug_spawn_vals=dict(
         energy=20,
-        reproduction_threshold=50,
+        reproduction_threshold=60,
         energy_max=100
     )
 )
 
-food_endangered_threshold = 999999999
-bug_endangered_threshold = 0
+food_endangered_threshold = 100
+bug_endangered_threshold = 50
+
+food_over_shadow = True
+food_over_shadow_ratio = 0.5
 
 food = dict(
-    growth_rate=4,
+    growth_rate=2,
 
     # Evolution switches
     evolve_reproduction_threshold=False,

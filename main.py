@@ -42,15 +42,18 @@ while KillSwitch.is_off():
             # Plant die
             w.kill(plant)
         else:
-            if plant.energy >= plant.reproduction_threshold:
+            if plant.energy >= plant.reproduction_threshold and plant.lifetime > 1:
                 # Find an empty square
-                random_direction = w.get_random_available_direction(plant)
+                random_direction = w.get_random_available_direction(plant, cfg.food_over_shadow)
+
                 if random_direction is not None:
+                    try:
+                        weak_plant = w.plant_position_dict[tuple(plant.position + random_direction)]
+                        w.kill(weak_plant)
+                    except KeyError:
+                        pass
                     w.spawn(plant.reproduce(random_direction))
             plant_index += 1
-
-    # Construct a dictionary of alive_plant_position: food_object
-    plant_position_dict = {tuple(plant.position): plant for plant in alive_plants}
 
     # Bug life cycle
     bug_index = 0
@@ -76,7 +79,6 @@ while KillSwitch.is_off():
                 plant_beneath = plant_position_dict[tuple(bug.position)]
                 if bug.try_eat(plant_beneath):
                     w.kill(plant_beneath)
-                    del plant_position_dict[tuple(plant_beneath.position)]
 
             # Check if bug can reproduce
             if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
