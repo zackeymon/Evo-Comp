@@ -99,17 +99,25 @@ class World:
 
         return False
 
-    def get_allowed_directions(self, current_position, organism_type):
+    def get_allowed_directions(self, organism, overshadow):
         """Each organism cannot collide with itself (no overlap)."""
         allowed_directions = []
 
         for direction, val in enumerate(Direction.all_directions):
-            if not self._collide(current_position + np.array(val), organism_type):
+            current_position = organism.position + np.array(val)
+            if not self._collide(current_position, organism.value):
                 allowed_directions.append(direction)
+            elif overshadow:
+                # Check this is not a wall
+                if tuple(current_position) in self.plant_position_dict:
+                    original_plant = self.plant_position_dict[tuple(current_position)]
+                    if original_plant.energy < int(organism.energy * cfg.food_over_shadow_ratio):
+                        allowed_directions.append(direction)
+
         return allowed_directions
 
-    def get_random_available_direction(self, organism):
-        return Direction.random(self.get_allowed_directions(organism.position, organism.value))
+    def get_random_available_direction(self, organism, overshadow=False):
+        return Direction.random(self.get_allowed_directions(organism, overshadow))
 
     def update_available_spawn_squares(self):
         """Get available spawn spaces and the average of the food taste value for."""

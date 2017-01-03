@@ -44,8 +44,14 @@ while KillSwitch.is_off():
         else:
             if plant.energy >= plant.reproduction_threshold:
                 # Find an empty square
-                random_direction = w.get_random_available_direction(plant)
+                random_direction = w.get_random_available_direction(plant, cfg.food_over_shadow)
+
                 if random_direction is not None:
+                    try:
+                        weak_plant = w.plant_position_dict[tuple(plant.position + random_direction)]
+                        w.kill(weak_plant)
+                    except KeyError:
+                        pass
                     w.spawn(plant.reproduce(random_direction))
             plant_index += 1
 
