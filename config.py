@@ -3,11 +3,9 @@ Initialisation Settings
 """
 
 # Plotting
-save_world_view = True
 fig_size = 20  # pixel size is fig_size x dpi
-check_newly_spawned = True
-
 save_world_view = True
+check_newly_spawned = True
 
 world = dict(
     settings=dict(
