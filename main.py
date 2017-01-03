@@ -34,7 +34,8 @@ while KillSwitch.is_off():
 
     # Food life cycle
     plant_index = 0
-    while plant_index < len(alive_plants):
+    plant_loop = len(alive_plants)
+    while plant_index < plant_loop:
         plant = alive_plants[plant_index]
         plant.grow()
         if plant.energy <= cfg.food['growth_rate']:
@@ -53,7 +54,8 @@ while KillSwitch.is_off():
 
     # Bug life cycle
     bug_index = 0
-    while bug_index < len(alive_bugs):
+    bug_loop = len(alive_bugs)
+    while bug_index < bug_loop:
         bug = alive_bugs[bug_index]
         bug.respire()
         if bug.energy <= 0:

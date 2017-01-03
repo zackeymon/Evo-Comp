@@ -42,7 +42,9 @@ class WorldViewer:
 
                 food_x_offsets.append(food.position[0] + 0.5)
                 food_y_offsets.append(food.position[1] + 0.5)
-                food_facecolors.append(colorsys.hls_to_rgb(hue, luminosity, 1))
+                food_facecolors.append(
+                    'k') if cfg.check_newly_spawned and food.lifetime == 0 else food_facecolors.append(
+                    colorsys.hls_to_rgb(hue, luminosity, 1))
 
             # Add final parameters, and create and plot collection
             food_sizes = np.full(len(food_x_offsets), (
@@ -79,10 +81,13 @@ class WorldViewer:
                     bug_heights.append(bug_size / 1.5)
                     bug_x_offsets.append(bug.position[0] + 0.5)
                     bug_y_offsets.append(bug.position[1] + 0.5)
-                    bug_facecolors.append(colorsys.hls_to_rgb(float(bug.taste) / 360, 0.5, 1))
+                    bug_facecolors.append(
+                        'k') if cfg.check_newly_spawned and bug.lifetime == 0 else bug_facecolors.append(
+                        colorsys.hls_to_rgb(float(bug.taste) / 360, 0.5, 1))
 
                 else:  # no outline
-                    bug_facecolors.append('r')
+                    bug_facecolors.append(
+                        'k') if cfg.check_newly_spawned and bug.lifetime == 0 else bug_facecolors.append('r')
 
             # Add final parameters, and create and plot collection
             bug_angles = np.zeros(len(bug_widths))
@@ -107,7 +112,8 @@ class WorldViewer:
 
         data = [(np.genfromtxt(os.path.join('data', self.seed, 'data_files', path + '.csv'), delimiter=',',
                                names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
-                                      'average_lifespan'])) for path in ['food_data', 'bug_data']]
+                                      'average_lifespan', 'average_reproduction_threshold'])) for path in
+                ['food_data', 'bug_data']]
         food_data, bug_data = data[0], data[1]
 
         data_to_plot = []
@@ -121,24 +127,40 @@ class WorldViewer:
         data_to_plot.append({'data': data2, 'x_label': 'Time', 'y_label': 'Number of Bugs', 'title': 'Bug Populations',
                              'filename': 'bug_population.png'})
 
-        data3 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
+        data3 = [(food_data['energy'], 'Alive')]
+        data_to_plot.append({'data': data3, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'Food Energy',
+                             'filename': 'food_energy.png'})
+
+        data4 = [(bug_data['energy'], 'Alive')]
+        data_to_plot.append({'data': data4, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'Bug Energy',
+                             'filename': 'bug_energy.png'})
+
+        data5 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
                  (food_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
-        data_to_plot.append({'data': data3, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Food Lifetimes',
+        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Food Lifetimes',
                              'filename': 'food_lifetime.png'})
 
-        data4 = [(bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
+        data6 = [(bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
                  (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
-        data_to_plot.append({'data': data4, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Bug Lifetimes',
+        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Bug Lifetimes',
                              'filename': 'bug_lifetime.png'})
 
-        data5 = [(food_data['population'], 'Food'), (bug_data['population'], 'Bugs'),
+        data7 = [(food_data['average_reproduction_threshold'], 'Alive')]
+        data_to_plot.append({'data': data7, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
+                             'title': 'Food Reproduction Threshold', 'filename': 'food_reproduction_threshold.png'})
+
+        data8 = [(bug_data['average_reproduction_threshold'], 'Alive')]
+        data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
+                             'title': 'Bug Reproduction Threshold', 'filename': 'bug_reproduction_threshold.png'})
+
+        data9 = [(food_data['population'], 'Food'), (bug_data['population'], 'Bugs'),
                  (food_data['population'] + bug_data['population'], 'Food + Bugs')]
-        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
+        data_to_plot.append({'data': data9, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
                              'filename': 'world_population.png'})
 
-        data6 = [(food_data['energy'], 'Food'), (bug_data['energy'], 'Bugs'),
-                 (food_data['energy'] + bug_data['energy'], 'Food + Bugs')]
-        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
+        data10 = [(food_data['energy'], 'Food'), (bug_data['energy'], 'Bugs'),
+                  (food_data['energy'] + bug_data['energy'], 'Food + Bugs')]
+        data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
                              'filename': 'world_energy.png'})
 
         print('plotting world statistics...')
@@ -162,7 +184,7 @@ class WorldViewer:
         """
 
         if world or cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
-                             'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
+            'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
 
             print('reading world data...')
 
@@ -270,7 +292,7 @@ class WorldViewer:
 
         # Plot genes
         if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
-                    'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
+            'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
             for i, day in enumerate(organism_list):  # loop through each day
 
                 sys.stdout.write(

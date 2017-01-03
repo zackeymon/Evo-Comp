@@ -1,8 +1,11 @@
 """
 Initialisation Settings
 """
+
+# Plotting
 save_world_view = True
 fig_size = 20  # pixel size is fig_size x dpi
+check_newly_spawned = True
 
 world = dict(
     settings=dict(
@@ -33,10 +36,10 @@ food = dict(
     growth_rate=4,
 
     # Evolution switches
-    evolve_reproduction_threshold=True,
+    evolve_reproduction_threshold=False,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=True,
+    evolve_taste=False,
     taste_mutation_limit=10
 )
 
@@ -45,9 +48,9 @@ bug = dict(
     eat_tax=1,
 
     # Evolution switches
-    evolve_reproduction_threshold=True,
+    evolve_reproduction_threshold=False,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=True,
+    evolve_taste=False,
     taste_mutation_limit=10
 )

@@ -27,6 +27,17 @@ def average_lifetime(organism_list):
     return total_lifetime / total_number
 
 
+def average_rep_thresh(organism_list):
+    """organism_list[turn][organism_index]"""
+    total_number = sum([len(i) for i in organism_list])
+    if total_number == 0:
+        return 0
+
+    total_rep_thresh = sum([sum([i.reproduction_threshold for i in turn]) for turn in organism_list])
+
+    return total_rep_thresh / total_number
+
+
 def split_list(data):
     """Split the overall list of data into separate days."""
     split_data = [[]]
@@ -40,4 +51,3 @@ def split_list(data):
     data = split_data
 
     return data
-
