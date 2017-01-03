@@ -1,16 +1,17 @@
 """
 Initialisation Settings
 """
-save_world_view = False
+save_world_view = True
+fig_size = 20  # pixel size is fig_size x dpi
 
 world = dict(
     settings=dict(
-        seed='rt0_t0-rs_XXL-001',
-        rows=500,
-        columns=500,
-        fertile_lands=[[[100, 100], [400, 400]]],
-        init_food=20000,
-        init_bugs=1000
+        seed='rt0_t0-cs_L-001',
+        rows=100,
+        columns=100,
+        fertile_lands=[[[20, 20], [79, 79]]],
+        init_food=500,
+        init_bugs=100
     ),
     food_spawn_vals=dict(
         energy=20,
@@ -32,20 +33,21 @@ food = dict(
     growth_rate=4,
 
     # Evolution switches
-    evolve_reproduction_threshold=False,
+    evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=False,
+    evolve_taste=True,
     taste_mutation_limit=10
 )
 
 bug = dict(
     respiration_rate=3,
+    eat_tax=1,
 
     # Evolution switches
-    evolve_reproduction_threshold=False,
+    evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=False,
+    evolve_taste=True,
     taste_mutation_limit=10
 )

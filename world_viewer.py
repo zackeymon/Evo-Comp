@@ -22,7 +22,7 @@ class WorldViewer:
         self.seed = seed
 
         # World plotting axis initialisation
-        self.ax = plt.figure(figsize=(20, 20)).add_subplot(1, 1, 1)
+        self.ax = plt.figure(figsize=(cfg.fig_size, cfg.fig_size)).add_subplot(1, 1, 1)
         self.ax.set_xlim(0, cfg.world['settings']['columns'])
         self.ax.set_ylim(0, cfg.world['settings']['rows'])
         # Turn off axis labels
@@ -45,7 +45,9 @@ class WorldViewer:
                 food_facecolors.append(colorsys.hls_to_rgb(hue, luminosity, 1))
 
             # Add final parameters, and create and plot collection
-            food_sizes = np.full(len(food_x_offsets), 200, dtype=np.int)
+            food_sizes = np.full(len(food_x_offsets), (
+                (cfg.fig_size * 1e5) / (cfg.world['settings']['columns'] * cfg.world['settings']['rows'])),
+                                 dtype=np.int)
             food_linewidths = np.zeros(len(food_x_offsets))
             food_collection = col.RegularPolyCollection(4, rotation=np.pi / 4, sizes=food_sizes,
                                                         offsets=list(zip(food_x_offsets, food_y_offsets)),
@@ -98,7 +100,7 @@ class WorldViewer:
     def plot_world_stats(self):
         """Read the CSV (comma-separated values) output and plot trends."""
 
-        print('plotting world statistics...')
+        print('reading world statistics...')
 
         if not os.path.exists(os.path.join('data', self.seed, 'world_statistics')):
             os.makedirs(os.path.join('data', self.seed, 'world_statistics'))
@@ -139,6 +141,8 @@ class WorldViewer:
         data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
                              'filename': 'world_energy.png'})
 
+        print('plotting world statistics...')
+
         for data_dict in data_to_plot:
             plt.figure()
             for (y, l) in data_dict['data']:
@@ -172,7 +176,8 @@ class WorldViewer:
                         os.makedirs(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", ""))))
 
             # Create the list of organisms for each day
-            world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')), delimiter=',')
+            world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data.csv')),
+                                    delimiter=',')
 
             organism_list = []
             for row in world_file:
@@ -235,7 +240,9 @@ class WorldViewer:
                             bug_facecolors.append('r')
 
                 # Add final parameters
-                food_sizes = np.full(len(food_x_offsets), 200, dtype=np.int)
+                food_sizes = np.full(len(food_x_offsets), (
+                    (cfg.fig_size * 1e5) / (cfg.world['settings']['columns'] * cfg.world['settings']['rows'])),
+                                     dtype=np.int)
                 food_linewidths = np.zeros(len(food_x_offsets))
                 bug_angles = np.zeros(len(bug_widths))
                 bug_linewidths = np.zeros(len(bug_widths))
@@ -310,7 +317,8 @@ class WorldViewer:
 
                         plt.figure()
                         plt.bar(y_pos, rep_dict.values(), align='center', color=organism_data['colour'])
-                        plt.ylim(0, 1)
+                        if not rep_thresh:
+                            plt.ylim(0, 1)
                         plt.xlabel('Reproduction Threshold')
                         plt.ylabel('Population')
                         plt.title('time=%s' % (i + start))

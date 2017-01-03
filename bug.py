@@ -1,5 +1,8 @@
+import numpy as np
 import config as cfg
+from random import randint
 from constants import BUG_VAL, BUG_NAME
+from utility_methods import get_taste_average
 from organism import Organism
 
 
@@ -35,3 +38,10 @@ class Bug(Organism):
 
     def move(self, del_pos):
         self.position += del_pos
+
+    def try_eat(self, food):
+        self.energy -= cfg.bug['eat_tax']
+        if np.absolute(self.taste - get_taste_average([self.taste, food.taste])) <= randint(0, 180):  # eating chance
+            self.eat(food)
+            return True
+        return False

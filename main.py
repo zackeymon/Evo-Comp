@@ -1,6 +1,5 @@
 import config as cfg
 from constants import *
-from utility_methods import *
 from kill_switch import KillSwitch
 from world import World
 from world_recorder import WorldRecorder
@@ -73,8 +72,7 @@ while KillSwitch.is_off():
             # Check if there is food on this square
             if w.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
                 plant_beneath = plant_position_dict[tuple(bug.position)]
-                if np.absolute(bug.taste - get_taste_average([bug.taste, plant_beneath.taste])) <= 10:
-                    bug.eat(plant_beneath)
+                if bug.try_eat(plant_beneath):
                     w.kill(plant_beneath)
                     del plant_position_dict[tuple(plant_beneath.position)]
 
@@ -94,4 +92,3 @@ world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
 world_viewer.plot_world_data()
-
