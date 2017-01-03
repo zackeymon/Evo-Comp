@@ -42,7 +42,7 @@ while KillSwitch.is_off():
             # Plant die
             w.kill(plant)
         else:
-            if plant.energy >= plant.reproduction_threshold:
+            if plant.energy >= plant.reproduction_threshold and plant.lifetime > 1:
                 # Find an empty square
                 random_direction = w.get_random_available_direction(plant, cfg.food_over_shadow)
 
