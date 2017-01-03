@@ -76,7 +76,7 @@ while KillSwitch.is_off():
 
             # Check if there is food on this square
             if w.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
-                plant_beneath = plant_position_dict[tuple(bug.position)]
+                plant_beneath = w.plant_position_dict[tuple(bug.position)]
                 if bug.try_eat(plant_beneath):
                     w.kill(plant_beneath)
 

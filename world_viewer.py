@@ -183,8 +183,8 @@ class WorldViewer:
         start: set a time to start plotting from, starts from 0 by default.
         """
 
-        if world or cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
-            'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
+        if world or cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or \
+                cfg.bug['evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
 
             print('reading world data...')
 
@@ -291,8 +291,8 @@ class WorldViewer:
             sys.stdout.write('\n')  # write gene data outputs on a new line
 
         # Plot genes
-        if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or cfg.bug[
-            'evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
+        if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or \
+                cfg.bug['evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
             for i, day in enumerate(organism_list):  # loop through each day
 
                 sys.stdout.write(
