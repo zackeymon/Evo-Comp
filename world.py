@@ -22,8 +22,9 @@ class World:
         self.columns = columns
         self.rows = rows
         self.time = time
-        self.seed = seed if seed is not None else datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         self.food_taste_average = 180
+        self.seed = seed if seed is not None else datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        random.seed(self.seed)
 
         # Initiate a dict to store lists of food and bugs
         self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
@@ -31,7 +32,6 @@ class World:
         self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
         self.fertile_squares = self.get_fertile_squares(fertile_lands)
         self.spawnable_squares = list(self.fertile_squares)
-        random.seed(self.seed)
 
         # Populate the world
         self.drop_food(init_food, **cfg.world['food_spawn_vals'])
@@ -79,7 +79,7 @@ class World:
         i = 0
         while i < len(self.spawnable_squares):
             current_square = tuple(self.spawnable_squares[i])
-            if self.grid[current_square] == FOOD_VAL or self.grid[current_square] == BUG_VAL:
+            if self.grid[current_square] != EMPTY_SQUARE_VAL:
                 del self.spawnable_squares[i]
                 continue
             i += 1
@@ -107,7 +107,7 @@ class World:
         if len(alive_bugs) < cfg.bug_endangered_threshold:
             self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
 
-        # Shuffle the alive food & bug lists
+        # Shuffle the order alive food & bug lists
         random.shuffle(alive_plants)
         random.shuffle(alive_bugs)
 
