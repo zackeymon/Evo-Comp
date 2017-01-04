@@ -31,3 +31,7 @@ class Food(Organism):
         self.lifetime += 1
         if self.energy < self.energy_max:
             self.energy += cfg.food['growth_rate']
+
+    def can_overshadow(self, defending_plant):
+        if self.energy * self.offspring_energy_fraction * cfg.food_over_shadow_ratio > defending_plant.energy:
+            return True
