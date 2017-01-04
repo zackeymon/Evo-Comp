@@ -43,7 +43,7 @@ class WorldViewer:
                 food_x_offsets.append(food.position[0] + 0.5)
                 food_y_offsets.append(food.position[1] + 0.5)
                 food_facecolors.append(
-                    'k') if cfg.check_newly_spawned and food.lifetime == 0 else food_facecolors.append(
+                    'k') if cfg.check_newly_spawned_plants and food.lifetime == 1 else food_facecolors.append(
                     colorsys.hls_to_rgb(hue, luminosity, 1))
 
             # Add final parameters, and create and plot collection
@@ -82,12 +82,12 @@ class WorldViewer:
                     bug_x_offsets.append(bug.position[0] + 0.5)
                     bug_y_offsets.append(bug.position[1] + 0.5)
                     bug_facecolors.append(
-                        'k') if cfg.check_newly_spawned and bug.lifetime == 0 else bug_facecolors.append(
+                        'k') if cfg.check_newly_spawned_bugs and bug.lifetime == 1 else bug_facecolors.append(
                         colorsys.hls_to_rgb(float(bug.taste) / 360, 0.5, 1))
 
                 else:  # no outline
                     bug_facecolors.append(
-                        'k') if cfg.check_newly_spawned and bug.lifetime == 0 else bug_facecolors.append('r')
+                        'k') if cfg.check_newly_spawned_bugs and bug.lifetime == 1 else bug_facecolors.append('r')
 
             # Add final parameters, and create and plot collection
             bug_angles = np.zeros(len(bug_widths))
