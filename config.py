@@ -4,18 +4,18 @@ Initialisation Settings
 
 # Plotting
 fig_size = 20  # pixel size is fig_size x dpi
-save_world_view = True
-check_newly_spawned_plants = True
+save_world_view = False
+check_newly_spawned_plants = False
 check_newly_spawned_bugs = False
 
 world = dict(
     settings=dict(
-        seed='rt0_t0-cs_L-002_NEWWWW',
-        rows=100,
-        columns=100,
+        seed='rt0_t0-cs_L-111-NEWWWW',
+        rows=200,
+        columns=200,
         fertile_lands=None,
-        init_food=500,
-        init_bugs=100
+        init_food=100,
+        init_bugs=1
     ),
     food_spawn_vals=dict(
         energy=20,
@@ -31,16 +31,18 @@ world = dict(
 )
 
 food_endangered_threshold = 100
-bug_endangered_threshold = 50
+bug_endangered_threshold = 1
 
-food_over_shadow = True
-food_over_shadow_ratio = 0.8
+food_over_shadow = False
+food_over_shadow_ratio = 1.0
+
+food_min_energy = 12
 
 food = dict(
     growth_rate=3,
 
     # Evolution switches
-    evolve_reproduction_threshold=True,
+    evolve_reproduction_threshold=False,
     reproduction_threshold_mutation_limit=5,
 
     evolve_taste=False,
@@ -48,11 +50,11 @@ food = dict(
 )
 
 bug = dict(
-    respiration_rate=4,
+    respiration_rate=2,
     eat_tax=2,
 
     # Evolution switches
-    evolve_reproduction_threshold=True,
+    evolve_reproduction_threshold=False,
     reproduction_threshold_mutation_limit=5,
 
     evolve_taste=False,

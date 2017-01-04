@@ -39,7 +39,7 @@ while KillSwitch.is_off():
         plant = alive_plants[plant_index]
 
         # Should it die?
-        if plant.energy <= 0:
+        if plant.energy <= cfg.food_min_energy:
             w.kill(plant)
             continue
 
@@ -51,7 +51,7 @@ while KillSwitch.is_off():
 
             if w.available(plant, trial_direction):
                 w.spawn(plant.reproduce(trial_direction))
-            else:
+            elif cfg.food_over_shadow:
                 # Try overshadow the original plant
                 try:
                     defending_plant = w.plant_position_dict[tuple(plant.position + trial_direction)]
