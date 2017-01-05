@@ -6,7 +6,6 @@ from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
-
 ##################################
 # --------Initialisation-------- #
 ##################################
@@ -45,23 +44,11 @@ while KillSwitch.is_off():
 
         plant.grow()
 
-        # Can it reproduce?
-        if plant.energy >= plant.reproduction_threshold and plant.lifetime > 1:
+        if plant.can_reproduce():
             trial_direction = Direction.random()
-
             if w.available(plant, trial_direction):
                 w.spawn(plant.reproduce(trial_direction))
-            elif cfg.food_over_shadow:
-                # Try overshadow the original plant
-                try:
-                    defending_plant = w.plant_position_dict[tuple(plant.position + trial_direction)]
-                    if plant.can_overshadow(defending_plant):
-                        w.kill(defending_plant)
-                        w.spawn(plant.reproduce(trial_direction))
-                        plant_index = alive_plants.index(plant) + 1
-                        continue
-                except KeyError:
-                    pass
+
         plant_index += 1
 
     # Bug life cycle
@@ -70,7 +57,7 @@ while KillSwitch.is_off():
         bug = alive_bugs[bug_index]
 
         # Should it die?
-        if bug.energy <= 0:
+        if bug.energy <= cfg.bug_min_energy:
             w.kill(bug)
             continue
 
@@ -91,8 +78,7 @@ while KillSwitch.is_off():
             if bug.try_eat(plant_beneath):
                 w.kill(plant_beneath)
 
-        # Can it reproduce?
-        if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
+        if bug.can_reproduce():
             trial_direction = Direction.random()
             if w.available(bug, trial_direction):
                 w.spawn(bug.reproduce(trial_direction))
