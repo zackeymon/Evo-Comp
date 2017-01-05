@@ -22,6 +22,7 @@ class Organism:
         self.reproduction_threshold = reproduction_threshold if reproduction_threshold >= 0 else 0
         self.energy_max = energy_max
         self.taste = taste
+        self.offspring_energy_fraction = 0.5
 
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d E_max:%d g:%d)' % (
@@ -34,15 +35,15 @@ class Organism:
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
-        # Half of the energy goes to the offspring
-        self.energy = int(self.energy / 2)
-
         # Set new parameters
         new_position = self.position + direction
-        new_energy = self.energy
+        new_energy = int(self.energy * self.offspring_energy_fraction)
         new_energy_max = self.energy_max
         new_reproduction_threshold = self.reproduction_threshold
         new_taste = self.taste
+
+        # Loses that much energy
+        self.energy -= new_energy
 
         # Create new object
         return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_taste)

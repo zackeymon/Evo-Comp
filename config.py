@@ -4,21 +4,22 @@ Initialisation Settings
 
 # Plotting
 fig_size = 20  # pixel size is fig_size x dpi
-save_world_view = True
-check_newly_spawned = True
+save_world_view = False
+check_newly_spawned_plants = False
+check_newly_spawned_bugs = False
 
 world = dict(
     settings=dict(
-        seed='rt0_t0-cs_L-001',
-        rows=100,
-        columns=100,
-        fertile_lands=[[[20, 20], [79, 79]]],
-        init_food=500,
-        init_bugs=100
+        seed='rt0_t0-cs_L-111-NEWWWW',
+        rows=200,
+        columns=200,
+        fertile_lands=None,
+        init_food=100,
+        init_bugs=1
     ),
     food_spawn_vals=dict(
         energy=20,
-        reproduction_threshold=25,
+        reproduction_threshold=30,
         energy_max=100
         # TODO: food & bug taste
     ),
@@ -30,30 +31,32 @@ world = dict(
 )
 
 food_endangered_threshold = 100
-bug_endangered_threshold = 50
+bug_endangered_threshold = 1
 
-food_over_shadow = True
-food_over_shadow_ratio = 0.5
+food_over_shadow = False
+food_over_shadow_ratio = 1.0
+
+food_min_energy = 12
 
 food = dict(
-    growth_rate=2,
+    growth_rate=3,
 
     # Evolution switches
     evolve_reproduction_threshold=False,
     reproduction_threshold_mutation_limit=5,
 
     evolve_taste=False,
-    taste_mutation_limit=10
+    taste_mutation_limit=5
 )
 
 bug = dict(
-    respiration_rate=3,
-    eat_tax=1,
+    respiration_rate=2,
+    eat_tax=2,
 
     # Evolution switches
     evolve_reproduction_threshold=False,
     reproduction_threshold_mutation_limit=5,
 
     evolve_taste=False,
-    taste_mutation_limit=10
+    taste_mutation_limit=5
 )

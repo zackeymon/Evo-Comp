@@ -1,5 +1,6 @@
 import config as cfg
 from constants import *
+from direction import Direction
 from kill_switch import KillSwitch
 from world import World
 from world_recorder import WorldRecorder
@@ -34,60 +35,69 @@ while KillSwitch.is_off():
 
     # Food life cycle
     plant_index = 0
-    plant_loop = len(alive_plants)
-    while plant_index < plant_loop:
+    while plant_index < len(alive_plants):
         plant = alive_plants[plant_index]
-        plant.grow()
-        if plant.energy <= cfg.food['growth_rate']:
-            # Plant die
-            w.kill(plant)
-        else:
-            if plant.energy >= plant.reproduction_threshold and plant.lifetime > 1:
-                # Find an empty square
-                random_direction = w.get_random_available_direction(plant, cfg.food_over_shadow)
 
-                if random_direction is not None:
-                    try:
-                        weak_plant = w.plant_position_dict[tuple(plant.position + random_direction)]
-                        w.kill(weak_plant)
-                    except KeyError:
-                        pass
-                    w.spawn(plant.reproduce(random_direction))
-            plant_index += 1
+        # Should it die?
+        if plant.energy <= cfg.food_min_energy:
+            w.kill(plant)
+            continue
+
+        plant.grow()
+
+        # Can it reproduce?
+        if plant.energy >= plant.reproduction_threshold and plant.lifetime > 1:
+            trial_direction = Direction.random()
+
+            if w.available(plant, trial_direction):
+                w.spawn(plant.reproduce(trial_direction))
+            elif cfg.food_over_shadow:
+                # Try overshadow the original plant
+                try:
+                    defending_plant = w.plant_position_dict[tuple(plant.position + trial_direction)]
+                    if plant.can_overshadow(defending_plant):
+                        w.kill(defending_plant)
+                        w.spawn(plant.reproduce(trial_direction))
+                        plant_index = alive_plants.index(plant) + 1
+                        continue
+                except KeyError:
+                    pass
+        plant_index += 1
 
     # Bug life cycle
     bug_index = 0
-    bug_loop = len(alive_bugs)
-    while bug_index < bug_loop:
+    while bug_index < len(alive_bugs):
         bug = alive_bugs[bug_index]
-        bug.respire()
+
+        # Should it die?
         if bug.energy <= 0:
-            # Bug die
             w.kill(bug)
-        else:
-            # Bug won't move if born this turn
-            if bug.lifetime > 1 or w.time == 1:
-                random_direction = w.get_random_available_direction(bug)
-                # Check if bug can move
-                if random_direction is not None:
-                    w.grid[tuple(bug.position)] -= BUG_VAL
-                    bug.move(random_direction)
-                    w.grid[tuple(bug.position)] += BUG_VAL
+            continue
 
-            # Check if there is food on this square
-            if w.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
-                plant_beneath = w.plant_position_dict[tuple(bug.position)]
-                if bug.try_eat(plant_beneath):
-                    w.kill(plant_beneath)
+        bug.respire()
 
-            # Check if bug can reproduce
-            if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
-                random_direction = w.get_random_available_direction(bug)
-                # check if there is an empty square
-                if random_direction is not None:
-                    w.spawn(bug.reproduce(random_direction))
+        # Try move (if not newly born)
+        if bug.lifetime > 1 or w.time == 1:
+            trial_direction = Direction.random()
 
-            bug_index += 1
+            if w.available(bug, trial_direction):
+                w.grid[tuple(bug.position)] -= bug.value
+                bug.move(trial_direction)
+                w.grid[tuple(bug.position)] += bug.value
+
+        # Can it eat?
+        if w.grid[tuple(bug.position)] == FOOD_VAL + BUG_VAL:
+            plant_beneath = w.plant_position_dict[tuple(bug.position)]
+            if bug.try_eat(plant_beneath):
+                w.kill(plant_beneath)
+
+        # Can it reproduce?
+        if bug.energy >= bug.reproduction_threshold and bug.lifetime > 1:
+            trial_direction = Direction.random()
+            if w.available(bug, trial_direction):
+                w.spawn(bug.reproduce(trial_direction))
+
+        bug_index += 1
 
 ########################
 # --------Plot-------- #

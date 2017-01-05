@@ -9,11 +9,6 @@ class Direction:
     all_directions = ((0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (0, -1), (-1, 1))
 
     @classmethod
-    def random(cls, allowed_directions):
+    def random(cls):
         """Pick a random direction from allowed directions."""
-
-        if not allowed_directions:
-            return None
-
-        choice = random.choice(allowed_directions)
-        return np.array(cls.all_directions[choice])
+        return np.array(random.choice(cls.all_directions))

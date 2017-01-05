@@ -87,14 +87,17 @@ class World:
                 squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
         return squares
 
-    def _collide(self, position, organism_type):
+    def available(self, organism, direction):
+        return not self.collide(organism.position + direction, organism.value)
+
+    def collide(self, position, organism_value):
         """Check if position is out of bounds and for disallowed collisions."""
         # Collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
 
         # Collide with organism of the same type
-        if self.grid[tuple(position)] == organism_type or self.grid[tuple(position)] == FOOD_VAL + BUG_VAL:
+        if self.grid[tuple(position)] == organism_value or self.grid[tuple(position)] == FOOD_VAL + BUG_VAL:
             return True
 
         return False
@@ -105,7 +108,7 @@ class World:
 
         for direction, val in enumerate(Direction.all_directions):
             current_position = organism.position + np.array(val)
-            if not self._collide(current_position, organism.value):
+            if not self.collide(current_position, organism.value):
                 allowed_directions.append(direction)
             elif overshadow:
                 # Check this is not a wall
