@@ -9,6 +9,7 @@ class Food(Organism):
     """
     value = FOOD_VAL
     name = FOOD_NAME
+    reproduction_cost = cfg.food_reproduction_cost
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
