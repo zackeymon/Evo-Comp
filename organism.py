@@ -6,6 +6,8 @@ class Organism:
     """
     The parent class for all organisms living in the world.
     """
+    reproduction_cost = None
+    maturity_age = None
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
@@ -22,7 +24,7 @@ class Organism:
         self.reproduction_threshold = reproduction_threshold if reproduction_threshold >= 0 else 0
         self.energy_max = energy_max
         self.taste = taste
-        self.offspring_energy_fraction = 0.5
+        self.offspring_energy_fraction = 0.4
 
     def __repr__(self):
         return '%s(P:[%d, %d] L:%d E:%d RT:%d E_max:%d g:%d)' % (
@@ -32,6 +34,9 @@ class Organism:
     @staticmethod
     def mutate(current_val, max_mutation_rate):
         return current_val + randint(-max_mutation_rate, max_mutation_rate)
+
+    def can_reproduce(self):
+        return self.energy >= self.reproduction_threshold and self.lifetime > self.maturity_age
 
     def reproduce(self, direction):
         """"Return new organism from reproduction."""
@@ -43,7 +48,9 @@ class Organism:
         new_taste = self.taste
 
         # Loses that much energy
-        self.energy -= new_energy
+        self.energy -= (new_energy + self.reproduction_cost)
+        if self.energy < 0:
+            self.energy = 0
 
         # Create new object
         return self.__class__(new_position, new_energy, new_reproduction_threshold, new_energy_max, new_taste)
