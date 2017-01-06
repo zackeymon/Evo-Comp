@@ -12,6 +12,9 @@ class Bug(Organism):
     """
     value = BUG_VAL
     name = BUG_NAME
+    mouth_size = cfg.bug_mouse_size
+    reproduction_cost = cfg.bug_reproduction_cost
+    maturity_age = cfg.bug_maturity_age
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
@@ -33,15 +36,22 @@ class Bug(Organism):
         self.lifetime += 1
         self.energy -= cfg.bug['respiration_rate']
 
-    def eat(self, food):
-        self.energy += food.energy
-
     def move(self, del_pos):
         self.position += del_pos
 
     def try_eat(self, food):
         self.energy -= cfg.bug['eat_tax']
         if np.absolute(self.taste - get_taste_average([self.taste, food.taste])) <= randint(0, 180):  # eating chance
-            self.eat(food)
+            if self.eat(food):
+                return True
+        return False
+
+    def eat(self, food):
+        """Take a bite, if ate the whole food return True, else return False"""
+        if self.mouth_size >= food.energy:
+            self.energy += food.energy
             return True
+
+        self.energy += self.mouth_size
+        food.energy -= self.mouth_size
         return False
