@@ -17,7 +17,7 @@ def objective(parameters, data):
     sample_size = len(data)
     t = np.arange(0, sample_size, 1)
     lv_model = odeint(lv, data[0], t, args=tuple(parameters))
-    return np.sum(np.abs(data - lv_model)) / sample_size
+    return np.sum(np.square(lv_model - data))
 
 
 if __name__ == '__main__':
@@ -31,7 +31,8 @@ if __name__ == '__main__':
     plt.plot(t, data[:, 0], t, data[:, 1])
 
     opt_parameters = minimize(objective, guess_parameters, args=(data,), tol=0.001, bounds=parameters_bounds)
-    print(opt_parameters.x)
+    print(opt_parameters)
+    print(objective(opt_parameters.x, data))
 
     sol = odeint(lv, data[0], t, args=tuple(opt_parameters.x))
     plt.plot(t, sol[:, 0], t, sol[:, 1])
