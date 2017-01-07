@@ -6,12 +6,12 @@ from scipy.optimize import minimize
 
 def lv(population, t, alpha, beta, delta, gamma):
     x, y = population
-    # if x < 5: x = 5
-    # if y < 5: y = 5
-    dx_dt = alpha * x - beta * x * y
-    dy_dt = delta * x * y - gamma * y
+    dx_dt = x * (alpha - beta * y)
+    dy_dt = y * (delta * x - gamma)
     return [dx_dt, dy_dt]
 
+# TODO: Competitive LV
+# I think the objective function is right. We need better data sets
 
 def objective(parameters, data):
     sample_size = len(data)
@@ -21,7 +21,7 @@ def objective(parameters, data):
 
 
 if __name__ == '__main__':
-    guess_parameters = [0.1, 0.001, 0.001, 0.5]
+    guess_parameters = [0.4, 0.001, 0.001, 0.1]
     parameters_bounds = ((0, None), (0, None), (0, None), (0, None))
     # TODO: Constraint dictionary
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     plt.plot(t, data[:, 0], t, data[:, 1])
 
-    opt_parameters = minimize(objective, guess_parameters, args=(data,), tol=0.001, bounds=parameters_bounds)
+    opt_parameters = minimize(objective, guess_parameters, args=(data,), tol=0.0001, bounds=parameters_bounds)
     print(opt_parameters)
     print(objective(opt_parameters.x, data))
 
