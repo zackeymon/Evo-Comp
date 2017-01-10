@@ -158,7 +158,7 @@ class WorldViewer:
                              'filename': 'food_lifetime.png'})
 
         data10 = [(bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
-                 (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
+                  (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
         data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Bug Lifetimes',
                              'filename': 'bug_lifetime.png'})
 
@@ -171,7 +171,7 @@ class WorldViewer:
                              'title': 'Bug Reproduction Threshold', 'filename': 'bug_reproduction_threshold.png'})
 
         data13 = [(food_data['population'], 'Food'), (bug_data['population'], 'Bugs'),
-                 (food_data['population'] + bug_data['population'], 'Food + Bugs')]
+                  (food_data['population'] + bug_data['population'], 'Food + Bugs')]
         data_to_plot.append({'data': data13, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
                              'filename': 'world_population.png'})
 
