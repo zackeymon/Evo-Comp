@@ -30,6 +30,8 @@ world = dict(
     )
 )
 
+taste_range = 180  # scales within range
+
 food_endangered_threshold = 100
 bug_endangered_threshold = 10
 
