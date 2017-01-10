@@ -2,6 +2,8 @@
 Initialisation Settings
 """
 
+output_each_day_csv = True
+
 # Plotting
 fig_size = 20  # pixel size is fig_size x dpi
 save_world_view = True

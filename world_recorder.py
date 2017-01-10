@@ -32,11 +32,14 @@ class WorldRecorder:
                                for _ in range(2))
 
         self.organism_data = {'food': food_dict, 'bug': bug_dict}
+        self.organism_number = 0
 
         # Create output directories if they don't exist
         for path in ['world', 'data_files']:
             if not os.path.exists(os.path.join('data', world.seed, path)):
                 os.makedirs(os.path.join('data', world.seed, path))
+        if not os.path.exists(os.path.join('data', world.seed, 'data_files', 'world_data')):
+            os.makedirs(os.path.join('data', world.seed, 'data_files', 'world_data'))
 
         # Create a copy of the config file with parameters of initialisation
         fd, new_path = mkstemp()
@@ -81,6 +84,7 @@ class WorldRecorder:
     def generate_world_data(self):
         """Add data for current world iteration to a list."""
 
+        self.organism_number = 0
         for organism in ['food', 'bug']:
             for individual_organism in self.world.organism_lists[organism]['alive']:
                 self.world_data['organism'].append(organism)
@@ -89,6 +93,7 @@ class WorldRecorder:
                 self.world_data['energy'].append(individual_organism.energy)
                 self.world_data['reproduction_threshold'].append(individual_organism.reproduction_threshold)
                 self.world_data['taste'].append(individual_organism.taste)
+                self.organism_number += 1
 
         # End day
         self.world_data['organism'].append(self.world.time)
@@ -97,6 +102,22 @@ class WorldRecorder:
         self.world_data['energy'].append('end_day')
         self.world_data['reproduction_threshold'].append('end_day')
         self.world_data['taste'].append('end_day')
+
+    def output_world_day_data(self):
+
+        # Output into a csv file for each day
+        i = self.organism_number
+        with open(os.path.join('data', self.world.seed, 'data_files', 'world_data',
+                               '%r.csv' % self.world_data['organism'][-1]), 'w') as world_file:
+            for organism, x, y, energy, reproduction_threshold, taste in zip(self.world_data['organism'][-(i + 1):],
+                                                                             self.world_data['x'][-(i + 1):],
+                                                                             self.world_data['y'][-(i + 1):],
+                                                                             self.world_data['energy'][-(i + 1):],
+                                                                             self.world_data['reproduction_threshold'][
+                                                                             -(i + 1):],
+                                                                             self.world_data['taste'][-(i + 1):]):
+                world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
+                                 + '%r,' % reproduction_threshold + '%r,' % taste + '\n')
 
     def output_world_data(self):
         """Output data in CSV (comma-separated values) format for analysis."""

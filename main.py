@@ -26,6 +26,8 @@ while KillSwitch.is_off():
     # Generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
+    if cfg.output_each_day_csv:
+        world_recorder.output_world_day_data()
     if cfg.save_world_view:
         world_viewer.view_world(w)
 
