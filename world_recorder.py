@@ -25,6 +25,7 @@ class WorldRecorder:
                                  ('energy', []),
                                  ('population', []),
                                  ('deaths', []),
+                                 ('average_deaths', []),
                                  ('average_alive_lifetime', []),
                                  ('average_lifespan', []),
                                  ('average_reproduction_threshold', [])])
@@ -56,7 +57,8 @@ class WorldRecorder:
             self.organism_data[organism]['time'].append(self.world.time)
             self.organism_data[organism]['energy'].append(sum_list_energy(alive))
             self.organism_data[organism]['population'].append(len(alive))
-            self.organism_data[organism]['deaths'].append(sum([len(i) for i in dead[-10:]]))
+            self.organism_data[organism]['deaths'].append(len(dead[-1:]))
+            self.organism_data[organism]['average_deaths'].append(sum([len(i) for i in dead[-10:]]))
             self.organism_data[organism]['average_alive_lifetime'].append(average_lifetime([alive]))
             self.organism_data[organism]['average_lifespan'].append(average_lifetime(dead[-10:]))
             self.organism_data[organism]['average_reproduction_threshold'].append(average_rep_thresh([alive]))
@@ -69,11 +71,11 @@ class WorldRecorder:
         for organism in ['food', 'bug']:
             with open(os.path.join('data', self.world.seed, 'data_files', str(organism) + '_data.csv'),
                       'w') as organism_file:
-                for time, energy, population, dead_population, average_alive_lifetime, average_lifespan, \
-                        average_reproduction_threshold in zip(*self.organism_data[organism].values()):
+                for time, energy, population, dead_population, average_dead_population, average_alive_lifetime, \
+                        average_lifespan, average_reproduction_threshold in zip(*self.organism_data[organism].values()):
                     organism_file.write(
                         '%r,' % time + '%r,' % energy + '%r,' % population + '%r,' % dead_population
-                        + '%r,' % average_alive_lifetime + '%r,' % average_lifespan
+                        + '%r,' % average_dead_population + '%r,' % average_alive_lifetime + '%r,' % average_lifespan
                         + '%r,' % average_reproduction_threshold + '\n')
 
     def generate_world_data(self):
