@@ -2,6 +2,8 @@
 Initialisation Settings
 """
 
+output_each_day_csv = True
+
 # Plotting
 fig_size = 20  # pixel size is fig_size x dpi
 save_world_view = True
@@ -29,6 +31,8 @@ world = dict(
         energy_max=100
     )
 )
+
+taste_range = 180  # scales within range
 
 food_endangered_threshold = 100
 bug_endangered_threshold = 10

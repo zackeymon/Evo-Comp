@@ -111,21 +111,21 @@ class WorldViewer:
             os.makedirs(os.path.join('data', self.seed, 'world_statistics'))
 
         data = [(np.genfromtxt(os.path.join('data', self.seed, 'data_files', path + '.csv'), delimiter=',',
-                               names=['time', 'energy', 'population', 'dead_population', 'average_alive_lifetime',
-                                      'average_lifespan', 'average_reproduction_threshold'])) for path in
-                ['food_data', 'bug_data']]
+                               names=['time', 'energy', 'population', 'deaths', 'average_deaths',
+                                      'average_alive_lifetime', 'average_lifespan', 'average_reproduction_threshold']))
+                for path in ['food_data', 'bug_data']]
         food_data, bug_data = data[0], data[1]
 
         data_to_plot = []
         time = food_data['time']
 
-        data1 = [(food_data['population'], 'Alive'), (food_data['dead_population'], 'Deaths (last 10 cycles)')]
-        data_to_plot.append({'data': data1, 'x_label': 'Time', 'y_label': 'Number of Food', 'title': 'Food Populations',
-                             'filename': 'food_population.png'})
+        data1 = [(food_data['population'], 'Alive')]
+        data_to_plot.append({'data': data1, 'x_label': 'Time', 'y_label': 'Number of Food',
+                             'title': 'Alive Food Populations', 'filename': 'food_alive_population.png'})
 
-        data2 = [(bug_data['population'], 'Alive'), (bug_data['dead_population'], 'Deaths (last 10 cycles)')]
-        data_to_plot.append({'data': data2, 'x_label': 'Time', 'y_label': 'Number of Bugs', 'title': 'Bug Populations',
-                             'filename': 'bug_population.png'})
+        data2 = [(bug_data['population'], 'Alive')]
+        data_to_plot.append({'data': data2, 'x_label': 'Time', 'y_label': 'Number of Bugs',
+                             'title': 'Alive Bug Populations', 'filename': 'bug_alive_population.png'})
 
         data3 = [(food_data['energy'], 'Alive')]
         data_to_plot.append({'data': data3, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'Food Energy',
@@ -135,32 +135,49 @@ class WorldViewer:
         data_to_plot.append({'data': data4, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'Bug Energy',
                              'filename': 'bug_energy.png'})
 
-        data5 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
+        data5 = [(food_data['deaths'], 'Deaths')]
+        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Number of Food',
+                             'title': 'Dead Food Populations', 'filename': 'food_dead_population.png'})
+
+        data6 = [(bug_data['deaths'], 'Deaths')]
+        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Number of Bugs',
+                             'title': 'Dead Bug Populations', 'filename': 'bug_dead_population.png'})
+
+        # plot average because otherwise dead plant population is not viewable on the plot (dominated by alive)
+        data7 = [(food_data['population'], 'Alive'), (food_data['average_deaths'], 'Deaths (last 10 cycles)')]
+        data_to_plot.append({'data': data7, 'x_label': 'Time', 'y_label': 'Number of Food',
+                             'title': 'Food Populations', 'filename': 'food_populations.png'})
+
+        data8 = [(bug_data['population'], 'Alive'), (bug_data['average_deaths'], 'Deaths (last 10 cycles)')]
+        data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Number of Bugs',
+                             'title': 'Dead Bug Populations', 'filename': 'bug_populations.png'})
+
+        data9 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
                  (food_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
-        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Food Lifetimes',
+        data_to_plot.append({'data': data9, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Food Lifetimes',
                              'filename': 'food_lifetime.png'})
 
-        data6 = [(bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
-                 (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
-        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Bug Lifetimes',
+        data10 = [(bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
+                  (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
+        data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Lifetime', 'title': 'Bug Lifetimes',
                              'filename': 'bug_lifetime.png'})
 
-        data7 = [(food_data['average_reproduction_threshold'], 'Alive')]
-        data_to_plot.append({'data': data7, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
+        data11 = [(food_data['average_reproduction_threshold'], 'Alive')]
+        data_to_plot.append({'data': data11, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
                              'title': 'Food Reproduction Threshold', 'filename': 'food_reproduction_threshold.png'})
 
-        data8 = [(bug_data['average_reproduction_threshold'], 'Alive')]
-        data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
+        data12 = [(bug_data['average_reproduction_threshold'], 'Alive')]
+        data_to_plot.append({'data': data12, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
                              'title': 'Bug Reproduction Threshold', 'filename': 'bug_reproduction_threshold.png'})
 
-        data9 = [(food_data['population'], 'Food'), (bug_data['population'], 'Bugs'),
-                 (food_data['population'] + bug_data['population'], 'Food + Bugs')]
-        data_to_plot.append({'data': data9, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
+        data13 = [(food_data['population'], 'Food'), (bug_data['population'], 'Bugs'),
+                  (food_data['population'] + bug_data['population'], 'Food + Bugs')]
+        data_to_plot.append({'data': data13, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
                              'filename': 'world_population.png'})
 
-        data10 = [(food_data['energy'], 'Food'), (bug_data['energy'], 'Bugs'),
+        data14 = [(food_data['energy'], 'Food'), (bug_data['energy'], 'Bugs'),
                   (food_data['energy'] + bug_data['energy'], 'Food + Bugs')]
-        data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
+        data_to_plot.append({'data': data14, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
                              'filename': 'world_energy.png'})
 
         print('plotting world statistics...')

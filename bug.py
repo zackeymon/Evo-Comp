@@ -41,7 +41,8 @@ class Bug(Organism):
 
     def try_eat(self, food):
         self.energy -= cfg.bug['eat_tax']
-        if np.absolute(self.taste - get_taste_average([self.taste, food.taste])) <= randint(0, 180):  # eating chance
+        if (np.absolute(self.taste - get_taste_average([self.taste, food.taste]))) * (
+                    cfg.taste_range / 180) <= randint(0, cfg.taste_range):  # eating chance
             if self.eat(food):
                 return True
         return False
