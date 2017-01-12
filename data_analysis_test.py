@@ -9,7 +9,7 @@ t = np.arange(0, 100, 1)
 init_populations = [100, 100]
 parameters = [0.1, 0.002, 0.002, 0.4]
 
-sol = odeint(lv, init_populations, t, args=tuple(parameters))
+sol = odeint(competitive_lv, init_populations, t, args=tuple(parameters))
 
 plt.plot(t, sol[:, 0], t, sol[:, 1])
 
@@ -17,7 +17,7 @@ plt.plot(t, sol[:, 0], t, sol[:, 1])
 guess = [0.12, 0.003, 0.003, 0.39]
 bounds = ((1e-6, 1), (1e-6, 1), (1e-6, 1), (1e-6, 1))
 
-opt_parameters = minimize(objective, guess, args=(lv, sol), bounds=bounds)
+opt_parameters = minimize(objective, guess, args=(competitive_lv, sol), bounds=bounds)
 # opt_parameters = basinhopping(objective, guess, niter=1000, minimizer_kwargs={'args': (sol,)})
 
 print(opt_parameters.x)

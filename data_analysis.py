@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.optimize import minimize, differential_evolution, brute, basinhopping
 
-CC = 40000
+CC = 128*128
 
 
 def lv(population, t, alpha, beta, delta, gamma):
@@ -25,9 +25,6 @@ def restricted_growth(x, t, alpha):
     return dx_dt
 
 
-# TODO: Competitive LV
-# I think the objective function is right. We need better data sets
-
 def objective(parameters, *args):
     func, data = args
     sample_size = len(data)
@@ -36,6 +33,7 @@ def objective(parameters, *args):
     if model.shape[1] == 1:
         model = model.ravel()
     return np.sum(np.abs(model - data))
+
 
 if __name__ == '__main__':
     guess_parameters = [0.008, 0.00002, 0.001, 0.001]

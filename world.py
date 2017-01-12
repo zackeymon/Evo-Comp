@@ -51,15 +51,19 @@ class World:
         self.time += 1
         self.update_available_spawn_squares()
 
+        # if self.time == 100:
+        #     self.spawn(Bug([20, 50], taste=180, **cfg.world['bug_spawn_vals']))
+
         # If there is still food, find their taste average, else don't update my average
         if alive_plants:
             self.food_taste_average = get_taste_average([i.taste for i in alive_plants])
 
-        # Drop balls on them (if endangered)
-        if len(alive_plants) < cfg.food_endangered_threshold:
-            self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
-        if len(alive_bugs) < cfg.bug_endangered_threshold:
-            self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
+        if self.time < 500:
+            # Drop balls on them (if endangered)
+            if len(alive_plants) < cfg.food_endangered_threshold:
+                self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
+            if len(alive_bugs) < cfg.bug_endangered_threshold:
+                self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
 
         # Shuffle the order alive food & bug lists
         random.shuffle(alive_plants)
