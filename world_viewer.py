@@ -118,13 +118,14 @@ class WorldViewer:
 
         data_to_plot = []
         time = food_data['time']
+        world_capacity = cfg.world['settings']['rows'] * cfg.world['settings']['columns']  # normalise for world size
 
-        data1 = [(food_data['population'], 'Alive')]
-        data_to_plot.append({'data': data1, 'x_label': 'Time', 'y_label': 'Number of Food',
+        data1 = [(food_data['population'] / world_capacity, 'Alive')]
+        data_to_plot.append({'data': data1, 'x_label': 'Time', 'y_label': 'Food Population Density',
                              'title': 'Alive Food Populations', 'filename': 'food_alive_population.png'})
 
-        data2 = [(bug_data['population'], 'Alive')]
-        data_to_plot.append({'data': data2, 'x_label': 'Time', 'y_label': 'Number of Bugs',
+        data2 = [(bug_data['population'] / world_capacity, 'Alive')]
+        data_to_plot.append({'data': data2, 'x_label': 'Time', 'y_label': 'Bug Population Density',
                              'title': 'Alive Bug Populations', 'filename': 'bug_alive_population.png'})
 
         data3 = [(food_data['energy'], 'Alive')]
@@ -135,22 +136,24 @@ class WorldViewer:
         data_to_plot.append({'data': data4, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'Bug Energy',
                              'filename': 'bug_energy.png'})
 
-        data5 = [(food_data['deaths'], 'Deaths')]
-        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Number of Food',
+        data5 = [(food_data['deaths'] / world_capacity, 'Deaths')]
+        data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Food Population Density',
                              'title': 'Dead Food Populations', 'filename': 'food_dead_population.png'})
 
-        data6 = [(bug_data['deaths'], 'Deaths')]
-        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Number of Bugs',
+        data6 = [(bug_data['deaths'] / world_capacity, 'Deaths')]
+        data_to_plot.append({'data': data6, 'x_label': 'Time', 'y_label': 'Bug Population Density',
                              'title': 'Dead Bug Populations', 'filename': 'bug_dead_population.png'})
 
-        # plot average because otherwise dead plant population is not viewable on the plot (dominated by alive)
-        data7 = [(food_data['population'], 'Alive'), (food_data['average_deaths'], 'Deaths (last 10 cycles)')]
-        data_to_plot.append({'data': data7, 'x_label': 'Time', 'y_label': 'Number of Food',
+        # plot average deaths because otherwise dead plant population is not viewable on the plot (dominated by alive)
+        data7 = [(food_data['population'] / world_capacity, 'Alive'),
+                 (food_data['average_deaths'] / world_capacity, 'Deaths (last 10 cycles)')]
+        data_to_plot.append({'data': data7, 'x_label': 'Time', 'y_label': 'Food Population Density',
                              'title': 'Food Populations', 'filename': 'food_populations.png'})
 
-        data8 = [(bug_data['population'], 'Alive'), (bug_data['average_deaths'], 'Deaths (last 10 cycles)')]
-        data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Number of Bugs',
-                             'title': 'Dead Bug Populations', 'filename': 'bug_populations.png'})
+        data8 = [(bug_data['population'] / world_capacity, 'Alive'),
+                 (bug_data['average_deaths'] / world_capacity, 'Deaths (last 10 cycles)')]
+        data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Bug Population Density',
+                             'title': 'Bug Populations', 'filename': 'bug_populations.png'})
 
         data9 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
                  (food_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
@@ -170,13 +173,11 @@ class WorldViewer:
         data_to_plot.append({'data': data12, 'x_label': 'Time', 'y_label': 'Reproduction Threshold',
                              'title': 'Bug Reproduction Threshold', 'filename': 'bug_reproduction_threshold.png'})
 
-        data13 = [(food_data['population'], 'Food'), (bug_data['population'], 'Bugs'),
-                  (food_data['population'] + bug_data['population'], 'Food + Bugs')]
-        data_to_plot.append({'data': data13, 'x_label': 'Time', 'y_label': 'Number', 'title': 'World Population',
-                             'filename': 'world_population.png'})
+        data13 = [(food_data['population'] / world_capacity, 'Food'), (bug_data['population'] / world_capacity, 'Bugs')]
+        data_to_plot.append({'data': data13, 'x_label': 'Time', 'y_label': 'Population Density',
+                             'title': 'World Population', 'filename': 'world_population.png'})
 
-        data14 = [(food_data['energy'], 'Food'), (bug_data['energy'], 'Bugs'),
-                  (food_data['energy'] + bug_data['energy'], 'Food + Bugs')]
+        data14 = [(food_data['energy'] / world_capacity, 'Food'), (bug_data['energy'] / world_capacity, 'Bugs')]
         data_to_plot.append({'data': data14, 'x_label': 'Time', 'y_label': 'Energy', 'title': 'World Energy',
                              'filename': 'world_energy.png'})
 
@@ -188,7 +189,7 @@ class WorldViewer:
                 plt.plot(time, y, label=l)
             plt.xlabel(data_dict['x_label'])
             plt.ylabel(data_dict['y_label'])
-            plt.legend()
+            plt.legend(loc=0)
             plt.title(data_dict['title'])
             plt.savefig(os.path.join('data', self.seed, 'world_statistics', data_dict['filename']))
             plt.close()
