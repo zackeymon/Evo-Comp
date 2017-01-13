@@ -1,11 +1,10 @@
 import datetime
 import random
 import config as cfg
-from constants import *
-from utility_methods import *
-from direction import Direction
 from bug import Bug
+from constants import *
 from food import Food
+from utility_methods import *
 
 
 class World:
@@ -58,7 +57,7 @@ class World:
         if alive_plants:
             self.food_taste_average = get_taste_average([i.taste for i in alive_plants])
 
-        if self.time < 500:
+        if self.time < 300:
             # Drop balls on them (if endangered)
             if len(alive_plants) < cfg.food_endangered_threshold:
                 self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
@@ -92,9 +91,9 @@ class World:
         return squares
 
     def available(self, organism, direction):
-        return not self.collide(organism.position + direction, organism.value)
+        return not self._collide(organism.position + direction, organism.value)
 
-    def collide(self, position, organism_value):
+    def _collide(self, position, organism_value):
         """Check if position is out of bounds and for disallowed collisions."""
         # Collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
@@ -105,26 +104,6 @@ class World:
             return True
 
         return False
-
-    def get_allowed_directions(self, organism, overshadow):
-        """Each organism cannot collide with itself (no overlap)."""
-        allowed_directions = []
-
-        for direction, val in enumerate(Direction.all_directions):
-            current_position = organism.position + np.array(val)
-            if not self.collide(current_position, organism.value):
-                allowed_directions.append(direction)
-            elif overshadow:
-                # Check this is not a wall
-                if tuple(current_position) in self.plant_position_dict:
-                    original_plant = self.plant_position_dict[tuple(current_position)]
-                    if original_plant.energy < int(organism.energy * cfg.food_over_shadow_ratio):
-                        allowed_directions.append(direction)
-
-        return allowed_directions
-
-    def get_random_available_direction(self, organism, overshadow=False):
-        return Direction.random(self.get_allowed_directions(organism, overshadow))
 
     def update_available_spawn_squares(self):
         """Get available spawn spaces and the average of the food taste value for."""
