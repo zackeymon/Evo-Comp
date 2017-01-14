@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.optimize import minimize, differential_evolution, brute, basinhopping
 
-CC = 128*128
+CC = 128 * 128
 
 
 def lv(population, t, alpha, beta, delta, gamma):
@@ -25,27 +25,31 @@ def restricted_growth(x, t, alpha):
     return dx_dt
 
 
+def bug_death(y, t, gamma):
+    dy_dt = -gamma * y
+    return dy_dt
+
+
 def objective(parameters, *args):
-    func, data = args
+    func, alpha, gamma, data = args
     sample_size = len(data)
     t = np.arange(0, sample_size, 1)
-    model = np.array(odeint(func, data[0], t, args=tuple(parameters)))
+    model = np.array(odeint(func, data[0], t, args=tuple([alpha, parameters[0], parameters[1], gamma])))
     if model.shape[1] == 1:
         model = model.ravel()
-    return np.sum(np.abs(model - data))
+    return np.sum(np.square(model - data)) / sample_size
 
 
 if __name__ == '__main__':
-    guess_parameters = [0.008, 0.00002, 0.001, 0.001]
-    parameters_bounds = ((1e-7, 0.5), (1e-7, 0.1), (1e-7, 0.1), (1e-7, 0.5))
+    guess_parameters = [0.193, 0.05, 0.05, 0.193]
+    parameters_bounds = ((0.15, 0.25), (1e-7, 0.1), (1e-7, 0.1), (0.1, 0.3))
     # TODO: Constraint dictionary
 
-    data = np.loadtxt('pop_data_.csv', delimiter=',')  # [plants, bugs]
+    data = np.loadtxt('para_fit.csv', delimiter=',')  # [plants, bugs]
     t = np.arange(0, len(data), 1)
 
     plt.plot(t, data[:, 0], t, data[:, 1])
-    # opt_parameters = brute(objective, parameters_bounds, args=(data,))
-    opt_parameters = minimize(objective, guess_parameters, args=(lv, data), bounds=parameters_bounds)
+    opt_parameters = minimize(objective, guess_parameters, args=(competitive_lv, data), bounds=parameters_bounds)
     # opt_parameters = basinhopping(objective, guess_parameters, niter=1000, minimizer_kwargs={'args': (data,)})
     print(opt_parameters)
 

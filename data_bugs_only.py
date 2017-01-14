@@ -2,17 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.optimize import minimize
-from data_analysis import objective, restricted_growth, CC
+from data_analysis import objective, bug_death, CC
 
-data = np.loadtxt('plant_only_gr10.csv')
+data = np.loadtxt('bug_only.csv')
 t = np.arange(0, len(data), 1)
 
 guess = np.array([0.01])
 bounds = ((0, 0.5),)
 
-opt = minimize(objective, guess, args=(restricted_growth, data), bounds=bounds)
+opt = minimize(objective, guess, args=(bug_death, data), bounds=bounds)
 print(opt)
-sol = odeint(restricted_growth, data[0], t, args=tuple(opt.x))
+sol = odeint(bug_death, data[0], t, args=tuple(opt.x))
 
 plt.plot(t, data/CC, '-', label='Simulated Data')
 plt.plot(t, sol/CC, '-', label='L-V Model')
