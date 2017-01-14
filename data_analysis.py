@@ -31,6 +31,16 @@ def bug_death(y, t, gamma):
 
 
 def objective(parameters, *args):
+    func, data = args
+    sample_size = len(data)
+    t = np.arange(0, sample_size, 1)
+    model = np.array(odeint(func, data[0], t, args=tuple(parameters)))
+    if model.shape[1] == 1:
+        model = model.ravel()
+    return np.sum(np.square(model - data)) / sample_size
+
+
+def objective_2d(parameters, *args):
     func, alpha, gamma, data = args
     sample_size = len(data)
     t = np.arange(0, sample_size, 1)
