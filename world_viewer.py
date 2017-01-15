@@ -155,11 +155,13 @@ class WorldViewer:
         data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Population Density', 'y_lim': [0, 1],
                              'title': 'Bug Populations', 'filename': 'bug_populations.png'})
 
-        data9 = [(food_data['average_alive_lifetime'], 'Alive')]
+        data9 = [(food_data['average_alive_lifetime'], 'Alive'),
+                 (food_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
         data_to_plot.append({'data': data9, 'x_label': 'Time', 'y_label': 'Average Lifetime', 'y_lim': None,
                              'title': 'Plant Lifetimes', 'filename': 'food_lifetime.png'})
 
-        data10 = [(bug_data['average_alive_lifetime'], 'Alive')]
+        data10 = [(bug_data['average_alive_lifetime'], 'Alive'),
+                  (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
         data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Average Lifetime', 'y_lim': None,
                              'title': 'Bug Lifetimes', 'filename': 'bug_lifetime.png'})
 
