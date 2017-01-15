@@ -221,7 +221,7 @@ class WorldViewer:
                         os.makedirs(os.path.join('data', self.seed, 'bug_' + str(switch.replace("'", ""))))
 
             # Create the list of organisms for each day
-            world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data', '%r' % day)),
+            world_file = csv.reader(open(os.path.join('data', self.seed, 'data_files', 'world_data', '%r.csv' % day)),
                                     delimiter=',')
 
             organism_list = []
