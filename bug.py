@@ -1,8 +1,8 @@
 import numpy as np
 import config as cfg
-from random import randint
+from random import random
 from constants import BUG_VAL, BUG_NAME
-from utility_methods import get_taste_average
+from utility_methods import get_taste_difference
 from organism import Organism
 
 
@@ -41,9 +41,11 @@ class Bug(Organism):
 
     def try_eat(self, food):
         self.energy -= cfg.bug['eat_tax']
-        if (np.absolute(self.taste - get_taste_average([self.taste, food.taste]))) * (
-                    cfg.taste_range / 180) <= randint(0, cfg.taste_range):  # eating chance
+        chance = (cfg.max_compatible_taste - get_taste_difference(self.taste, food.taste)) / cfg.max_compatible_taste
+        if chance > random():
+            # Success
             if self.eat(food):
+                # Ate the whole thing
                 return True
         return False
 

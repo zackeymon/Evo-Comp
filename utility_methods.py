@@ -12,6 +12,10 @@ def get_taste_average(taste_list):
     return int(average % 360)
 
 
+def get_taste_difference(taste1, taste2):
+    return abs((taste1 - taste2 + 180) % 360 - 180)
+
+
 def sum_list_energy(organism_list):
     return sum(organism.energy for organism in organism_list)
 
