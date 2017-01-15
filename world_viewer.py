@@ -155,14 +155,12 @@ class WorldViewer:
         data_to_plot.append({'data': data8, 'x_label': 'Time', 'y_label': 'Population Density', 'y_lim': [0, 1],
                              'title': 'Bug Populations', 'filename': 'bug_populations.png'})
 
-        data9 = [(food_data['average_alive_lifetime'], 'Average Alive Lifetime'),
-                 (food_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
-        data_to_plot.append({'data': data9, 'x_label': 'Time', 'y_label': 'Lifetime', 'y_lim': None,
+        data9 = [(food_data['average_alive_lifetime'], 'Alive')]
+        data_to_plot.append({'data': data9, 'x_label': 'Time', 'y_label': 'Average Lifetime', 'y_lim': None,
                              'title': 'Plant Lifetimes', 'filename': 'food_lifetime.png'})
 
-        data10 = [(bug_data['average_alive_lifetime'], 'Average Alive Lifetime'),
-                  (bug_data['average_lifespan'], 'Average Lifespan (last 10 cycles)')]
-        data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Lifetime', 'y_lim': None,
+        data10 = [(bug_data['average_alive_lifetime'], 'Alive')]
+        data_to_plot.append({'data': data10, 'x_label': 'Time', 'y_label': 'Average Lifetime', 'y_lim': None,
                              'title': 'Bug Lifetimes', 'filename': 'bug_lifetime.png'})
 
         data11 = [(food_data['average_reproduction_threshold'], 'Alive')]
@@ -173,11 +171,11 @@ class WorldViewer:
         data_to_plot.append({'data': data12, 'x_label': 'Time', 'y_label': 'Reproduction Threshold', 'y_lim': None,
                              'title': 'Bug Reproduction Threshold', 'filename': 'bug_reproduction_threshold.png'})
 
-        data13 = [(food_data['population'] / world_capacity, 'Food'), (bug_data['population'] / world_capacity, 'Bugs')]
+        data13 = [(food_data['population'] / world_capacity, 'Plants'), (bug_data['population'] / world_capacity, 'Bugs')]
         data_to_plot.append({'data': data13, 'x_label': 'Time', 'y_label': 'Population Density', 'y_lim': [0, 1],
                              'title': 'World Population', 'filename': 'world_population.png'})
 
-        data14 = [(food_data['energy'] / world_capacity, 'Food'), (bug_data['energy'] / world_capacity, 'Bugs')]
+        data14 = [(food_data['energy'] / world_capacity, 'Plants'), (bug_data['energy'] / world_capacity, 'Bugs')]
         data_to_plot.append({'data': data14, 'x_label': 'Time', 'y_label': 'Energy', 'y_lim': None,
                              'title': 'World Energy', 'filename': 'world_energy.png'})
 
