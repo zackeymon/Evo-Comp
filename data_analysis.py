@@ -51,11 +51,11 @@ def objective_2d(parameters, *args):
 
 
 if __name__ == '__main__':
-    guess_parameters = [0.193, 0.05, 0.05, 0.193]
-    parameters_bounds = ((0.15, 0.25), (1e-7, 0.1), (1e-7, 0.1), (0.1, 0.3))
+    guess_parameters = [0.20705694, 5.02921384e-05, 6.85824820e-05, 0.209544]
+    parameters_bounds = ((0.1, 0.3), (4e-05, 6e-05), (6e-05, 8e-05), (0.1, 0.3))
     # TODO: Constraint dictionary
 
-    data = np.loadtxt('para_fit.csv', delimiter=',')  # [plants, bugs]
+    data = np.loadtxt('para_fit_.csv', delimiter=',')  # [plants, bugs]
     t = np.arange(0, len(data), 1)
 
     plt.plot(t, data[:, 0], t, data[:, 1])
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # opt_parameters = basinhopping(objective, guess_parameters, niter=1000, minimizer_kwargs={'args': (data,)})
     print(opt_parameters)
 
-    sol = odeint(lv, data[0], t, args=tuple(opt_parameters.x))
+    sol = odeint(competitive_lv, data[0], t, args=tuple(opt_parameters.x))
     plt.plot(t, sol[:, 0], 'black')
     plt.plot(t, sol[:, 1], 'red')
     plt.show()
