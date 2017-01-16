@@ -23,7 +23,7 @@ class Organism:
         self.energy = energy
         self.reproduction_threshold = reproduction_threshold if reproduction_threshold >= 0 else 0
         self.energy_max = energy_max
-        self.taste = taste
+        self.taste = taste % 360
         self.offspring_energy_fraction = 0.4
 
     def __repr__(self):
