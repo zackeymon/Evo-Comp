@@ -93,4 +93,4 @@ while KillSwitch.is_off():
 world_recorder.output_world_stats()
 world_recorder.output_world_data()
 world_viewer.plot_world_stats()
-world_viewer.plot_world_data()
+# world_viewer.plot_world_data()
