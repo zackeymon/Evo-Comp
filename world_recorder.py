@@ -62,7 +62,7 @@ class WorldRecorder:
             self.organism_data[organism]['time'].append(self.world.time)
             self.organism_data[organism]['energy'].append(sum_list_energy(alive))
             self.organism_data[organism]['population'].append(len(alive))
-            self.organism_data[organism]['deaths'].append(len(dead[-1]))
+            self.organism_data[organism]['deaths'].append(len(dead[-1:]))
             self.organism_data[organism]['average_deaths'].append(sum([len(i) for i in dead[-10:]]))
             self.organism_data[organism]['average_alive_lifetime'].append(average_lifetime([alive]))
             self.organism_data[organism]['average_lifespan'].append(average_lifetime(dead[-10:]))

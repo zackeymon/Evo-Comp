@@ -50,8 +50,8 @@ class World:
         self.time += 1
         self.update_available_spawn_squares()
 
-        # if self.time == 100:
-        #     self.spawn(Bug([20, 50], taste=180, **cfg.world['bug_spawn_vals']))
+        # if self.time == 200:
+        #     self.spawn(Bug([int(self.rows/2), int(self.columns/2)], taste=180, **cfg.world['bug_spawn_vals']))
 
         # If there is still food, find their taste average, else don't update my average
         if alive_plants:

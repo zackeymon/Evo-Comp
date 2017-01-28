@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
-from scipy.optimize import minimize, differential_evolution, brute, basinhopping
+from scipy.optimize import minimize
 
 CC = 128 * 128
 
@@ -53,14 +53,12 @@ def objective_2d(parameters, *args):
 if __name__ == '__main__':
     guess_parameters = [0.20705694, 5.02921384e-05, 6.85824820e-05, 0.209544]
     parameters_bounds = ((0.1, 0.3), (4e-05, 6e-05), (6e-05, 8e-05), (0.1, 0.3))
-    # TODO: Constraint dictionary
 
     data = np.loadtxt('para_fit_.csv', delimiter=',')  # [plants, bugs]
     t = np.arange(0, len(data), 1)
 
     plt.plot(t, data[:, 0], t, data[:, 1])
     opt_parameters = minimize(objective, guess_parameters, args=(competitive_lv, data), bounds=parameters_bounds)
-    # opt_parameters = basinhopping(objective, guess_parameters, niter=1000, minimizer_kwargs={'args': (data,)})
     print(opt_parameters)
 
     sol = odeint(competitive_lv, data[0], t, args=tuple(opt_parameters.x))
