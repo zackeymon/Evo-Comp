@@ -6,3 +6,5 @@ __pycache__/
 data/
 log/
 test.py
+
+animation/
