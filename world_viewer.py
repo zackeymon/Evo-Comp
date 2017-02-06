@@ -398,6 +398,6 @@ class WorldViewer:
 
         for i in range(days):
             sys.stdout.write(
-                '\r' + 'reading & plotting world data, time: %r' % (start + i) + '/%r' % total_days + '...')
+                '\r' + 'reading & plotting world data, time: %r' % (start + i) + '/%r' % (total_days - 1) + '...')
             sys.stdout.flush()
             self.plot_day_data(day=start + i, world=plot_world)
