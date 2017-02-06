@@ -21,7 +21,6 @@ class World:
         self.columns = columns
         self.rows = rows
         self.time = time
-        self.food_taste_average = 180
         self.seed = seed if seed is not None else datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         random.seed(self.seed)
 
@@ -54,15 +53,18 @@ class World:
         #     self.spawn(Bug([int(self.rows/2), int(self.columns/2)], taste=180, **cfg.world['bug_spawn_vals']))
 
         # If there is still food, find their taste average, else don't update my average
-        if alive_plants:
-            self.food_taste_average = get_taste_average([i.taste for i in alive_plants])
 
-        if self.time < 300:
+        food_taste_average = get_taste_average([i.taste for i in alive_plants]) if alive_plants else \
+            cfg.world['food_spawn_vals']['initial_taste']
+        bug_taste_average = get_taste_average([i.taste for i in alive_bugs]) if alive_bugs else \
+            cfg.world['bug_spawn_vals']['initial_taste']
+
+        if self.time < cfg.endangered_time:
             # Drop balls on them (if endangered)
             if len(alive_plants) < cfg.food_endangered_threshold:
-                self.drop_food(1, **cfg.world['food_spawn_vals'], taste=self.food_taste_average)
+                self.drop_food(1, **cfg.world['food_spawn_vals'], taste=food_taste_average)
             if len(alive_bugs) < cfg.bug_endangered_threshold:
-                self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=self.food_taste_average)
+                self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=bug_taste_average)
 
         # Shuffle the order alive food & bug lists
         random.shuffle(alive_plants)
@@ -144,8 +146,6 @@ class World:
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
         random_spawn: set to True to randomly spawn bugs anywhere in the world.
         """
-
-        # TODO: spawn outside fertile lands
 
         for _ in range(number):
             try:

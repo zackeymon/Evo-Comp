@@ -31,7 +31,5 @@ sol = odeint(competitive_lv, data[0], t, args=tuple(actual))
 plt.plot(t, sol[:, 0], 'black', label='Plants Fit')
 plt.plot(t, sol[:, 1], 'red', label='Bugs Fit')
 plt.legend(loc=0)
-plt.savefig('fig15.png')
+plt.savefig('ltv_analysis.png')
 plt.show()
-
-

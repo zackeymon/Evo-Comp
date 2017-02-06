@@ -2,8 +2,6 @@
 Initialisation Settings
 """
 
-output_each_day_csv = True
-
 # Plotting
 fig_size = 20  # pixel size is fig_size x dpi
 save_world_view = False
@@ -12,7 +10,7 @@ check_newly_spawned_bugs = False
 
 world = dict(
     settings=dict(
-        seed='rt0_t0-128-gr10',
+        seed='rt0_t0-128-gr10',  # rt=reproduction_threshold, t=taste, world size, growth rate --> 0=off, 1=on
         rows=128,
         columns=128,
         fertile_lands=None,
@@ -22,19 +20,22 @@ world = dict(
     food_spawn_vals=dict(
         energy=20,
         reproduction_threshold=30,
-        energy_max=100
-        # TODO: food & bug taste
+        energy_max=100,
+        initial_taste=180
+
     ),
     bug_spawn_vals=dict(
         energy=30,
         reproduction_threshold=70,
-        energy_max=100
+        energy_max=100,
+        initial_taste=180
     )
 )
 
 # World parameters
 taste_range = 180  # scales within range
 
+endangered_time = 300
 food_endangered_threshold = 100
 bug_endangered_threshold = 10
 food_min_energy = 10
@@ -55,7 +56,7 @@ food = dict(
 )
 
 bug_maturity_age = 1
-bug_mouse_size = 40
+bug_mouth_size = 40
 bug_reproduction_cost = 6
 
 bug = dict(

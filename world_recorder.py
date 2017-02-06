@@ -103,7 +103,7 @@ class WorldRecorder:
         self.world_data['reproduction_threshold'].append('end_day')
         self.world_data['taste'].append('end_day')
 
-    def output_world_day_data(self):
+    def output_world_data(self):
         """Output data in CSV (comma-separated values) format for each day, for faster file reading for world setup."""
 
         # Find length of most recent day
@@ -123,15 +123,5 @@ class WorldRecorder:
                                                                              self.world_data['reproduction_threshold'][
                                                                              -i:-1],
                                                                              self.world_data['taste'][-i:-1]):
-                world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
-                                 + '%r,' % reproduction_threshold + '%r,' % taste + '\n')
-
-    def output_world_data(self):
-        """Output data in CSV (comma-separated values) format for analysis."""
-
-        print('outputting world data...')
-
-        with open(os.path.join('data', self.world.seed, 'data_files', 'world_data.csv'), 'w') as world_file:
-            for organism, x, y, energy, reproduction_threshold, taste in zip(*self.world_data.values()):
                 world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
                                  + '%r,' % reproduction_threshold + '%r,' % taste + '\n')

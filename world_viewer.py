@@ -2,6 +2,7 @@ import os
 import sys
 import csv
 import colorsys
+import fnmatch
 from matplotlib import pyplot as plt
 from matplotlib import collections as col
 from constants import *
@@ -134,7 +135,7 @@ class WorldViewer:
 
         data4 = [(bug_data['energy'], 'Alive')]
         data_to_plot.append({'data': data4, 'x_label': 'Time', 'y_label': 'Energy', 'y_lim': None,
-                             'title': 'Bug Energy','filename': 'bug_energy.png'})
+                             'title': 'Bug Energy', 'filename': 'bug_energy.png'})
 
         data5 = [(food_data['deaths'] / world_capacity, 'Deaths')]
         data_to_plot.append({'data': data5, 'x_label': 'Time', 'y_label': 'Population Density', 'y_lim': [0, 1],
@@ -173,7 +174,8 @@ class WorldViewer:
         data_to_plot.append({'data': data12, 'x_label': 'Time', 'y_label': 'Reproduction Threshold', 'y_lim': None,
                              'title': 'Bug Reproduction Threshold', 'filename': 'bug_reproduction_threshold.png'})
 
-        data13 = [(food_data['population'] / world_capacity, 'Plants'), (bug_data['population'] / world_capacity, 'Bugs')]
+        data13 = [(food_data['population'] / world_capacity, 'Plants'),
+                  (bug_data['population'] / world_capacity, 'Bugs')]
         data_to_plot.append({'data': data13, 'x_label': 'Time', 'y_label': 'Population Density', 'y_lim': [0, 1],
                              'title': 'World Population', 'filename': 'world_population.png'})
 
@@ -199,7 +201,7 @@ class WorldViewer:
             plt.savefig(os.path.join('data', self.seed, 'world_statistics', data_dict['filename']))
             plt.close()
 
-    def plot_world_data(self, day, world=False):
+    def plot_day_data(self, day=None, world=False):
         """
         Read the CSV (comma-separated values) output and plot the world and/or gene values for each time.
         world: set to True to plot the world.
@@ -226,23 +228,14 @@ class WorldViewer:
 
             organism_list = []
             for row in world_file:
-                 row.remove(row[-1])  # remove the '\n' for CSV files
-                 organism_list.append(row)
+                row.remove(row[-1])  # remove the '\n' for CSV files
+                organism_list.append(row)
 
-            organism_list = [[float(organism[i]) if i > 0 else organism[i] for i in range(len(organism))]
-                              for organism in organism_list]
-
-            # for _ in range(start):
-            #     del organism_list[0]
+            organism_list = [[float(organism[i]) if i > 0 else organism[i] for i in range(len(organism))] for organism
+                             in organism_list]
 
         # Plot the world
         if world:
-            # for i, day in enumerate(organism_list):  # loop through each day
-            #
-            #     sys.stdout.write(
-            #         '\r' + 'plotting world data (world), time: %r' % (i + start) + '/%r' % (
-            #             len(organism_list) + start - 1) + '...')
-            #     sys.stdout.flush()
 
             food_x_offsets, food_y_offsets, food_facecolors = ([] for _ in range(3))
             bug_widths, bug_heights, bug_x_offsets, bug_y_offsets, bug_facecolors = ([] for _ in range(5))
@@ -307,21 +300,13 @@ class WorldViewer:
                                                        linewidths=bug_linewidths)
                 self.ax.add_collection(bug_collection)
 
-            plt.title('time=%s' % (day), fontsize=30)
-            plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % (day)))
+            plt.title('time=%s' % day, fontsize=30)
+            plt.savefig(os.path.join('data', self.seed, 'world', '%s.png' % day))
             plt.cla()
-
-        sys.stdout.write('\n')  # write gene data outputs on a new line
 
         # Plot genes
         if cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or \
                 cfg.bug['evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
-            # for i, day in enumerate(organism_list):  # loop through each day
-            #
-            #     sys.stdout.write(
-            #         '\r' + 'plotting world data (genes), time: %r' % (i + start) + '/%r' % (
-            #             len(organism_list) + start - 1) + '...')
-            #     sys.stdout.flush()
 
             # Create lists of food and bug gene data for plotting
             food_list, bug_list = [], []
@@ -366,8 +351,8 @@ class WorldViewer:
                         plt.ylim(0, 1)
                     plt.xlabel('Reproduction Threshold')
                     plt.ylabel('Population')
-                    plt.title('time=%s' % (day))
-                    plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % (day)))
+                    plt.title('time=%s' % day)
+                    plt.savefig(os.path.join('data', self.seed, organism_data['path'], '%s.png' % day))
                     plt.close()
 
                 # 2D Plot (heat map)
@@ -403,6 +388,19 @@ class WorldViewer:
                     plt.ylim(0, 360)
                     plt.xlabel('Reproduction Threshold')
                     plt.ylabel('Taste')
-                    plt.title('time=%s' % (day))
-                    plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % (day)))
+                    plt.title('time=%s' % day)
+                    plt.savefig(os.path.join('data', self.seed, organism_data['path2'], '%s.png' % day))
                     plt.close()
+
+    def plot_world_data(self, days=None, start=0, plot_world=False):
+
+        total_days = len(
+            fnmatch.filter(os.listdir(os.path.join('data', self.seed, 'data_files', 'world_data')), '*.csv'))
+
+        if days is None or days > total_days:
+            days = total_days - start
+
+        for i in range(days):
+            sys.stdout.write('\r' + 'plotting world data, time: %r' % (start + i) + '/%r' % days + '...')
+            sys.stdout.flush()
+            self.plot_day_data(day=start + i, world=plot_world)

@@ -12,7 +12,7 @@ class Bug(Organism):
     """
     value = BUG_VAL
     name = BUG_NAME
-    mouth_size = cfg.bug_mouse_size
+    mouth_size = cfg.bug_mouth_size
     reproduction_cost = cfg.bug_reproduction_cost
     maturity_age = cfg.bug_maturity_age
 
