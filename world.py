@@ -132,7 +132,7 @@ class World:
         if organism.name == FOOD_NAME:
             self.plant_position_dict[tuple(organism.position)] = organism
 
-    def drop_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180):
+    def drop_food(self, number, energy, reproduction_threshold, energy_max, taste):
         """Spawn food on fertile land and check spawn square is available."""
         for _ in range(number):
             try:
@@ -141,7 +141,7 @@ class World:
             except ValueError:
                 break
 
-    def drop_bug(self, number, energy=30, reproduction_threshold=70, energy_max=100, taste=180):
+    def drop_bug(self, number, energy, reproduction_threshold, energy_max, taste):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
         random_spawn: set to True to randomly spawn bugs anywhere in the world.
