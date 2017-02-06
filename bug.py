@@ -1,4 +1,3 @@
-import numpy as np
 import config as cfg
 from random import random
 from constants import BUG_VAL, BUG_NAME

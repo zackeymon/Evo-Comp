@@ -26,6 +26,7 @@ while KillSwitch.is_off():
     # Generate yesterday data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
+    world_recorder.output_world_data()
     if cfg.save_world_view:
         world_viewer.view_world(w)
 
@@ -89,6 +90,5 @@ while KillSwitch.is_off():
 # --------Plot-------- #
 ########################
 world_recorder.output_world_stats()
-world_recorder.output_world_data()
 world_viewer.plot_world_stats()
 world_viewer.plot_world_data()

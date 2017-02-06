@@ -106,7 +106,7 @@ class WorldViewer:
     def plot_world_stats(self):
         """Read the CSV (comma-separated values) output and plot trends."""
 
-        print('reading world statistics...')
+        print('reading & plotting world statistics...')
 
         if not os.path.exists(os.path.join('data', self.seed, 'world_statistics')):
             os.makedirs(os.path.join('data', self.seed, 'world_statistics'))
@@ -187,8 +187,6 @@ class WorldViewer:
         data_to_plot.append({'data': data15, 'x_label': 'Time', 'y_label': 'Average Lifetime', 'y_lim': None,
                              'title': 'World Lifetimes', 'filename': 'world_lifetime.png'})
 
-        print('plotting world statistics...')
-
         for data_dict in data_to_plot:
             plt.figure()
             for (y, l) in data_dict['data']:
@@ -210,8 +208,6 @@ class WorldViewer:
 
         if world or cfg.food['evolve_reproduction_threshold'] or cfg.food['evolve_taste'] or \
                 cfg.bug['evolve_reproduction_threshold'] or cfg.bug['evolve_taste']:
-
-            print('reading world data...')
 
             # Create output directories
             for switch in ['evolve_reproduction_threshold', 'evolve_taste']:
@@ -401,6 +397,7 @@ class WorldViewer:
             days = total_days - start
 
         for i in range(days):
-            sys.stdout.write('\r' + 'plotting world data, time: %r' % (start + i) + '/%r' % days + '...')
+            sys.stdout.write(
+                '\r' + 'reading & plotting world data, time: %r' % (start + i) + '/%r' % total_days + '...')
             sys.stdout.flush()
             self.plot_day_data(day=start + i, world=plot_world)

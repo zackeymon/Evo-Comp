@@ -39,9 +39,8 @@ class WorldRecorder:
             if not os.path.exists(os.path.join('data', world.seed, path)):
                 os.makedirs(os.path.join('data', world.seed, path))
 
-        if cfg.output_each_day_csv:
-            if not os.path.exists(os.path.join('data', world.seed, 'data_files', 'world_data')):
-                os.makedirs(os.path.join('data', world.seed, 'data_files', 'world_data'))
+        if not os.path.exists(os.path.join('data', world.seed, 'data_files', 'world_data')):
+            os.makedirs(os.path.join('data', world.seed, 'data_files', 'world_data'))
 
         # Create a copy of the config file with parameters of initialisation
         fd, new_path = mkstemp()
@@ -62,7 +61,7 @@ class WorldRecorder:
             self.organism_data[organism]['time'].append(self.world.time)
             self.organism_data[organism]['energy'].append(sum_list_energy(alive))
             self.organism_data[organism]['population'].append(len(alive))
-            self.organism_data[organism]['deaths'].append(len(dead[-1:]))
+            self.organism_data[organism]['deaths'].append(len(dead[-1]))
             self.organism_data[organism]['average_deaths'].append(sum([len(i) for i in dead[-10:]]))
             self.organism_data[organism]['average_alive_lifetime'].append(average_lifetime([alive]))
             self.organism_data[organism]['average_lifespan'].append(average_lifetime(dead[-10:]))

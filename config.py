@@ -10,7 +10,7 @@ check_newly_spawned_bugs = False
 
 world = dict(
     settings=dict(
-        seed='rt0_t0-128-gr10',  # rt=reproduction_threshold, t=taste, world size, growth rate --> 0=off, 1=on
+        seed='rt0_t0-128-gr10',  # set to None to use current datetime as seed
         rows=128,
         columns=128,
         fertile_lands=None,
@@ -21,19 +21,19 @@ world = dict(
         energy=20,
         reproduction_threshold=30,
         energy_max=100,
-        initial_taste=180
+        taste=180
 
     ),
     bug_spawn_vals=dict(
         energy=30,
         reproduction_threshold=70,
         energy_max=100,
-        initial_taste=180
+        taste=180
     )
 )
 
 # World parameters
-taste_range = 180  # scales within range
+max_compatible_taste = 180  # scales within range
 
 endangered_time = 300
 food_endangered_threshold = 100
@@ -48,10 +48,10 @@ food = dict(
     growth_rate=10,
 
     # Evolution switches
-    evolve_reproduction_threshold=False,
+    evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=False,
+    evolve_taste=True,
     taste_mutation_limit=5
 )
 
@@ -64,9 +64,9 @@ bug = dict(
     eat_tax=0,
 
     # Evolution switches
-    evolve_reproduction_threshold=False,
+    evolve_reproduction_threshold=True,
     reproduction_threshold_mutation_limit=5,
 
-    evolve_taste=False,
+    evolve_taste=True,
     taste_mutation_limit=5
 )

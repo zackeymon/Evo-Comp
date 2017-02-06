@@ -25,7 +25,7 @@ class World:
         random.seed(self.seed)
 
         # Initiate a dict to store lists of food and bugs
-        self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': []}, BUG_NAME: {'alive': [], 'dead': []}}
+        self.organism_lists = {FOOD_NAME: {'alive': [], 'dead': [[]]}, BUG_NAME: {'alive': [], 'dead': [[]]}}
         self.plant_position_dict = None
         self.grid = np.zeros(shape=(rows, columns), dtype=np.int)
         self.fertile_squares = self.get_fertile_squares(fertile_lands)
@@ -55,16 +55,19 @@ class World:
         # If there is still food, find their taste average, else don't update my average
 
         food_taste_average = get_taste_average([i.taste for i in alive_plants]) if alive_plants else \
-            cfg.world['food_spawn_vals']['initial_taste']
+            cfg.world['food_spawn_vals']['taste']
         bug_taste_average = get_taste_average([i.taste for i in alive_bugs]) if alive_bugs else \
-            cfg.world['bug_spawn_vals']['initial_taste']
+            cfg.world['bug_spawn_vals']['taste']
+
+        food_spawn_vals, bug_spawn_vals = [dict((k, v) for k, v in cfg.world[organism].items() if k is not 'taste') for
+                                           organism in ['food_spawn_vals', 'bug_spawn_vals']]
 
         if self.time < cfg.endangered_time:
             # Drop balls on them (if endangered)
             if len(alive_plants) < cfg.food_endangered_threshold:
-                self.drop_food(1, **cfg.world['food_spawn_vals'], taste=food_taste_average)
+                self.drop_food(1, **food_spawn_vals, taste=food_taste_average)
             if len(alive_bugs) < cfg.bug_endangered_threshold:
-                self.drop_bug(1, **cfg.world['bug_spawn_vals'], taste=bug_taste_average)
+                self.drop_bug(1, **bug_spawn_vals, taste=bug_taste_average)
 
         # Shuffle the order alive food & bug lists
         random.shuffle(alive_plants)
