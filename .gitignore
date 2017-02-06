@@ -4,6 +4,8 @@ __pycache__/
 *.pyc
 
 data/
+log/
+misc/papers/
 test.py
 
 animation/
