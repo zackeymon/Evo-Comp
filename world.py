@@ -1,15 +1,15 @@
 import datetime
 import random
 import config as cfg
-from bug import Bug
 from constants import *
-from food import Food
 from utility_methods import *
+from bug import Bug
+from food import Food
 
 
 class World:
     """
-    A class to create in the environment in which our organisms live.
+    A class to create in the environment inhabited by organisms.
     """
 
     def __init__(self, rows, columns, seed=None, fertile_lands=None, time=0, init_food=0, init_bugs=0):
@@ -17,6 +17,11 @@ class World:
         World Initialisation
         :param rows: Number of rows in the world
         :param columns: Number of columns in the world
+        :param seed:
+        :param fertile_lands:
+        :param time:
+        :param init_food:
+        :param init_bugs:
         """
         self.columns = columns
         self.rows = rows
@@ -135,7 +140,7 @@ class World:
         if organism.name == FOOD_NAME:
             self.plant_position_dict[tuple(organism.position)] = organism
 
-    def drop_food(self, number, energy, reproduction_threshold, energy_max, taste):
+    def drop_food(self, number, energy=20, reproduction_threshold=30, energy_max=100, taste=180):
         """Spawn food on fertile land and check spawn square is available."""
         for _ in range(number):
             try:
@@ -144,7 +149,7 @@ class World:
             except ValueError:
                 break
 
-    def drop_bug(self, number, energy, reproduction_threshold, energy_max, taste):
+    def drop_bug(self, number, energy=30, reproduction_threshold=70, energy_max=100, taste=180):
         """
         Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
         random_spawn: set to True to randomly spawn bugs anywhere in the world.

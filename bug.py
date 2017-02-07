@@ -1,5 +1,5 @@
-import config as cfg
 from random import random
+import config as cfg
 from constants import BUG_VAL, BUG_NAME
 from utility_methods import get_taste_difference
 from organism import Organism
@@ -11,9 +11,9 @@ class Bug(Organism):
     """
     value = BUG_VAL
     name = BUG_NAME
-    mouth_size = cfg.bug_mouth_size
-    reproduction_cost = cfg.bug_reproduction_cost
-    maturity_age = cfg.bug_maturity_age
+    mouth_size = cfg.bug['mouth_size']
+    reproduction_cost = cfg.bug['reproduction_cost']
+    maturity_age = cfg.bug['maturity_age']
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
@@ -22,7 +22,7 @@ class Bug(Organism):
         :param energy: The energy the bug has stored
         :param reproduction_threshold: The energy value at which the bug reproduces
         :param energy_max: The maximum energy the bug can store
-        :param taste: The gene parameter of the bug
+        :param taste: The gene compatibility parameter of the bug
         """
         new_rep_thresh = self.mutate(reproduction_threshold, cfg.bug['reproduction_threshold_mutation_limit']) \
             if cfg.bug['evolve_reproduction_threshold'] else reproduction_threshold
@@ -49,7 +49,7 @@ class Bug(Organism):
         return False
 
     def eat(self, food):
-        """Take a bite, if ate the whole food return True, else return False"""
+        """Take a bite, if all the food is eaten return True, else return False"""
         if self.mouth_size >= food.energy:
             self.energy += food.energy
             return True

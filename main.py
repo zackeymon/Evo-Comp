@@ -6,6 +6,7 @@ from world import World
 from world_recorder import WorldRecorder
 from world_viewer import WorldViewer
 
+
 ##################################
 # --------Initialisation-------- #
 ##################################
@@ -29,7 +30,7 @@ while KillSwitch.is_off():
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
     world_recorder.output_world_data()
-    if cfg.save_world_view:
+    if cfg.save_world_view_every_day:
         world_viewer.view_world(w)
 
     # Prepare today's work
@@ -41,7 +42,7 @@ while KillSwitch.is_off():
         plant = alive_plants[plant_index]
 
         # Should it die?
-        if plant.energy <= cfg.food_min_energy:
+        if plant.energy <= cfg.food['min_energy']:
             w.kill(plant)
             continue
 
@@ -60,7 +61,7 @@ while KillSwitch.is_off():
         bug = alive_bugs[bug_index]
 
         # Should it die?
-        if bug.energy <= cfg.bug_min_energy:
+        if bug.energy <= cfg.bug['min_energy']:
             w.kill(bug)
             continue
 

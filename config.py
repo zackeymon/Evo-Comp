@@ -4,10 +4,11 @@ Initialisation Settings
 
 # Plotting
 fig_size = 20  # pixel size is fig_size x dpi
-save_world_view = False
-check_newly_spawned_plants = False
+save_world_view_every_day = False
+check_newly_spawned_plants = False  # for debugging
 check_newly_spawned_bugs = False
 
+# World set up
 world = dict(
     settings=dict(
         seed='rt0_t0-128-gr10',  # set to None to use current datetime as seed
@@ -33,19 +34,17 @@ world = dict(
 )
 
 # World parameters
-max_compatible_taste = 180  # scales within range
-
-endangered_time = 300
+max_compatible_taste = 180  # scaling eat probability within range
+offspring_energy_fraction = 0.5
+endangered_time = 300  # time up to which spawn additional organisms if below endangered threshold
 food_endangered_threshold = 100
 bug_endangered_threshold = 10
-food_min_energy = 10
-bug_min_energy = 0
-
-food_maturity_age = 1
-food_reproduction_cost = 4
 
 food = dict(
     growth_rate=10,
+    min_energy=10,
+    maturity_age=1,
+    reproduction_cost=1,
 
     # Evolution switches
     evolve_reproduction_threshold=True,
@@ -55,13 +54,14 @@ food = dict(
     taste_mutation_limit=5
 )
 
-bug_maturity_age = 1
-bug_mouth_size = 40
-bug_reproduction_cost = 6
-
 bug = dict(
     respiration_rate=10,
+    min_energy=0,
+    maturity_age=1,
+    reproduction_cost=6,
+
     eat_tax=0,
+    mouth_size=40,
 
     # Evolution switches
     evolve_reproduction_threshold=True,

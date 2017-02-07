@@ -3,7 +3,14 @@ from time import time
 
 
 class Timer:
+    """
+    A class to investigate code runtime.
+    """
     def __init__(self, seed):
+        """
+        Timer Initialisation
+        :param seed: The seed of the world being timed
+        """
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
