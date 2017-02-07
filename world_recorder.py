@@ -86,36 +86,32 @@ class WorldRecorder:
         """Add data for current world iteration to a list."""
 
         # Start day
-        self.world_data['organism'].append([])
-        self.world_data['x'].append([])
-        self.world_data['y'].append([])
-        self.world_data['energy'].append([])
-        self.world_data['reproduction_threshold'].append([])
-        self.world_data['taste'].append([])
+        del self.world_data['organism'][:]
+        del self.world_data['x'][:]
+        del self.world_data['y'][:]
+        del self.world_data['energy'][:]
+        del self.world_data['reproduction_threshold'][:]
+        del self.world_data['taste'][:]
 
         for organism in ['food', 'bug']:
             for individual_organism in self.world.organism_lists[organism]['alive']:
-                self.world_data['organism'][-1].append(organism)
-                self.world_data['x'][-1].append(individual_organism.position[0])
-                self.world_data['y'][-1].append(individual_organism.position[1])
-                self.world_data['energy'][-1].append(individual_organism.energy)
-                self.world_data['reproduction_threshold'][-1].append(individual_organism.reproduction_threshold)
-                self.world_data['taste'][-1].append(individual_organism.taste)
+                self.world_data['organism'].append(organism)
+                self.world_data['x'].append(individual_organism.position[0])
+                self.world_data['y'].append(individual_organism.position[1])
+                self.world_data['energy'].append(individual_organism.energy)
+                self.world_data['reproduction_threshold'].append(individual_organism.reproduction_threshold)
+                self.world_data['taste'].append(individual_organism.taste)
 
     def output_world_data(self):
         """Output data in CSV (comma-separated values) format for each day, for faster file reading for world setup."""
 
-        print('outputting world data...')
-
-        for i in range(len(self.world_data['organism'])):
-            with open(os.path.join('data', self.world.seed, 'data_files', 'world_data',
-                                   '%r.csv' % i), 'w') as world_file:
-                for organism, x, y, energy, reproduction_threshold, taste in zip(self.world_data['organism'][i],
-                                                                                 self.world_data['x'][i],
-                                                                                 self.world_data['y'][i],
-                                                                                 self.world_data['energy'][i],
-                                                                                 self.world_data[
-                                                                                     'reproduction_threshold'][i],
-                                                                                 self.world_data['taste'][i]):
-                    world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
-                                     + '%r,' % reproduction_threshold + '%r,' % taste + '\n')
+        with open(os.path.join('data', self.world.seed, 'data_files', 'world_data',
+                               '%r.csv' % self.world.time), 'w') as world_file:
+            for organism, x, y, energy, reproduction_threshold, taste in zip(self.world_data['organism'],
+                                                                             self.world_data['x'],
+                                                                             self.world_data['y'],
+                                                                             self.world_data['energy'],
+                                                                             self.world_data['reproduction_threshold'],
+                                                                             self.world_data['taste']):
+                world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
+                                 + '%r,' % reproduction_threshold + '%r,' % taste + '\n')
