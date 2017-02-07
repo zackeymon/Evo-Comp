@@ -1,27 +1,28 @@
+import numpy as np
 import datetime
 import random
 import config as cfg
 from constants import *
-from utility_methods import *
+from utility_methods import get_taste_average
 from bug import Bug
 from food import Food
 
 
 class World:
     """
-    A class to create in the environment inhabited by organisms.
+    A class to create the environment inhabited by organisms.
     """
 
     def __init__(self, rows, columns, seed=None, fertile_lands=None, time=0, init_food=0, init_bugs=0):
         """
         World Initialisation
-        :param rows: Number of rows in the world
-        :param columns: Number of columns in the world
-        :param seed:
-        :param fertile_lands:
-        :param time:
-        :param init_food:
-        :param init_bugs:
+        :param rows: The number of rows in the world
+        :param columns: The number of columns in the world
+        :param seed: The random seed of the world
+        :param fertile_lands: The areas on which organisms can spawn, random spawn by default
+        :param time: The time the world has existed for
+        :param init_food: The initial number of food in the world
+        :param init_bugs: The initial number of bugs in the world
         """
         self.columns = columns
         self.rows = rows
@@ -43,7 +44,8 @@ class World:
         self.drop_bug(init_bugs, **cfg.world['bug_spawn_vals'])
 
     def prepare_today(self):
-        """Returns lists of alive plant and bug objects"""
+        """Returns lists of alive plant and bug objects."""
+
         alive_plants = self.organism_lists[FOOD_NAME]['alive']
         alive_bugs = self.organism_lists[BUG_NAME]['alive']
 
@@ -90,6 +92,7 @@ class World:
         return alive_plants, alive_bugs
 
     def get_fertile_squares(self, fertile_lands):
+
         if fertile_lands is None:
             # Make the whole world fertile
             squares = [[x, y] for x in range(self.columns) for y in range(self.rows)]
@@ -98,6 +101,7 @@ class World:
             for i in fertile_lands:
                 min_x, min_y, max_x, max_y = i[0][0], i[0][1], i[1][0], i[1][1]
                 squares += [[x, y] for x in range(min_x, max_x + 1) for y in range(min_y, max_y + 1)]
+
         return squares
 
     def available(self, organism, direction):
@@ -105,6 +109,7 @@ class World:
 
     def _collide(self, position, organism_value):
         """Check if position is out of bounds and for disallowed collisions."""
+
         # Collide with wall
         if position[0] < 0 or position[0] >= self.columns or position[1] < 0 or position[1] >= self.rows:
             return True
@@ -150,11 +155,7 @@ class World:
                 break
 
     def drop_bug(self, number, energy=30, reproduction_threshold=70, energy_max=100, taste=180):
-        """
-        Spawn bugs on fertile land and check spawn square is available, bugs only created upon initialisation.
-        random_spawn: set to True to randomly spawn bugs anywhere in the world.
-        """
-
+        """Spawn bugs on fertile land and check spawn square is available."""
         for _ in range(number):
             try:
                 spawn_position = self.spawnable_squares.pop(random.randint(0, len(self.spawnable_squares) - 1))

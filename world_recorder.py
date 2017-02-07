@@ -3,12 +3,11 @@ from collections import OrderedDict
 from shutil import move
 from tempfile import mkstemp
 from utility_methods import *
-import config as cfg
 
 
 class WorldRecorder:
     """
-    A class output the data for the world as it develops.
+    A class to output the data for the world as it develops.
     """
 
     def __init__(self, world):
@@ -52,7 +51,7 @@ class WorldRecorder:
         move(new_path, os.path.join('data', world.seed, 'config.py'))  # move new file
 
     def generate_world_stats(self):
-        """Add data for the current world iteration to a list."""
+        """Add statistics for the current world iteration to a list."""
 
         for organism in ['food', 'bug']:
             alive = self.world.organism_lists[organism]['alive']
@@ -68,7 +67,7 @@ class WorldRecorder:
             self.organism_data[organism]['average_reproduction_threshold'].append(average_rep_thresh([alive]))
 
     def output_world_stats(self):
-        """Output data in CSV (comma-separated values) format for analysis."""
+        """Output statistics in CSV (comma-separated values) format for analysis."""
 
         print('outputting world statistics...')
 
@@ -83,7 +82,7 @@ class WorldRecorder:
                         + '%r,' % average_reproduction_threshold + '\n')
 
     def generate_world_data(self):
-        """Add data for current world iteration to a list."""
+        """Add data for the current world iteration to a list."""
 
         # Start day
         del self.world_data['organism'][:]
@@ -103,7 +102,7 @@ class WorldRecorder:
                 self.world_data['taste'].append(individual_organism.taste)
 
     def output_world_data(self):
-        """Output data in CSV (comma-separated values) format for each day, for faster file reading for world setup."""
+        """Output data in CSV (comma-separated values) format for each day."""
 
         with open(os.path.join('data', self.world.seed, 'data_files', 'world_data',
                                '%r.csv' % self.world.time), 'w') as world_file:

@@ -26,7 +26,8 @@ world_viewer = WorldViewer(w.seed)
 print('Press Enter key to end simulation.\n')
 
 while KillSwitch.is_off():
-    # Generate yesterday data
+
+    # Generate yesterday's data
     world_recorder.generate_world_stats()
     world_recorder.generate_world_data()
     world_recorder.output_world_data()

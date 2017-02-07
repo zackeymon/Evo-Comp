@@ -14,7 +14,7 @@ world = dict(
         seed='rt0_t0-128-gr10',  # set to None to use current datetime as seed
         rows=128,
         columns=128,
-        fertile_lands=None,
+        fertile_lands=None,  # fertile_lands=[[[20, 20], [29, 29]], [[50, 20], [59, 29]], [[20, 50], [29, 59]]])
         init_food=100,
         init_bugs=10
     ),
