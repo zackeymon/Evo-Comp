@@ -9,8 +9,8 @@ class Food(Organism):
     """
     value = FOOD_VAL
     name = FOOD_NAME
-    reproduction_cost = cfg.food_reproduction_cost
-    maturity_age = cfg.food_maturity_age
+    reproduction_cost = cfg.food['reproduction_cost']
+    maturity_age = cfg.food['maturity_age']
 
     def __init__(self, position, energy, reproduction_threshold, energy_max, taste):
         """
@@ -19,7 +19,7 @@ class Food(Organism):
         :param energy: The energy stored in the food
         :param reproduction_threshold: The energy value at which the food reproduces
         :param energy_max: The maximum energy the food can hold
-        :param taste: The gene parameter of the food
+        :param taste: The gene compatibility parameter of the food
         """
         new_rep_thresh = self.mutate(reproduction_threshold, cfg.food['reproduction_threshold_mutation_limit']) \
             if cfg.food['evolve_reproduction_threshold'] \
@@ -33,7 +33,5 @@ class Food(Organism):
         self.lifetime += 1
         if self.energy < self.energy_max:
             self.energy += cfg.food['growth_rate']
-
-    def can_overshadow(self, defending_plant):
-        if self.energy * self.offspring_energy_fraction * cfg.food_over_shadow_ratio > defending_plant.energy:
-            return True
+        if self.energy > self.energy_max:
+            self.energy = self.energy_max

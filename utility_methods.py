@@ -13,6 +13,7 @@ def get_taste_average(taste_list):
 
 
 def get_taste_difference(taste1, taste2):
+    """Absolute difference between two points in polar co-ordinates."""
     return abs((taste1 - taste2 + 180) % 360 - 180)
 
 
@@ -40,18 +41,3 @@ def average_rep_thresh(organism_list):
     total_rep_thresh = sum([sum([i.reproduction_threshold for i in turn]) for turn in organism_list])
 
     return total_rep_thresh / total_number
-
-
-def split_list(data):
-    """Split the overall list of data into separate days."""
-    split_data = [[]]
-    for item in data:
-        if "'end_day'" in item:
-            split_data.append([])
-        else:
-            split_data[-1].append(item)
-
-    del split_data[-1]
-    data = split_data
-
-    return data

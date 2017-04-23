@@ -2,6 +2,9 @@ import _thread
 
 
 class KillSwitch:
+    """"
+    A class to implement a kill switch for loops.
+    """
     _list = []
 
     @staticmethod

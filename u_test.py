@@ -1,7 +1,7 @@
 import unittest
 import config as cfg
-from utility_methods import *
 from constants import *
+from utility_methods import *
 from world import World
 from world_recorder import WorldRecorder
 
@@ -69,7 +69,6 @@ class OrganismTests(unittest.TestCase):
 
     def test_kill(self):
         self.my_world.drop_bug(3)
-        self.my_world.organism_lists[BUG_NAME]['dead'].append([])
         self.my_world.kill(self.my_world.organism_lists[BUG_NAME]['alive'][0])
         self.assertEqual(len(self.my_world.organism_lists[BUG_NAME]['alive']), 2)
         self.assertEqual(len(self.my_world.organism_lists[BUG_NAME]['dead']), 1)
@@ -82,7 +81,7 @@ class OrganismTests(unittest.TestCase):
 
 class WorldRecorderTests(unittest.TestCase):
     def setUp(self):
-        dummy_world = World(rows=10, columns=10, seed='lolz')
+        dummy_world = World(rows=10, columns=10, seed='unit_test')
         self.dummy_bug_list = [DummyBug(5, 10), DummyBug(10, 20), DummyBug(15, 30)]
         self.dead_dummy_bug_list = [[DummyBug(40, 50), DummyBug(60, 70), DummyBug(50, 60)] for _ in range(20)]
         self.my_world_recorder = WorldRecorder(dummy_world)
@@ -107,10 +106,9 @@ class WorldRecorderTests(unittest.TestCase):
         self.assertEqual(average_dead_lifetime, 60)
 
 
-class OvershadowTest(unittest.TestCase):
+class SimpleWorldTests(unittest.TestCase):
     def setUp(self):
         self.tiny_world = World(rows=1, columns=2)
-        self.tiny_world.organism_lists[FOOD_NAME]['dead'].append([])
 
     def test_simple_dictionary(self):
         food1 = DummyFood([0, 0])
