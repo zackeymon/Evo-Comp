@@ -53,18 +53,19 @@ class WorldRecorder:
     def generate_world_stats(self):
         """Add statistics for the current world iteration to a list."""
 
+        world_param = ['time', 'energy', 'population', 'deaths', 'average_deaths', 'average_alive_lifetime',
+                       'average_lifespan', 'average_reproduction_threshold']
+
         for organism in ['food', 'bug']:
             alive = self.world.organism_lists[organism]['alive']
             dead = self.world.organism_lists[organism]['dead']
 
-            self.organism_data[organism]['time'].append(self.world.time)
-            self.organism_data[organism]['energy'].append(sum_list_energy(alive))
-            self.organism_data[organism]['population'].append(len(alive))
-            self.organism_data[organism]['deaths'].append(len(dead[-1]))
-            self.organism_data[organism]['average_deaths'].append(sum([len(i) for i in dead[-10:]]) / 10)
-            self.organism_data[organism]['average_alive_lifetime'].append(average_lifetime([alive]))
-            self.organism_data[organism]['average_lifespan'].append(average_lifetime(dead[-10:]))
-            self.organism_data[organism]['average_reproduction_threshold'].append(average_rep_thresh([alive]))
+            world_append = [self.world.time, sum_list_energy(alive), len(alive), len(dead[-1]),
+                            sum([len(i) for i in dead[-10:]]) / 10, average_lifetime([alive]),
+                            average_lifetime(dead[-10:]), average_rep_thresh([alive])]
+
+            for param_list, x in zip(world_param, world_append):
+                self.organism_data[organism][param_list].append(x)
 
     def output_world_stats(self):
         """Output statistics in CSV (comma-separated values) format for analysis."""
@@ -84,33 +85,29 @@ class WorldRecorder:
     def generate_world_data(self):
         """Add data for the current world iteration to a list."""
 
+        organism_param = ['organism', 'x', 'y', 'energy', 'reproduction_threshold', 'taste']
+
         # Start day
-        del self.world_data['organism'][:]
-        del self.world_data['x'][:]
-        del self.world_data['y'][:]
-        del self.world_data['energy'][:]
-        del self.world_data['reproduction_threshold'][:]
-        del self.world_data['taste'][:]
+        for param_list in organism_param:
+            del self.world_data[param_list][:]
 
         for organism in ['food', 'bug']:
             for individual_organism in self.world.organism_lists[organism]['alive']:
-                self.world_data['organism'].append(organism)
-                self.world_data['x'].append(individual_organism.position[0])
-                self.world_data['y'].append(individual_organism.position[1])
-                self.world_data['energy'].append(individual_organism.energy)
-                self.world_data['reproduction_threshold'].append(individual_organism.reproduction_threshold)
-                self.world_data['taste'].append(individual_organism.taste)
+                organism_append = [organism, individual_organism.position[0], individual_organism.position[1],
+                                   individual_organism.energy, individual_organism.reproduction_threshold,
+                                   individual_organism.taste]
+
+                for param_list, x in zip(organism_param, organism_append):
+                    self.world_data[param_list].append(x)
 
     def output_world_data(self):
         """Output data in CSV (comma-separated values) format for each day."""
 
+        organism_param = ['organism', 'x', 'y', 'energy', 'reproduction_threshold', 'taste']
+
         with open(os.path.join('data', self.world.seed, 'data_files', 'world_data',
                                '%r.csv' % self.world.time), 'w') as world_file:
-            for organism, x, y, energy, reproduction_threshold, taste in zip(self.world_data['organism'],
-                                                                             self.world_data['x'],
-                                                                             self.world_data['y'],
-                                                                             self.world_data['energy'],
-                                                                             self.world_data['reproduction_threshold'],
-                                                                             self.world_data['taste']):
+            for organism, x, y, energy, reproduction_threshold, taste in zip(
+                    *[self.world_data[param_list] for param_list in organism_param]):
                 world_file.write('%r,' % organism + '%r,' % x + '%r,' % y + '%r,' % energy
                                  + '%r,' % reproduction_threshold + '%r,' % taste + '\n')
